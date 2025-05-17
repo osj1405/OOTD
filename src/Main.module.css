@@ -1,0 +1,59 @@
+.container {
+    background-color: azure;
+    text-align: center;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+
+.sidebar {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.profile {
+    display: flex;
+    flex-direction: row;
+}
+
+.id {
+    font-weight: bold;
+    font-size: medium;
+    margin-left: 5%;
+}
+
+.profileImage {
+    border-radius: 50%;
+    min-width: 100px;
+    min-height: 100px;
+    background-color: gray;
+    margin-left: 5%;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 50;
+}
+
+.logoutField{
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 5%;
+}
+
+.logout {
+    width: 80px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: xx-large;
+    
+}
+
