@@ -17,24 +17,6 @@
     min-width: 200px;
 }
 
-.profile {
-    display: flex;
-    flex-direction: row;
-}
-
-.id {
-    font-weight: bold;
-    font-size: medium;
-    margin-left: 5%;
-}
-
-.profileImage {
-    border-radius: 50%;
-    min-width: 100px;
-    min-height: 100px;
-    background-color: gray;
-    margin-left: 5%;
-}
 
 .content {
     display: flex;
