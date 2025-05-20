@@ -1,0 +1,65 @@
+.title {
+    font-weight: bold;
+    font-size: xx-large;
+    margin: 0;
+    padding: 32px;
+}
+
+p {
+    font-weight: bold;
+}
+.container {
+    text-align: center;
+}
+
+.buttonForm{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 15%
+}
+
+.button {
+    width: 180px;
+    height: 40px;
+    border-radius: 5px;
+    border-color: white;
+    color: white;
+    font-size: medium;
+}
+
+.cancel {
+    background-color: #f04846;
+    opacity: 0.7;
+}
+
+.success {
+    background-color: #4863e8;
+    opacity: 0.8;
+}
+
+.signupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-items: center;
+    margin-top: 5%;
+}
+
+label {
+    display: inline-block;
+    text-align: end;
+    width: 100px;
+    font-weight: medium;
+    margin-right: 2%;
+}
+
+.inputForm input {
+  width: 250px;
+  max-width: 300px;
+  height: 25px;
+  border-radius: 3px;
+  border-width: 1px;
+  margin-right: 7%;
+}

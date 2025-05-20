@@ -1,12 +1,13 @@
 .profile {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .id {
     font-weight: bold;
     font-size: medium;
-    margin-left: 5%;
+    margin-left: 10%;
 }
 
 .id:hover {
@@ -15,10 +16,10 @@
 
 .profileImage {
     border-radius: 50%;
-    min-width: 100px;
-    min-height: 100px;
+    width: 150px;
+    height: 150px;
     background-color: gray;
-    margin-left: 5%;
+    margin-left: 10%;
 }
 
 .tagContainer {

@@ -9,6 +9,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Main from './Main';
+import SignUp from './SignUp';
+import MyPage from './MyPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -21,6 +23,12 @@ root.render(
         <Route
         path="/main"
         element={<Main />} />
+        <Route
+          path="/signup"
+          element={<SignUp />} />
+        <Route
+          path="mypage/:id"
+          element={<MyPage />} />
     </Routes>
   </BrowserRouter>
 );

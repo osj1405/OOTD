@@ -25,7 +25,11 @@ function App() {
            onClick={() => {
             navigate("/main");
            }}>로그인</button>
-          <button className={styles.signupButton}>회원가입</button>
+          <button 
+            className={styles.signupButton}
+            onClick={()=>{
+              navigate("/signup");
+            }}>회원가입</button>
         </div>
       </form>
       {/* <header className="App-header">
