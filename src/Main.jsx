@@ -2,9 +2,21 @@ import styles from './Main.module.css';
 import { useNavigate } from 'react-router';
 import CardContainer from './component/CardContainer';
 import SideProfile from './component/SideProfile';
+import { useState } from 'react';
+import WriteModal from './component/WriteModal';
 
 function Main(){
     let navigate = useNavigate();
+    // eslint-disable-next-line no-unused-vars
+    const [open, setOpen] = useState(false);
+
+    function setOpenModal(){
+        setOpen(true);
+    }
+
+    function setCloseModal(){
+        setOpen(false);
+    }
 
     return(
         <>
@@ -12,7 +24,7 @@ function Main(){
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
-                    <SideProfile />
+                    <SideProfile setOpenModal={setOpenModal}/>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
@@ -23,7 +35,8 @@ function Main(){
                     <CardContainer />
                     <CardContainer />                    
                 </div>
-            </div>        
+            </div> 
+            <WriteModal isOpen={open} onClose={setCloseModal} />     
         </div>
         </>
     )

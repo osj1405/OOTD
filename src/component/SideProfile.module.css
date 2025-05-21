@@ -27,7 +27,7 @@
     flex-direction: row;
     gap: 5px;
     max-width: 100px;
-    margin-left: 5%;
+    margin-left: 10%;
 }
 
 .tag {
@@ -39,17 +39,31 @@
 }
 
 .profileSetButton{
-    margin-left: 5%;
+    margin-left: 10%;
     height: 25px;
     background-color: whitesmoke;
     border-color: whitesmoke;
     color: #101010;
     border-radius: 5px;
+    width: 200px;
 }
-.friendsTitle {
+
+.writePostButton {
+    margin-left: 10%;
+    height: 25px;
+    background-color: whitesmoke;
+    border-color: whitesmoke;
+    color: #101010;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 5%;
+    align-self: center;
+}
+
+.friendsContainer {
     font-weight: bold;
     font-size: large;
     display: flex;
     flex-direction: row;
-    margin-left: 5%;
+    margin-left: 10%;
 }
