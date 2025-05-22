@@ -1,0 +1,51 @@
+.container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.title {
+    font-weight: bold;
+    font-size: xx-large;
+    margin: 0;
+    padding-top: 32px;
+    padding-bottom: 20px;
+}
+
+.goMainContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 5%;
+}
+
+.goMainButton {
+    width: 80px;
+}
+
+
+.Field {
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+
+.sidebar {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 50;
+}

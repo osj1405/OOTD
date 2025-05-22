@@ -1,0 +1,69 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.id {
+    font-weight: bold;
+    font-size: medium;
+    margin-left: 10%;
+}
+
+.id:hover {
+    color: gray;
+}
+
+.profileImage {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    background-color: gray;
+    margin-left: 10%;
+}
+
+.tagContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    max-width: 100px;
+    margin-left: 10%;
+}
+
+.tag {
+    color: #5f7edd;
+}
+
+.tag:hover{
+    color: blue;
+}
+
+.profileSetButton{
+    margin-left: 10%;
+    height: 25px;
+    background-color: whitesmoke;
+    border-color: whitesmoke;
+    color: #101010;
+    border-radius: 5px;
+    width: 200px;
+}
+
+.writePostButton {
+    margin-left: 10%;
+    height: 25px;
+    background-color: whitesmoke;
+    border-color: whitesmoke;
+    color: #101010;
+    border-radius: 5px;
+    width: 100px;
+    margin-top: 5%;
+    align-self: center;
+}
+
+.friendsContainer {
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10%;
+}
