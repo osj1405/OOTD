@@ -2,6 +2,7 @@ import React from "react";
 import styles from "./MyPage.module.css";
 import { useNavigate } from "react-router";
 import SideProfile from "./component/SideProfile";
+import Calendar from "./component/Calendar";
 
 export default function MyPage(){
     let navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function MyPage(){
                                 navigate("/main")
                             }}>Main</button>
                         </div>
+                        <Calendar />
                     </div>
                 </div>
             </div>
