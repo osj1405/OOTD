@@ -1,3 +1,30 @@
 .day {
     flex: 1;
+    padding: 5px;
+    min-width: 50px;
+    max-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: background-color 0.2s ease;
+}
+
+.sunday {
+    color: red;
+}
+
+.saturday {
+    color: blue;
+}
+
+.today {
+  border: 1px dotted #909090;
+}
+
+.circlehover:hover {
+    background-color: #c9c9c9;
+    cursor: pointer;
 }

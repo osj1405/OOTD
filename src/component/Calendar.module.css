@@ -10,8 +10,6 @@ h2 {
     text-align: start;
 }
 
-
-
 .week {
     display: flex;
 }
@@ -19,6 +17,7 @@ h2 {
 .selectMonth {
     display: flex;
     flex-direction: row;
+    max-width: 600px;
 }
 
 .button {
@@ -26,4 +25,17 @@ h2 {
     background-color: white;
     width: 50px;
     font-size: x-large;
+}
+
+.todayContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    min-width: 280px;
+}
+
+.goToday {
+    border-width: 0;
+    font-size: medium;
+    font-weight: bold;
+    background-color: white;
 }
