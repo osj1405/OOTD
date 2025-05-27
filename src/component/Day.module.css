@@ -21,10 +21,13 @@
 }
 
 .today {
-  border: 1px dotted #909090;
+    background-color: #EAEAEA;
+}
+.circlehover:hover {
+    background-color: #EBEBEB;
+    cursor: pointer;
 }
 
-.circlehover:hover {
-    background-color: #c9c9c9;
-    cursor: pointer;
+.anotherMonth {
+    color: #C9c9c9;
 }

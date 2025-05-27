@@ -6,43 +6,44 @@ import Week from "./Week";
 import Day from "./Day";
 export default function Calendar(){
     const today = new Date();
-    console.log(today);
-    const [day, setDay] = useState(new Date());
+    // eslint-disable-next-line no-unused-vars
+    const [selectedDay, setSelectedDay] = useState(today);
     const [month, setMonth] = useState(today.getMonth() + 1)
     const [year, setYear] = useState(today.getFullYear());
     // setToday는 날짜 클릭해서 변경할 때 사용하기
 
-    const calendar = buildCalendar(year, month-1);
+    const calendar = buildCalendar(year, month);
 
-    const week = ["Sun", "Mon", "Thu", "Wen", "Thr", "Fri", "Sat"];
+    const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
     const previousMonth = () => {
         if(month === 1){
-            setYear(year-1);
+            setYear(prev => prev - 1);
             setMonth(12);
         } else {
-            setMonth(month-1);
+            setMonth(prev => prev - 1);
         }
     }
 
     const nextMonth = () => {
         if(month === 12){
-            setYear(year + 1);
+            setYear(prev => prev + 1);
             setMonth(1);
         } else {
-            setMonth(month + 1);
+            setMonth(prev => prev + 1);
         }
     }
 
     const onSelectDay = (day) => {
-        setDay(day)
-        console.log(day);
+        setSelectedDay(day)
+        console.log(`select Day: ${selectedDay}`);
     }
 
     const onGoToday = () => {
-        setDay(today);
-        setYear(new Date().getFullYear());
-        setMonth(new Date().getMonth() + 1);
+        const now = new Date();
+        setSelectedDay(now);
+        setYear(now.getFullYear());
+        setMonth(now.getMonth() + 1);
     }
 
     return (
@@ -53,12 +54,13 @@ export default function Calendar(){
                     className={styles.button}
                     onClick={()=> previousMonth()
                     }>{'<'}</button>
-                <h2>{month}월</h2>
+                <h2>{month.toString()}월</h2>
                 <button 
                     className={styles.button}
                     onClick={()=> nextMonth()
                     }>{'>'}</button>
                 <div className={styles.todayContainer}>
+                    <p className={styles.today}>{`${today.getMonth()+1}월 ${today.getDate()}일`}</p>
                     <button
                         className={styles.goToday}
                         onClick={()=>{
@@ -69,9 +71,9 @@ export default function Calendar(){
                 </div>
             </div>
             <Week>
-                {week.map((dayofweek, i) => {
+                {week.map((day, i) => {
                     return (
-                        <Day key={i} day={dayofweek} onClick={onSelectDay} sunday={i ===0 }></Day>
+                        <Day key={i} day={day} year={year} month={month} sunday={i === 0 }></Day>
                     )
                 })}
             </Week>

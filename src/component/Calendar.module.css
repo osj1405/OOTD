@@ -33,9 +33,17 @@ h2 {
     min-width: 280px;
 }
 
+.today {
+    align-self: center;
+}
+
 .goToday {
     border-width: 0;
     font-size: medium;
     font-weight: bold;
     background-color: white;
+}
+
+.goToday:hover{
+    color: #c3c3c3;
 }
