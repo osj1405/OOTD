@@ -3,13 +3,12 @@ import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
 import myImage from '../assets/profile_image.jpg';
 
-export default function SideProfile(props){
+export default function SideProfile({
+    setOpenModal = () => {}
+}){
     let navigate = useNavigate();
     const params = useParams();
 
-    function setOpenModal(){
-        props.setOpenModal(true);
-    }
 
     return (
         <>
@@ -29,7 +28,6 @@ export default function SideProfile(props){
                 <div className={styles.friendsContainer}>
                     <p>Friends</p>
                 </div>
-
             </div>
 
         </>

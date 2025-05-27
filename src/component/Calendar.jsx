@@ -42,7 +42,7 @@ export default function Calendar({
 
     const onGoToday = () => {
         const now = new Date();
-        selectedDay(now);
+        onSelectDay(now);
         setYear(now.getFullYear());
         setMonth(now.getMonth() + 1);
     }
