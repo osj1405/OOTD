@@ -1,6 +1,4 @@
 import styles from './Day.module.css';
-import { useState } from 'react';
-
 
 export default function Day({
     day, 
