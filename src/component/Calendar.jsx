@@ -1,17 +1,22 @@
 import styles from "./Calendar.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { buildCalendar } from "../utils/calendar";
-import Month from "./Month";
 import Week from "./Week";
 import Day from "./Day";
-export default function Calendar(){
+export default function Calendar({ 
+    selectedDay, 
+    onSelectDay = () => {}
+}){
     const today = new Date();
     // eslint-disable-next-line no-unused-vars
-    const [selectedDay, setSelectedDay] = useState(today);
+    // const [selectedDay, setSelectedDay] = useState(today);
     const [month, setMonth] = useState(today.getMonth() + 1)
     const [year, setYear] = useState(today.getFullYear());
     // setToday는 날짜 클릭해서 변경할 때 사용하기
 
+    useEffect(() => {
+        console.log(`select: ${selectedDay}`)
+    }, [selectedDay])
     const calendar = buildCalendar(year, month);
 
     const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -34,14 +39,10 @@ export default function Calendar(){
         }
     }
 
-    const onSelectDay = (day) => {
-        setSelectedDay(day)
-        console.log(`select Day: ${selectedDay}`);
-    }
 
     const onGoToday = () => {
         const now = new Date();
-        setSelectedDay(now);
+        selectedDay(now);
         setYear(now.getFullYear());
         setMonth(now.getMonth() + 1);
     }
@@ -63,9 +64,7 @@ export default function Calendar(){
                     <p className={styles.today}>{`${today.getMonth()+1}월 ${today.getDate()}일`}</p>
                     <button
                         className={styles.goToday}
-                        onClick={()=>{
-                            onGoToday()
-                        }}>
+                        onClick={onGoToday}>
                         Today
                     </button>
                 </div>
@@ -78,10 +77,22 @@ export default function Calendar(){
                 })}
             </Week>
             {calendar.map((week, i) => {
-                return(
-                    <Month key={i} week={week} year={year} month={month} onSelectDay={onSelectDay}></Month>
-                ) 
-            })}
+                return (
+                    <Week key={i}>
+                        {week.map((day, i) => {
+                            return(
+                                <Day key={i} year={year} month={month} day={day} sunday={i === 0} saturday={i === 6}
+                                anotherMonth={day.getMonth() + 1 !== month} 
+                                today={day.getFullYear() === today.getFullYear() && day.getMonth() === today.getMonth() && day.getDate() === today.getDate()}
+                                onClick={onSelectDay}  
+                                selected={selectedDay.getTime() === day.getTime()} 
+                                ></Day>
+                            )
+                        })}
+                     </Week>
+                )
+            }
+            )}
             </div>
         </>
     )

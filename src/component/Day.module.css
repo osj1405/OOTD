@@ -23,11 +23,22 @@
 .today {
     background-color: #EAEAEA;
 }
-.circlehover:hover {
+
+.selected {
     background-color: #EBEBEB;
+    color: red;
     cursor: pointer;
 }
 
 .anotherMonth {
     color: #C9c9c9;
+}
+
+.dot {
+  position: absolute; 
+  top: 20%;
+  right: 15px;
+  background-color: #016dfa;
+  padding: 3px;
+  border-radius: 50%;
 }
