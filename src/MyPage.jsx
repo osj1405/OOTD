@@ -2,9 +2,16 @@ import React from "react";
 import styles from "./MyPage.module.css";
 import { useNavigate } from "react-router";
 import SideProfile from "./component/SideProfile";
+import Calendar from "./component/Calendar";
+import { useState } from "react";
 
 export default function MyPage(){
+    const [selectedDay, setSelectedDay] = useState(new Date());
     let navigate = useNavigate();
+
+    const onSelectDay = (day) => {
+        setSelectedDay(day)
+    }
 
     return (
         <>
@@ -22,7 +29,11 @@ export default function MyPage(){
                                 navigate("/main")
                             }}>Main</button>
                         </div>
+                        <Calendar 
+                            selectedDay={selectedDay}
+                            onSelectDay={onSelectDay}/>
                     </div>
+                    
                 </div>
             </div>
         </>

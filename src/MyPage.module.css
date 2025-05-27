@@ -49,3 +49,8 @@
     flex-direction: column;
     flex: 50;
 }
+
+.selectedDay {
+    align-items: center;
+    justify-content: center;
+}

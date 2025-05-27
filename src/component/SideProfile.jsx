@@ -1,6 +1,7 @@
 import React from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
+import myImage from '../assets/profile_image.jpg';
 
 export default function SideProfile(props){
     let navigate = useNavigate();
@@ -13,8 +14,8 @@ export default function SideProfile(props){
     return (
         <>
             <div className={styles.profile}>
-                <div className={styles.profileImage}>
-                    profile
+                <div className={styles.profileImageContainer}>
+                    <img src={myImage} alt="profile" className={styles.profileImage}/>
                 </div>                        
                 <p className={styles.id} onClick={()=>{navigate(`/mypage/:${params.id}`)}}>yollkie</p>
                 <div className={styles.tagContainer}>

@@ -1,0 +1,49 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 5%;
+    max-width: 600px;
+}
+
+h2 {
+    text-align: start;
+}
+
+.week {
+    display: flex;
+}
+
+.selectMonth {
+    display: flex;
+    flex-direction: row;
+    max-width: 600px;
+}
+
+.button {
+    border-width: 0px;
+    background-color: white;
+    width: 50px;
+    font-size: x-large;
+}
+
+.todayContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    min-width: 280px;
+}
+
+.today {
+    align-self: center;
+}
+
+.goToday {
+    border-width: 0;
+    font-size: medium;
+    font-weight: bold;
+    background-color: white;
+}
+
+.goToday:hover{
+    color: #c3c3c3;
+}
