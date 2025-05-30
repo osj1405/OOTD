@@ -14,23 +14,28 @@ export default function SignUp(){
                     <form className={styles.signupForm}>
                         <div className={styles.inputForm}>
                             <label>이름 </label>
-                            <input type="text"></input>
+                            <input type="text" required></input>
                         </div>
                         <div className={styles.inputForm}>
                             <label>아이디</label>
-                            <input type="text"></input>
+                            <input type="text" required></input>
                         </div>
                         <div className={styles.inputForm}>
                             <label>비밀번호</label>
-                            <input type="password"></input>
+                            <input type="password" required></input>
                         </div>
                         <div className={styles.inputForm}>
                             <label>비밀번호 확인</label>
-                            <input type="password"></input>
+                            <input type="password" required></input>
                         </div>
                         <div className={styles.inputForm}>
                             <label>닉네임</label>
-                            <input type="text"></input>
+                            <input type="text" required></input>
+                        </div>
+                        <div className={styles.inputForm}>
+                            <label>성별</label>
+                            <button className={styles.sexButton}>여성</button>
+                            <button className={styles.sexButton}>남성</button>
                         </div>
                         <div className={styles.inputForm}>
                             <label>생일</label>
