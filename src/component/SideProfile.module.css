@@ -87,3 +87,8 @@
     text-align: start;
     margin-left: 10%;
 }
+
+.friendModalContainer {
+    position: relative;
+    display: inline-block;
+}

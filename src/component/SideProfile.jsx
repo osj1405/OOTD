@@ -5,9 +5,10 @@ import myImage from '../assets/profile_image.jpg';
 import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
+import FriendModal from "./FriendModal";
 
 export default function SideProfile({
-    setOpenModal = () => {}
+    setOpenModal = () => {},
 }){
     let navigate = useNavigate();
     const params = useParams(); 
@@ -15,8 +16,20 @@ export default function SideProfile({
     const [nickname, setNickName] = useState("수진");
     const [profileImage, setProfileImage] = useState(myImage);
 
+
+    const [friendModal, setFriendModal] = useState(null);
+
+
     const handleProfileImage = (src) => {
         setProfileImage(src);
+    }
+
+    function setFriendModalOpen(id){
+        setFriendModal(id);
+    }
+    
+    function setFriendModalClose(){
+        setFriendModal(null);
     }
 
     const friendsData = [
@@ -75,7 +88,28 @@ export default function SideProfile({
                                 <FriendsWrap key={i} >
                                     {row.map((friend, i) => {
                                         return(
-                                        <Friend key={i} id={friend.id} friendProfileImage={friend.profileImage} />
+                                        <>
+                                        <div
+                                            className={styles.friendModalContainer}
+                                            onMouseEnter={() => setFriendModalOpen(friend.id)}
+                                            onMouseLeave={setFriendModalClose}>
+                                            <Friend 
+                                                key={i} 
+                                                id={friend.id} 
+                                                friendProfileImage={friend.profileImage} 
+                                                // onMouseOver={()=>setFriendModalOpen(friend.id)}
+                                                // onMouseOut={setFriendModalClose} 
+                                                />
+                                            {friendModal === friend.id && <FriendModal isOpen={friendModal} id={friend.id} profileImage={friend.profileImage} />}
+                                        </div>
+                                            {/* <Friend 
+                                                key={i} 
+                                                id={friend.id} 
+                                                friendProfileImage={friend.profileImage} 
+                                                onMouseOver={()=>setFriendModalOpen(friend.id)}
+                                                onMouseOut={setFriendModalClose} />
+                                            {friendModal === friend.id && <FriendModal isOpen={true} id={friend.id} profileImage={friend.profileImage} />} */}
+                                        </>
                                         )
                                     })}
                                 </FriendsWrap>

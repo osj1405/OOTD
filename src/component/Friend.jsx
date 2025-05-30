@@ -2,12 +2,18 @@ import styles from "./Friend.module.css";
 
 export default function Friend({
     id,
-    friendProfileImage
+    friendProfileImage,
+    onMouseOver = () => {},
+    onMouseOut = () => {}
 }){
     
     return (
         <>
-            <div className={styles.container}>
+            <div 
+                className={styles.container}
+                // onMouseEnter={onMouseOver}
+                // onMouseLeave={onMouseOut}
+                >
                 <img 
                     src={friendProfileImage}
                     alt="friend profile"
