@@ -11,6 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import Main from './Main';
 import SignUp from './SignUp';
 import MyPage from './MyPage';
+import ProfileEdit from './ProfileEdit';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -29,6 +30,9 @@ root.render(
         <Route
           path="mypage/:id"
           element={<MyPage />} />
+        <Route 
+          path="editprofile/:id"
+          element={<ProfileEdit /> }/>
     </Routes>
   </BrowserRouter>
 );
