@@ -1,15 +1,11 @@
 import React from "react";
-import Card from "./Card";
 import styles from './CardContainer.module.css';
 
-export default function CardContainer(){
+export default function CardContainer({children}){
     return(
         <>
         <div className={styles.container}> 
-            <Card />
-            <Card />
-            <Card />
-            <Card />
+            {children}
         </div>
         </>
     );

@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
 import myImage from '../assets/profile_image.jpg';
+import FriendsWrap from "./FriendsWrap";
+import Friend from "./Friend";
+import FriendImage from '../assets/friends_profile_image.jpg';
 
 export default function SideProfile({
     setOpenModal = () => {}
@@ -14,6 +17,30 @@ export default function SideProfile({
 
     const handleProfileImage = (src) => {
         setProfileImage(src);
+    }
+
+    const friendsData = [
+        {
+            id: "yollkie",
+            profileImage: FriendImage
+        }, 
+        {
+            id: "noidraiz",
+            profileImage: FriendImage
+        },
+        {
+            id: "raylist03",
+            profileImage: FriendImage
+        },
+        {
+            id: "chuboki",
+            profileImage: FriendImage
+        }
+    ]
+    const rows = 3;
+    const sliceDate = [];
+    for(let i = 0; i < friendsData.length; i += rows){
+        sliceDate.push(friendsData.slice(i, i + rows));
     }
 
     return (
@@ -42,6 +69,19 @@ export default function SideProfile({
                     onClick={setOpenModal}>포스트하기</button>
                 <div className={styles.friendsContainer}>
                     <p>Friends</p>
+                    {
+                        sliceDate.map((row, i) => {
+                            return(
+                                <FriendsWrap key={i} >
+                                    {row.map((friend, i) => {
+                                        return(
+                                        <Friend key={i} id={friend.id} friendProfileImage={friend.profileImage} />
+                                        )
+                                    })}
+                                </FriendsWrap>
+                            )
+                        })
+                    }
                 </div>
             </div>
 
