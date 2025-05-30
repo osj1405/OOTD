@@ -7,7 +7,7 @@
 
 .id {
     font-weight: bold;
-    font-size: medium;
+    font-size: large;
     margin-left: 10%;
     align-self: flex-start;
 }
@@ -31,6 +31,15 @@
     border-radius: 50%;
     border-width: 0;
     object-fit: cover;
+}
+
+.nickname {
+    align-self: flex-start;
+    margin-left: 10%;
+    padding: 0px;
+    margin-top: 0;
+    font-size: medium;
+    font-weight: 700;
 }
 
 .tagContainer {
@@ -65,7 +74,7 @@
     border-color: whitesmoke;
     color: #101010;
     border-radius: 5px;
-    width: 100px;
+    width: 180px;
     margin-top: 5%;
     align-self: center;
 }
