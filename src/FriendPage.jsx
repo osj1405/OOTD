@@ -1,20 +1,28 @@
 import SideProfile from './component/SideProfile'
 import styles from './FriendPage.module.css'
 import { useParams, useNavigate } from 'react-router'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Calendar from './component/Calendar';
 
 
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState(new Date());
+    const [id, setId] = useState("");
     const onSelectDay = (day) => {
         setSelectedDay(day)
     }
-
     const params = useParams();
+    
+
+
+    useEffect(() => {
+        setId(params.id.slice(1, params.id.length));
+    }, [params])
+
     const navigate = useNavigate();
-    const id = params.id.slice(1, params.id.length);
+
     const [name, setName] = useState("friend");
+
     return (
         <>
             <div className={styles.container}>

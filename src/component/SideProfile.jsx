@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
 import myImage from '../assets/profile_image.jpg';
@@ -13,10 +13,13 @@ export default function SideProfile({
 }){
     let navigate = useNavigate();
     const params = useParams(); 
-    const [id, setId] = useState(idInfo);
+    const [id, setId] = useState("");
     const [nickname, setNickName] = useState("수진");
     const [profileImage, setProfileImage] = useState(myImage);
 
+    useEffect(()=> {
+        setId(idInfo);
+    }, [idInfo])
 
     const [friendModal, setFriendModal] = useState(null);
 
@@ -65,7 +68,9 @@ export default function SideProfile({
                 </div>                        
                 <p 
                     className={styles.id} 
-                    onClick={()=>{navigate(`/mypage/:${params.id}`)}}
+                    onClick={()=>{
+                        if(id === "pumupcld")
+                            navigate(`/mypage/:${params.id}`)}}
                     >{id}</p>
                 <p 
                     className={styles.nickname}
