@@ -1,0 +1,52 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: absolute;
+    top: 80%;
+    left: 80%;
+    width: 350px;
+    height: 220px;
+    border-radius: 5%;
+    background-color: #ffffff;
+    padding: 1%;
+    z-index: 100;
+}
+
+.profileImage {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: 3%;
+}
+
+.infoContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 3%;
+}
+
+.id {
+    margin-top: 3%;
+    margin-left: 5%;
+    font-size: large;
+    font-weight: bold;
+    align-self: start;
+}
+
+.followButton {
+    position: absolute;
+    justify-self: end;
+    top: 80%;
+    left: 65%;
+    height: 30px;
+    width: 100px;
+    font-weight: bold;
+    font-size: small;
+    border-width: 0;
+    background-color: #408DFE;
+    border-radius: 5%;
+    color: white;
+}

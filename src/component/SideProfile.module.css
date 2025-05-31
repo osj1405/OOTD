@@ -83,7 +83,12 @@
     font-weight: bold;
     font-size: large;
     display: flex;
-    flex-direction: row;
-    align-self: flex-start;
+    flex-direction: column;
+    text-align: start;
     margin-left: 10%;
+}
+
+.friendModalContainer {
+    position: relative;
+    display: inline-block;
 }

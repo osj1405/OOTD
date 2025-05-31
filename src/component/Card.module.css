@@ -1,13 +1,14 @@
 .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .image {
-    min-width: 160px;
-    min-height: 200px;
+    max-width: 200px;
+    max-height: 250px;
     background-color: gray;
+    border-radius: 1%;
 }
 
 .id {

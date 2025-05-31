@@ -12,6 +12,7 @@ import Main from './Main';
 import SignUp from './SignUp';
 import MyPage from './MyPage';
 import ProfileEdit from './ProfileEdit';
+import FriendPage from './FriendPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -33,6 +34,9 @@ root.render(
         <Route 
           path="editprofile/:id"
           element={<ProfileEdit /> }/>
+        <Route 
+          path="friendpage/:id"
+          element={<FriendPage />} />
     </Routes>
   </BrowserRouter>
 );
