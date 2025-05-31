@@ -8,7 +8,9 @@ export default function Card({
 }){
     return(
         <>
-            <div className={styles.container}>
+            <div 
+                className={styles.container}
+                >
                 <img className={styles.image} src={thumnail} alt="thumnail"></img>
                 <p className={styles.id}>{id}</p>
                 <time>{time}</time>
