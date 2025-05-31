@@ -4,12 +4,14 @@ import styles from './Card.module.css';
 export default function Card({
     id,
     thumnail,
-    time
+    time,
+    onClick = () => {}
 }){
     return(
         <>
             <div 
                 className={styles.container}
+                onClick={onClick}
                 >
                 <img className={styles.image} src={thumnail} alt="thumnail"></img>
                 <p className={styles.id}>{id}</p>

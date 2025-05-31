@@ -7,11 +7,13 @@ import { useState } from 'react';
 import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
+import FeedModal from './component/FeedModal';
 
 function Main(){
     let navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
+    const [selectedCard, setSelectedCard] = useState(null);
 
     function setOpenModal(){
         setOpen(true);
@@ -21,30 +23,43 @@ function Main(){
         setOpen(false);
     }
 
+    function handleCardClick(cardData){
+        setSelectedCard(cardData)
+    }
+
+    function closeCardModal(){
+        setSelectedCard(null);
+    }
+
     const feedData = [
         {
             id: "pumupcld",
             thumnail: feedImage,
+            content: "더현대 다녀왔어용",
             time: "14:02"
         },
         {
             id: "raylist03",
             thumnail: feedImage2,
+            content: "데이트~.~",
             time: "14:02"
         },
         {
             id: "yollkie",
             thumnail: feedImage,
+            content: "리락쿠마",
             time: "14:02"
         },
         {
             id: "noidraiz",
             thumnail: feedImage2,
+            content: "카페 왔당",
             time: "14:02"
         },
         {
             id: "chubuki",
             thumnail: feedImage,
+            content: "귀여운 것들 천국!!",
             time: "14:02"
         }
     ]
@@ -72,7 +87,8 @@ function Main(){
                             <CardContainer key={i}>
                                 {row.map((feed, i) => {
                                     return (
-                                        <Card key={i} id={feed.id} thumnail={feed.thumnail} time={feed.time}></Card>
+                                        <Card key={i} id={feed.id} thumnail={feed.thumnail} time={feed.time}
+                                            onClick={()=>handleCardClick(feed)}></Card>
                                     )
                                 })}
                             </CardContainer>
@@ -80,7 +96,7 @@ function Main(){
                     })}
                 </div>
             </div> 
-
+            {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal}/>}
             <WriteModal isOpen={open} onClose={setCloseModal} />     
         </div>
         </>
