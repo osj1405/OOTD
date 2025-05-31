@@ -61,7 +61,7 @@ function Main(){
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} />
+                    <SideProfile setOpenModal={setOpenModal} idInfo="pumupcld" />
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>

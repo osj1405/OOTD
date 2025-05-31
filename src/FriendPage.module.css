@@ -11,3 +11,34 @@
     padding-top: 32px;
     padding-bottom: 20px;
 }
+
+.contentContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 8%;
+}
+
+.sidebar {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.goMainContainer {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-right: 5%;
+}
+
+.goMainButton {
+    width: 80px;
+}
+
+
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 50;
+}
+

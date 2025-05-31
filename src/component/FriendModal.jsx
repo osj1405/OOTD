@@ -1,5 +1,5 @@
 import styles from "./FriendModal.module.css";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 
 export default function FriendModal ({
     isOpen,
@@ -7,7 +7,6 @@ export default function FriendModal ({
     profileImage,
 }){
     const navigate = useNavigate();
-    const param = useParams();
 
     if(!isOpen)
         return null;
@@ -16,7 +15,9 @@ export default function FriendModal ({
     return(
         <>
             <div className={styles.container}>
-                <div className={styles.infoContainer}>
+                <div 
+                className={styles.infoContainer}
+                onClick={()=>navigate(`/friendpage/:${id}`)}>
                     <img 
                         src={profileImage} 
                         alt="friend profile"
@@ -25,7 +26,7 @@ export default function FriendModal ({
                 </div>
                 <button 
                     className={styles.followButton}
-                    onClick={()=>navigate(`/friendpage/:${param.id}`)}>팔로우</button>
+                    >팔로우</button>
             </div>
         </>
     )

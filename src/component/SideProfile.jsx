@@ -9,10 +9,11 @@ import FriendModal from "./FriendModal";
 
 export default function SideProfile({
     setOpenModal = () => {},
+    idInfo
 }){
     let navigate = useNavigate();
     const params = useParams(); 
-    const [id, setId] = useState("pumupcld");
+    const [id, setId] = useState(idInfo);
     const [nickname, setNickName] = useState("수진");
     const [profileImage, setProfileImage] = useState(myImage);
 
@@ -73,13 +74,14 @@ export default function SideProfile({
                     <p className={styles.tag}>#lovely</p>
                     <p className={styles.tag}>#Hip</p>
                 </div>
-                <button 
+                {id === "pumupcld" && <><button 
                     className={styles.profileSetButton}
                     onClick={()=>{navigate(`/editprofile/:${params.id}`)}}
                     >프로필 수정</button>
                 <button 
                     className={styles.writePostButton}
                     onClick={setOpenModal}>포스트하기</button>
+                </>}
                 <div className={styles.friendsContainer}>
                     <p>Friends</p>
                     {
