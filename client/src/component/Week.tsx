@@ -1,6 +1,12 @@
 import styles from "./Week.module.css"
+import { ReactNode } from "react"
 
-export default function Week({children}){
+interface WeekProps {
+    children: ReactNode;
+}
+
+
+export default function Week({children}: WeekProps){
     return (
             <div className={styles.week}>
                 {children}

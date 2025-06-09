@@ -10,25 +10,28 @@ import FriendModal from "./FriendModal";
 export default function SideProfile({
     setOpenModal = () => {},
     idInfo
+}:{
+    setOpenModal?: () => void,
+    idInfo: string | null
 }){
     let navigate = useNavigate();
-    const params = useParams(); 
-    const [id, setId] = useState("");
+    const params = useParams();
+    const [id, setId] = useState<string | null>("");
     const [nickname, setNickName] = useState("수진");
-    const [profileImage, setProfileImage] = useState(myImage);
+    const [profileImage, setProfileImage] = useState<string>(myImage);
 
     useEffect(()=> {
         setId(idInfo);
     }, [idInfo])
 
-    const [friendModal, setFriendModal] = useState(null);
+    const [friendModal, setFriendModal] = useState<string | null>(null);
 
 
-    const handleProfileImage = (src) => {
+    const handleProfileImage = (src: string) => {
         setProfileImage(src);
     }
 
-    function setFriendModalOpen(id){
+    function setFriendModalOpen(id: string){
         setFriendModal(id);
     }
     

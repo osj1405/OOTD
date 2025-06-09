@@ -1,5 +1,5 @@
 
-export const buildCalendar = (year, month) => {
+export const buildCalendar = (year:number, month:number): Date[][] => {
     const calendar = []
     let week = [];
 

@@ -8,16 +8,18 @@ import Calendar from './component/Calendar';
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [id, setId] = useState("");
-    const onSelectDay = (day) => {
+    const onSelectDay = (day: any) => {
         setSelectedDay(day)
     }
-    const params = useParams();
+    const params = useParams<{id?: string}>();
     
 
 
     useEffect(() => {
+        if(params.id){
         setId(params.id.slice(1, params.id.length));
-    }, [params])
+        }
+    }, [params.id])
 
     const navigate = useNavigate();
 

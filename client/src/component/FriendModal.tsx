@@ -5,6 +5,10 @@ export default function FriendModal ({
     isOpen,
     id,
     profileImage,
+}:{
+    isOpen: string | null,
+    id: string,
+    profileImage: string
 }){
     const navigate = useNavigate();
 

@@ -3,8 +3,13 @@ import styles from "./Friend.module.css";
 export default function Friend({
     id,
     friendProfileImage,
-    onMouseOver = () => {},
-    onMouseOut = () => {}
+    // onMouseOver = () => {},
+    // onMouseOut = () => {}
+}:{
+    id: string,
+    friendProfileImage: string,
+    // onMouseOver: () => void,
+    // onMouseOut: () => void
 }){
     
     return (

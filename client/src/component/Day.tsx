@@ -1,5 +1,17 @@
 import styles from './Day.module.css';
 
+interface DayProps {
+    day: Date | string;
+    year: number;
+    month: number;
+    selected?: boolean;
+    sunday?: boolean;
+    saturday?: boolean;
+    today?: boolean;
+    anotherMonth?: boolean;
+    onClick?: (day: Date) => void;
+}
+
 export default function Day({
     day, 
     year,
@@ -10,7 +22,7 @@ export default function Day({
     today = false,
     anotherMonth = false,
     onClick = () => {},
-}){
+}:DayProps){
     const styleList = [`${styles.day}`]
 
 
