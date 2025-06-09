@@ -28,7 +28,7 @@ function App() {
       setUsers(response.data);
     })
     .catch(error => {
-      console.log(error('API failed', error));
+      console.log('API failed', error);
     })
   }, []);
   
