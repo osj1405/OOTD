@@ -3,10 +3,16 @@ import { useState, useEffect } from "react";
 import { buildCalendar } from "../utils/calendar";
 import Week from "./Week";
 import Day from "./Day";
+
+interface CalenderProps {
+    selectedDay: Date;
+    onSelectDay?: (day: Date) => void;
+}
+
 export default function Calendar({ 
     selectedDay, 
     onSelectDay = () => {}
-}){
+}: CalenderProps){
     const today = new Date();
     // eslint-disable-next-line no-unused-vars
     // const [selectedDay, setSelectedDay] = useState(today);
@@ -17,7 +23,8 @@ export default function Calendar({
     useEffect(() => {
         console.log(`select: ${selectedDay}`)
     }, [selectedDay])
-    const calendar = buildCalendar(year, month);
+
+    const calendar: Date[][] = buildCalendar(year, month);
 
     const week = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -79,9 +86,15 @@ export default function Calendar({
             {calendar.map((week, i) => {
                 return (
                     <Week key={i}>
-                        {week.map((day, i) => {
+                        {week.map((day, j) => {
                             return(
-                                <Day key={i} year={year} month={month} day={day} sunday={i === 0} saturday={i === 6}
+                                <Day 
+                                key={j} 
+                                year={year} 
+                                month={month} 
+                                day={day} 
+                                sunday={j === 0} 
+                                saturday={j === 6}
                                 anotherMonth={day.getMonth() + 1 !== month} 
                                 today={day.getFullYear() === today.getFullYear() && day.getMonth() === today.getMonth() && day.getDate() === today.getDate()}
                                 onClick={onSelectDay}  

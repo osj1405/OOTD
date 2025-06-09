@@ -25,7 +25,7 @@ export default function ProfileEdit(){
         
     }
 
-    const handleSex = (event) => {
+    const handleSex = (event: any) => {
         // console.log(event.target.value);
         const value = event.target.value;
         setSex(value.toString());

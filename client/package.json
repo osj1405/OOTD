@@ -2,7 +2,11 @@
   "name": "ootd",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5000",
   "dependencies": {
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.49.9",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -13,6 +17,7 @@
     "react-dom": "^19.1.0",
     "react-router": "^7.6.0",
     "react-scripts": "5.0.1",
+    "typescript": "^5.8.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

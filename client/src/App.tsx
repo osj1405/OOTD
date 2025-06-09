@@ -1,9 +1,23 @@
 import styles from './App.module.css';
 import { useNavigate } from 'react-router';
+import { createClient, Session } from '@supabase/supabase-js';
+import { Auth } from '@supabase/auth-ui-react';
+import { useEffect, useState } from 'react';
 
+
+const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
 function App() {
-  let navigate = useNavigate();
+  const [session, setSession] = useState<Session | null>(null)
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: {session} }) => {
+      setSession(session)
+    })
+  })
+
+  
+  let navigate = useNavigate();
+  
   return (
     <div className={styles.App}>
       <p className={styles.title}>OOTD</p>

@@ -12,7 +12,7 @@ export default function MyPage(){
     
     let navigate = useNavigate();
 
-    const onSelectDay = (day) => {
+    const onSelectDay = (day: any) => {
         setSelectedDay(day)
     }
 

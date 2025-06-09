@@ -7,14 +7,18 @@ import {
 } from 'react-router';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import Main from './Main';
-import SignUp from './SignUp';
-import MyPage from './MyPage';
-import ProfileEdit from './ProfileEdit';
+import reportWebVitals from "./reportWebVitals"
+import Main from './Main'
+import SignUp from './SignUp'
+import MyPage from './MyPage'
+import ProfileEdit from './ProfileEdit'
 import FriendPage from './FriendPage';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+
+if(!container) throw new Error('Root container not found');
+
+const root = ReactDOM.createRoot(container)
 
 root.render(
   <BrowserRouter>

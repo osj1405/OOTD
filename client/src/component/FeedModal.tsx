@@ -3,6 +3,9 @@ import styles from "./FeedModal.module.css";
 export default function FeedModal({
     card,
     onClose = () => {}
+}:{
+    card: any,
+    onClose: () => void
 }){
     return (
         <>

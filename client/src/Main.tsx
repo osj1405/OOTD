@@ -23,7 +23,7 @@ function Main(){
         setOpen(false);
     }
 
-    function handleCardClick(cardData){
+    function handleCardClick(cardData: any){
         setSelectedCard(cardData)
     }
 
