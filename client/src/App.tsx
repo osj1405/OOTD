@@ -4,46 +4,45 @@ import { createClient, Session } from '@supabase/supabase-js';
 import { Auth } from '@supabase/auth-ui-react';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-type User = {
-  id: number;
-  name?: string;
-  userId?: string;
-  email?: string;
-  password?: string;
-}
+import { useDispatch } from 'react-redux';
+import authSlice, { setSession } from './store/authSlice';
+import { User } from './types/User';
+import rootStore from './store/rootStore';
 
 const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
 function App() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [users, setUsers] = useState<User[]>([]);
+  const [session, settingSession] = useState<Session | null>(null)
+  // const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-   useEffect(()=>{
-    axios.get('/api/users')
-    .then(response =>{
-      setUsers(response.data);
-    })
-    .catch(error => {
-      console.log('API failed', error);
-    })
-  }, []);
+  const dispatch = useDispatch();
+
+  //  useEffect(()=>{
+
+  //   axios.get('/api/users')
+  //   .then(response =>{
+  //     setUsers(response.data);
+  //   })
+  //   .catch(error => {
+  //     console.log('API failed', error);
+  //   })
+  // }, []);
   
   let navigate = useNavigate();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: {session} }) => {
-      setSession(session)
-    })
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: {session} }) => {
+  //     setSession(session)
+  //   })
 
-    const {
-    data: {subscription},
-  } = supabase.auth.onAuthStateChange((_event, session) => {
-    setSession(session)
-  })
+  //   const {
+  //   data: {subscription},
+  // } = supabase.auth.onAuthStateChange((_event, session) => {
+  //   setSession(session)
+  // })
 
-  return () => subscription.unsubscribe()
-  }, [])
+  // return () => subscription.unsubscribe()
+  // }, [])
 
   
   const handleLogin = async (e: React.FormEvent) => {
@@ -60,6 +59,17 @@ function App() {
     } else {
       alert(`success login`)
     }
+
+    if(!data.session) return;
+
+    const accessToken = data.session.access_token;
+    const supabaseUser = data.session.user
+    
+    const response = await axios.post('/api/auth/login', { supabaseId: supabaseUser.id}, {
+      headers: {Authorization: `Bearer ${accessToken}`}
+    });
+
+    console.log(response)
   }
   return (
     <div className={styles.App}>
@@ -107,13 +117,19 @@ function App() {
         </a>
       </header> */}
       <ul>
-        {users.map(user => {
+        {/* {users.map(user => {
           return(
             <li key={user.id}>
             {user.userId || user.email || 'no name'}
           </li>
           )
-        })}
+        })} */}
+        {session && (
+        <div>
+          <p>access_token: {session.access_token}</p>
+          <p>token_type: {session.token_type}</p>
+          <p>user: {session.user.id}</p>
+        </div>)}
       </ul>
     </div>
   );
