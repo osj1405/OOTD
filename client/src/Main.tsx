@@ -8,11 +8,16 @@ import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { RootState } from './store/rootStore';
+import { createClient } from '@supabase/supabase-js';
+import { logout } from './store/authSlice';
 
 function Main(){
     let navigate = useNavigate();
+    const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
+    const dispatch = useDispatch();
+
     // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
@@ -37,6 +42,15 @@ function Main(){
     function closeCardModal(){
         setSelectedCard(null);
     }
+
+    async function handleLogout(){
+        const { error } = await supabase.auth.signOut();
+        if(error){
+            alert(`failed login ${error.message}`)
+        } else {
+        dispatch(logout())
+        }
+    }  
 
     const feedData = [
         {
@@ -87,7 +101,7 @@ function Main(){
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
-                        <button className={styles.logout} onClick={()=>{navigate("/")}}>로그아웃</button>
+                        <button className={styles.logout} onClick={handleLogout}>로그아웃</button>
                     </div>
                     {sliceData.map((row, i) => {
                         return(
