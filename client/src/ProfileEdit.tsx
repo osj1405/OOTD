@@ -1,25 +1,38 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styles from './ProfileEdit.module.css';
 import myImage from './assets/profile_image.jpg';
 import { useNavigate, useParams } from "react-router";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/rootStore";
 
 export default function ProfileEdit(){
-    const [profileImage, setProfileImage] = useState(myImage);
-    const [name, setName] = useState("오수진");
+    const [profileImage, setProfileImage] = useState<string>(myImage);
     const [id, setId] = useState("pumupcld");
-    const [nickname, setNickName] = useState("수진");
-    const [sex, setSex] = useState("여성");
-    const [birth, setBirth] = useState(null);
+    const [userName, setName] = useState("수진");
+    const [sexual, setSex] = useState<boolean | null>(null);
+    const [birth, setBirth] = useState<Date | null>(null);
     const [tag, setTag] = useState("");
     const [introduce, setIntroduce] = useState("");
 
     const navigator = useNavigate();
     const params = useParams();
+    const user = useSelector((state: RootState) => state.auth.user)
 
 
     useEffect(() => {
-        console.log(sex);
-    }, [sex])
+        if(user?.userId){
+            setId(user.userId)
+        }
+        if(user?.name){
+            setName(user.name)
+        }
+        if(user?.sex){
+           setSex(Boolean(user.sex))
+        }
+        if(user?.birth){
+            setBirth(user.birth)
+        }
+    }, [user])
 
     const handleProfileImage = () => {
         
@@ -41,7 +54,7 @@ export default function ProfileEdit(){
                 <hr></hr>
                 <div className={styles.inputField}>
                     <label>이름</label>
-                    <input type="text" placeholder={name}></input>
+                    <input type="text" placeholder={userName}></input>
                 </div>
                 <div className={styles.inputField}>
                     <label>아이디</label>
@@ -49,7 +62,7 @@ export default function ProfileEdit(){
                 </div>
                 <div className={styles.inputField}>
                     <label>닉네임</label>
-                    <input type="text" placeholder={nickname} readOnly={true}></input>
+                    <input type="text" placeholder={userName} readOnly={true}></input>
                 </div>
                 <div className={styles.inputField}>
                     <label>성별</label>
