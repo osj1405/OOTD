@@ -37,7 +37,7 @@ app.get('/api/users', async (_, res) => {
 
 app.post('/api/auth/login', async (req, res) => {
   try {
-    const { supabaseId, email } = req.body;
+    const { supabaseId } = req.body;
     const authHeader = req.headers.authorization;
     
     console.log("1")
@@ -60,7 +60,7 @@ app.post('/api/auth/login', async (req, res) => {
     // 2. 유저 DB 조회 또는 생성
     let user = await sql`SELECT * FROM users WHERE id = ${supabaseId}`;
     if (user.length === 0) {
-      res.status(401).json({ error: '사용자가 업습니다. '});
+      res.status(401).json({ error: '사용자가 없습니다. '});
     }
     user = user[0];
 

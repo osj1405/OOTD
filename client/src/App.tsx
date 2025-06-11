@@ -1,12 +1,10 @@
 import styles from './App.module.css';
 import { useNavigate } from 'react-router';
 import { createClient, Session } from '@supabase/supabase-js';
-import { Auth } from '@supabase/auth-ui-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import authSlice, { setSession } from './store/authSlice';
-import { User } from './types/User';
+import { setSession } from './store/authSlice';
 import rootStore from './store/rootStore';
 
 const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
@@ -65,11 +63,24 @@ function App() {
     const accessToken = data.session.access_token;
     const supabaseUser = data.session.user
     
-    const response = await axios.post('/api/auth/login', { supabaseId: supabaseUser.id}, {
+    try {
+      const response = await axios.post('/api/auth/login', { supabaseId: supabaseUser.id}, {
       headers: {Authorization: `Bearer ${accessToken}`}
     });
 
-    console.log(response)
+      const backendUser = response.data.user;
+      const backendJWTToken = response.data.token;
+
+      dispatch(setSession({
+        supabaseSession: data.session,
+        backendJWTToken,
+        user: backendUser
+      })) 
+    } catch(error){
+      console.log(error);
+    }
+
+    console.log(rootStore.getState());
   }
   return (
     <div className={styles.App}>
