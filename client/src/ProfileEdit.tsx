@@ -61,10 +61,6 @@ export default function ProfileEdit(){
                     <input type="text" placeholder={id} readOnly={true}></input>
                 </div>
                 <div className={styles.inputField}>
-                    <label>닉네임</label>
-                    <input type="text" placeholder={userName} readOnly={true}></input>
-                </div>
-                <div className={styles.inputField}>
                     <label>성별</label>
                         <button 
                             className={styles.sexButton}

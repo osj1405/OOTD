@@ -13,9 +13,12 @@ import { RootState } from './store/rootStore';
 import { createClient } from '@supabase/supabase-js';
 import { logout } from './store/authSlice';
 
+
 function Main(){
     let navigate = useNavigate();
-    const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
+    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
+    const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY
+    const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
     const dispatch = useDispatch();
 
     // eslint-disable-next-line no-unused-vars
