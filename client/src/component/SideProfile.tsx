@@ -9,19 +9,21 @@ import FriendModal from "./FriendModal";
 
 export default function SideProfile({
     setOpenModal = () => {},
-    idInfo
+    idInfo,
+    name
 }:{
     setOpenModal?: () => void,
-    idInfo: string | null
+    idInfo: string | undefined,
+    name: string | undefined
 }){
     let navigate = useNavigate();
     const params = useParams();
     const [id, setId] = useState<string | null>("");
-    const [nickname, setNickName] = useState("수진");
     const [profileImage, setProfileImage] = useState<string>(myImage);
 
     useEffect(()=> {
-        setId(idInfo);
+        if(idInfo)
+            setId(idInfo);
     }, [idInfo])
 
     const [friendModal, setFriendModal] = useState<string | null>(null);
@@ -77,7 +79,7 @@ export default function SideProfile({
                     >{id}</p>
                 <p 
                     className={styles.nickname}
-                    onClick={() => navigate(`/mypage/:${params.id}`)}>{nickname}</p>
+                    onClick={() => navigate(`/mypage/:${params.id}`)}>{name}</p>
                 <div className={styles.tagContainer}>
                     <p className={styles.tag}>#lovely</p>
                     <p className={styles.tag}>#Hip</p>

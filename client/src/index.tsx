@@ -1,10 +1,10 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
   BrowserRouter,
   Routes,
   Route
-} from 'react-router';
+} from 'react-router-dom';
+import PrivateRoute from './component/PrivateRoute';
 import { Provider } from 'react-redux';
 import rootStore from './store/rootStore';
 import './index.css';
@@ -31,19 +31,36 @@ root.render(
           element={<App />} />
           <Route
           path="/main"
-          element={<Main />} />
+          element=
+            {
+              <PrivateRoute>
+                 <Main />
+              </PrivateRoute>
+           } />
           <Route
             path="/signup"
             element={<SignUp />} />
           <Route
             path="mypage/:id"
-            element={<MyPage />} />
+            element={
+              <PrivateRoute>
+                <MyPage />
+              </PrivateRoute>
+            } />
           <Route 
             path="editprofile/:id"
-            element={<ProfileEdit /> }/>
+            element={
+              <PrivateRoute>
+                <ProfileEdit />
+              </PrivateRoute>
+             }/>
           <Route 
             path="friendpage/:id"
-            element={<FriendPage />} />
+            element={
+              <PrivateRoute>
+                <FriendPage />
+              </PrivateRoute>
+            } />
       </Routes>
     </BrowserRouter>
   </Provider>

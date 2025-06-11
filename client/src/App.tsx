@@ -62,7 +62,7 @@ function App() {
 
     const accessToken = data.session.access_token;
     const supabaseUser = data.session.user
-    
+
     try {
       const response = await axios.post('/api/auth/login', { supabaseId: supabaseUser.id}, {
       headers: {Authorization: `Bearer ${accessToken}`}
@@ -81,6 +81,7 @@ function App() {
     }
 
     console.log(rootStore.getState());
+    navigate('/main')
   }
   return (
     <div className={styles.App}>
@@ -113,34 +114,7 @@ function App() {
             }}>회원가입</button>
         </div>
       </form>
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header> */}
       <ul>
-        {/* {users.map(user => {
-          return(
-            <li key={user.id}>
-            {user.userId || user.email || 'no name'}
-          </li>
-          )
-        })} */}
-        {session && (
-        <div>
-          <p>access_token: {session.access_token}</p>
-          <p>token_type: {session.token_type}</p>
-          <p>user: {session.user.id}</p>
-        </div>)}
       </ul>
     </div>
   );

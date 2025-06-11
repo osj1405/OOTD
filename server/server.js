@@ -68,7 +68,7 @@ app.post('/api/auth/login', async (req, res) => {
     // 3. 자체 JWT 토큰 발급 (비밀키는 env 변수로 관리)
     const jwtToken = jwt.sign(
       { id: user.id, supabaseId: user.supabase_id },
-      process.env.SUPABASE_JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 

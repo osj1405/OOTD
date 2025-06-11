@@ -8,12 +8,19 @@ import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
+import { useSelector, shallowEqual } from 'react-redux';
+import { RootState } from './store/rootStore';
 
 function Main(){
     let navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
+    const [userId, setUserId] = useState('');
+
+    const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+
+    console.log(user)
 
     function setOpenModal(){
         setOpen(true);
@@ -76,7 +83,7 @@ function Main(){
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} idInfo="pumupcld" />
+                    <SideProfile setOpenModal={setOpenModal} idInfo={user?.userId} name={user?.name}/>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>

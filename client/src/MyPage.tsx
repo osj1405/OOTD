@@ -4,11 +4,14 @@ import SideProfile from "./component/SideProfile";
 import Calendar from "./component/Calendar";
 import { useState } from "react";
 import WriteModal from "./component/WriteModal";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/rootStore";
 
 export default function MyPage(){
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [open, setOpen] = useState(false);
-
+    
+    const user = useSelector((state: RootState) => state.auth.user)
     
     let navigate = useNavigate();
 
@@ -30,7 +33,7 @@ export default function MyPage(){
                 <p className={styles.title}>OOTD</p>
                 <div className={styles.contentContainer}>
                     <div className={styles.sidebar}>
-                        <SideProfile setOpenModal={setOpenModal} idInfo="pumupcld"/>
+                        <SideProfile setOpenModal={setOpenModal} idInfo={user?.userId} name={user?.name}/>
                     </div>
                     <div className={styles.content}>
                         <div className={styles.goMainContainer}>
