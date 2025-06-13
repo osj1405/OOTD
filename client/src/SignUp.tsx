@@ -14,7 +14,8 @@ export default function SignUp(){
     const [name, setName] = useState('');
     const [sex, setSex] = useState<boolean | null>(null);
     const [birth, setBirth] = useState< Date | null>(null);
-    const [checkDuplication, setDuplication] = useState(false);
+    const [checkEmailDuplication, setEmailDuplication] = useState(false);
+    const [checkIdDuplication, setIdDuplication] = useState(false);
     const [erros, setErrors] = useState<{email?: string; userId?: string; password?: string; name?: string; sex?:boolean; birth?: Date}>({})
 
     let navigate = useNavigate();
@@ -30,8 +31,8 @@ export default function SignUp(){
 
     const checkUserId = async() => {
         try{
-            const check = await axios.post('/api/users/check-userid', { userId } ) 
-            setDuplication(true);
+            await axios.post('/api/users/check-userid', { userId } ) 
+            setIdDuplication(true);
         }catch(error){
             if(axios.isAxiosError(error)){
                 if(error.response?.status === 409){
@@ -44,9 +45,24 @@ export default function SignUp(){
         
     }
 
+    const checkEmail = async() => {
+        try{
+            await axios.post('/api/users/check-email', {email})
+            setEmailDuplication(true);
+        } catch(error){
+            if(axios.isAxiosError(error)){
+                if(error.response?.status === 409){
+                    alert('이미 사용 중인 이메일입니다. ');
+                    setEmail('');
+                    return;
+                }
+            }
+        }
+    }
+
     const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!checkDuplication){
+    if(!checkIdDuplication){
         alert('아이디 중복 검사를 해주세요!')
         return;
     }
@@ -65,12 +81,12 @@ export default function SignUp(){
         console.log('validation success')
     }
 
-    const { data, error } = await supabase.auth.signUp(
-      {
-        email,
-        password,
-      }
-    );
+    // const { data, error } = await supabase.auth.signUp(
+    //   {
+    //     email,
+    //     password,
+    //   }
+    // );
     }
     return (
         <>
@@ -85,10 +101,17 @@ export default function SignUp(){
                                 <label>이메일 </label>
                                 <input 
                                     type="email" 
+                                    value={email}
                                     onChange={(e)=>{
                                         setEmail(e.target.value)
                                     }}
                                     required></input>
+                                {!checkEmailDuplication && 
+                                <button 
+                                    className={styles.checkDuplicationButton}
+                                    type="button"
+                                    onClick={checkEmail}
+                                    >중복 확인</button>}
                             </div>
                             <div className={styles.inputForm}>
                                 <label>아이디</label>
@@ -100,7 +123,7 @@ export default function SignUp(){
                                     value={userId}
                                     placeholder="추후 변경 가능합니다."
                                     required></input>
-                                {!checkDuplication && 
+                                {!checkIdDuplication && 
                                 <button 
                                     className={styles.checkDuplicationButton}
                                     type="button"
