@@ -53,6 +53,7 @@ function Main(){
         } else {
         dispatch(logout())
         }
+        console.log('logout')
     }  
 
     const feedData = [

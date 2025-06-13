@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { createClient, Session } from '@supabase/supabase-js';
 import { useState } from 'react';
 import axios from 'axios';
+import z from 'zod';
 import { useDispatch } from 'react-redux';
 import { setSession } from './store/authSlice';
 import rootStore from './store/rootStore';
@@ -13,6 +14,8 @@ function App() {
   // const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<{email?: string; password?: string}>({})
+
   const dispatch = useDispatch();
 
   //  useEffect(()=>{
@@ -42,9 +45,31 @@ function App() {
   // return () => subscription.unsubscribe()
   // }, [])
 
+
+  const loginSchema = z.object({
+    email: z.string().email('유효한 이메일 주소를 입력해주세요.'),
+    password: z.string().min(7, '비밀번호는 최소 7자리 이상이어야 합니다.')
+  })
+
+  // type LoginFormData = z.infer<typeof loginSchema>
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const result = loginSchema.safeParse({ email, password })
+
+    if(result.error){
+      console.log('fail validation')
+      const fieldErrors: { [key: string]: string } = {}
+      result.error.errors.forEach(err => {
+        const fieldName = err.path[0]
+        fieldErrors[fieldName] = err.message;
+        setErrors(fieldErrors)
+      })
+    }
+    if(result.success){
+      console.log('validation success')
+    }
     const { data, error } = await supabase.auth.signInWithPassword(
       {
         email,
@@ -95,20 +120,22 @@ function App() {
           className={styles.inputField}
           placeholder='이메일을 입력하세요.'
           onChange={(e)=>setEmail(e.target.value)} />
+          {errors.email && <p>{errors.email}</p>}
         <input 
          type="password" 
          className={styles.inputField}
          placeholder='비밀번호를 입력하세요.'
          minLength={7}
          onChange={(e)=>setPassword(e.target.value)}/>
+         {errors.password && <p>{errors.password}</p>}
         <div className={styles.buttonForm}>
           <button 
            className={styles.loginButton}
-           onClick={() => {
-            navigate("/main");
-           }}>로그인</button>
-          <button 
+           type='submit'
+           >로그인</button>
+           <button 
             className={styles.signupButton}
+            type='reset'
             onClick={()=>{
               navigate("/signup");
             }}>회원가입</button>

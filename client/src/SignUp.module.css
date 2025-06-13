@@ -42,10 +42,17 @@ p {
 .signupForm {
     display: flex;
     flex-direction: column;
-    gap: 30px;
     justify-items: center;
     align-items: center;
+    text-align: end;
     margin-top: 5%;
+}
+
+.signupForm2 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 30px;
 }
 
 .inputForm {
@@ -73,10 +80,20 @@ label {
   margin-right: 7%;
 }
 
+.checkDuplicationButton {
+    position: relative;
+    left: 1px;
+    width: 100px;
+    height: 25px;
+    font-weight: bold;
+    border-radius: 5px;
+    border-width: 0;
+    background-color: #cdcdcd;
+}
+
 .sexButton {
     width: 125px;
     height: 35px;
-    border-radius: 3px;
     border-radius: 5px;
     border-color: #c8c8c8;
     background-color: white;
