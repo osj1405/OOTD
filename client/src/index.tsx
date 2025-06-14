@@ -1,10 +1,12 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
   BrowserRouter,
   Routes,
   Route
-} from 'react-router';
+} from 'react-router-dom';
+import PrivateRoute from './component/PrivateRoute';
+import { Provider } from 'react-redux';
+import rootStore from './store/rootStore';
 import './index.css';
 import App from './App';
 import reportWebVitals from "./reportWebVitals"
@@ -21,28 +23,47 @@ if(!container) throw new Error('Root container not found');
 const root = ReactDOM.createRoot(container)
 
 root.render(
-  <BrowserRouter>
-    <Routes>
-      <Route
-        path="/"
-        element={<App />} />
+  <Provider store={rootStore}>
+    <BrowserRouter>
+      <Routes>
         <Route
-        path="/main"
-        element={<Main />} />
-        <Route
-          path="/signup"
-          element={<SignUp />} />
-        <Route
-          path="mypage/:id"
-          element={<MyPage />} />
-        <Route 
-          path="editprofile/:id"
-          element={<ProfileEdit /> }/>
-        <Route 
-          path="friendpage/:id"
-          element={<FriendPage />} />
-    </Routes>
-  </BrowserRouter>
+          path="/"
+          element={<App />} />
+          <Route
+          path="/main"
+          element=
+            {
+              <PrivateRoute>
+                 <Main />
+              </PrivateRoute>
+           } />
+          <Route
+            path="/signup"
+            element={<SignUp />} />
+          <Route
+            path="mypage/:id"
+            element={
+              <PrivateRoute>
+                <MyPage />
+              </PrivateRoute>
+            } />
+          <Route 
+            path="editprofile/:id"
+            element={
+              <PrivateRoute>
+                <ProfileEdit />
+              </PrivateRoute>
+             }/>
+          <Route 
+            path="friendpage/:id"
+            element={
+              <PrivateRoute>
+                <FriendPage />
+              </PrivateRoute>
+            } />
+      </Routes>
+    </BrowserRouter>
+  </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function

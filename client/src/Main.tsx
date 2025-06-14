@@ -8,12 +8,27 @@ import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { RootState } from './store/rootStore';
+import { createClient } from '@supabase/supabase-js';
+import { logout } from './store/authSlice';
+
 
 function Main(){
     let navigate = useNavigate();
+    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
+    const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY
+    const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
+    const dispatch = useDispatch();
+
     // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
+    const [userId, setUserId] = useState('');
+
+    const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+
+    console.log(user)
 
     function setOpenModal(){
         setOpen(true);
@@ -30,6 +45,16 @@ function Main(){
     function closeCardModal(){
         setSelectedCard(null);
     }
+
+    async function handleLogout(){
+        const { error } = await supabase.auth.signOut();
+        if(error){
+            alert(`failed login ${error.message}`)
+        } else {
+        dispatch(logout())
+        }
+        console.log('logout')
+    }  
 
     const feedData = [
         {
@@ -76,11 +101,11 @@ function Main(){
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} idInfo="pumupcld" />
+                    <SideProfile setOpenModal={setOpenModal} idInfo={user?.userId} name={user?.name}/>
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
-                        <button className={styles.logout} onClick={()=>{navigate("/")}}>로그아웃</button>
+                        <button className={styles.logout} onClick={handleLogout}>로그아웃</button>
                     </div>
                     {sliceData.map((row, i) => {
                         return(

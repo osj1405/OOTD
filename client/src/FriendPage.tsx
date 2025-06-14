@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router'
 import { useState, useEffect } from 'react';
 import Calendar from './component/Calendar';
 
-
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState(new Date());
     const [id, setId] = useState("");
@@ -31,7 +30,7 @@ export default function FriendPage() {
                 <p className={styles.title}>OOTD</p>
                 <div className={styles.contentContainer}>
                     <div className={styles.sidebar}>
-                        <SideProfile idInfo={id} />
+                        <SideProfile idInfo={id} name="친구" />
                     </div>
                     <div className={styles.content}>
                         <div className={styles.goMainContainer}>
