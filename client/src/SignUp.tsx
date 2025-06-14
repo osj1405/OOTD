@@ -11,6 +11,8 @@ export default function SignUp(){
     const [email, setEmail] = useState('');
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
+    const [checkPassword, setCheckPassword] = useState('')
+    const [matchPassword, setMatchPassword] = useState(false);
     const [name, setName] = useState('');
     const [sex, setSex] = useState<boolean | null>(null);
     const [birth, setBirth] = useState< Date | null>(null);
@@ -59,13 +61,28 @@ export default function SignUp(){
             }
         }
     }
+    const checkMatchPassword = () => {
+        if(password === checkPassword){
+            setMatchPassword(true);
+        } else {
+            alert('비밀번호가 일치하지 않습니다.')
+            setCheckPassword('')
+        }
+    }
 
     const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!checkIdDuplication){
-        alert('아이디 중복 검사를 해주세요!')
+
+    // 이메일, 아이디 중복 검사 여부 체크
+    if(!checkEmailDuplication){
+        alert('이메일 중복 검사를 먼저 해주세요!')
         return;
     }
+    if(!checkIdDuplication){
+        alert('아이디 중복 검사를 먼저 해주세요!')
+        return;
+    }
+
     const result = signUpSchema.safeParse({email, userId, password, name, sex, birth})
 
     if(result.error){
@@ -75,19 +92,43 @@ export default function SignUp(){
         const fieldName = err.path[0]
         fieldErrors[fieldName] = err.message;
         setErrors(fieldErrors)
+        return;
       })
     }
     if(result.success){
         console.log('validation success')
     }
+    setEmail(email.trim())
 
-    // const { data, error } = await supabase.auth.signUp(
-    //   {
-    //     email,
-    //     password,
-    //   }
-    // );
+    try{
+        const {data, error} = await supabase.auth.signUp({
+            email,
+            password,
+        });
+
+        if(error || !data.user){
+            alert(`회원가입 실패: ${error?.message}`)
+            return;
+        }
+        const supabaseId = data.user.id;
+
+        await axios.post('/api/auth/signup', {
+            supabaseId,
+            userId,
+            name,
+            sex,
+            birth
+        })
+
+        alert(`회원가입 성공!`)
+        navigate('/');
+    
+    } catch(error){
+        console.log(`회원가입 오류: `, error)
+        alert(`회원가입 중 오류가 발생하였습니다.`)
     }
+    }
+
     return (
         <>
             <div className={styles.container}>
@@ -134,6 +175,7 @@ export default function SignUp(){
                                 <label>비밀번호</label>
                                 <input 
                                     type="password" 
+                                    value={password}
                                     onChange={(e)=>{
                                         setPassword(e.target.value)
                                     }}
@@ -141,7 +183,19 @@ export default function SignUp(){
                             </div>
                             <div className={styles.inputForm}>
                                 <label>비밀번호 확인</label>
-                                <input type="password" required></input>
+                                <input 
+                                    type="password" 
+                                    value={checkPassword}
+                                    onChange={(e)=>{
+                                        setCheckPassword(e.target.value)
+                                    }}
+                                    required></input>
+                                    {!matchPassword && 
+                                <button 
+                                    className={styles.checkDuplicationButton}
+                                    type="button"
+                                    onClick={checkMatchPassword}
+                                    >비밀번호 확인</button>}
                             </div>
                             <div className={styles.inputForm}>
                                 <label>이름</label>
@@ -161,7 +215,7 @@ export default function SignUp(){
                                         setSex(true)
                                     }}
                                     >여성</button>
-                                <button 
+                                <button  
                                     type="button"
                                     className={styles.sexButton}
                                     onClick={()=>{
@@ -176,6 +230,7 @@ export default function SignUp(){
                                     onChange={(e)=>{
                                         const newDate = new Date(e.target.value)
                                         setBirth(newDate)
+                                        console.log(birth)
                                     }}
                                     ></input>
                             </div>
@@ -189,9 +244,7 @@ export default function SignUp(){
                                 <button 
                                     type="submit"
                                     className={`${styles.button} ${styles.success}`}
-                                    onClick={()=>{
-                                        navigate("/main")
-                                    }}>완료</button>
+                                    onClick={handleSignUp}>완료</button>
                             </div>
 
                         </div>

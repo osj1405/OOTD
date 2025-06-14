@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router()
 import sql from '../db.js';
+import { createClient } from '@supabase/supabase-js';
 
+const supabase = createClient(process.env.SUPABASE_PROJECT_URL, process.env.SUPABASE_SERVICE_ROLE)
 router.post('/login', async (req, res) => {
   try {
     const { supabaseId } = req.body;
@@ -46,5 +48,22 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+router.post('/signup', async (req, res) => {
+    const {supabaseId, userId, name, sex, birth } = req.body;
+    try {
+        const newUser = await sql`INSERT INTO public.users (id, "userId", name, sex, birth) VALUES (${supabaseId}, ${userId}, ${name}, ${sex}, ${birth}) RETURNING *`
+        return res.status(201).json({user: newUser[0]})
+    } catch(error){
+        console.log('회원 등록 오류: ', error)
+        try{
+            supabase.auth.admin.deleteUser(supabaseId)
+
+        }catch(deleteErr){
+            console.error('Supabse 사용자 삭제 실패: ', deleteErr.message);
+        }
+        return res.status(500).json({message: 'DB 저장 중 에러 발생', error})
+    }
+})
 
 export default router;
