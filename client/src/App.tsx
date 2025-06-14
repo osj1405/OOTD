@@ -79,6 +79,9 @@ function App() {
 
     if(error){
       alert(`failed login ${error.message}`)
+      if(error.message == "Email not confirmed"){
+        
+      }
     } else {
       alert(`success login`)
     }

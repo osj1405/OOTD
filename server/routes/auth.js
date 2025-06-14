@@ -2,6 +2,8 @@ import express from 'express';
 const router = express.Router()
 import sql from '../db.js';
 import { createClient } from '@supabase/supabase-js';
+import { verifySupabaseToken } from '../verifySupabaseToken.js';
+import jwt from 'jsonwebtoken'
 
 const supabase = createClient(process.env.SUPABASE_PROJECT_URL, process.env.SUPABASE_SERVICE_ROLE)
 router.post('/login', async (req, res) => {

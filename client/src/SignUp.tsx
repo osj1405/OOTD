@@ -49,6 +49,7 @@ export default function SignUp(){
 
     const checkEmail = async() => {
         try{
+            email.trim()
             await axios.post('/api/users/check-email', {email})
             setEmailDuplication(true);
         } catch(error){
@@ -98,7 +99,6 @@ export default function SignUp(){
     if(result.success){
         console.log('validation success')
     }
-    setEmail(email.trim())
 
     try{
         const {data, error} = await supabase.auth.signUp({
