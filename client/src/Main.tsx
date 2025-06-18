@@ -12,14 +12,15 @@ import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
 import profile_image from './assets/profile_image.jpg'
+import { useNavigate } from 'react-router';
 
 function Main(){
-    // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
     const [searchText, setSearchText] = useState<string>('');
     const [searchUser, setSearchUser] = useState<User[]>([]);
     const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+    const navigate = useNavigate();
 
     useEffect(()=>{
         async function onSearch(){
@@ -37,7 +38,7 @@ function Main(){
         }
         if(searchText !== '')
             onSearch()
-    },[searchText])
+    },[searchText, user?.userId])
 
 
     // console.log(user)
@@ -131,7 +132,10 @@ function Main(){
                             />
                             {searchText.length > 0 && searchUser.length > 0 ? <div>{searchUser.map((user)=>{
                                 return (
-                                <div className={styles.searchProfile}>
+                                <div 
+                                    className={styles.searchProfile}
+                                    onClick={()=>{navigate(`/friendpage/:${user.userId}`)}}
+                                    >
                                    <img 
                                     src={profile_image} 
                                     alt="friend profile"
