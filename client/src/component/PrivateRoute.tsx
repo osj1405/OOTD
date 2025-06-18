@@ -11,4 +11,5 @@ export default function PrivateRoute({children}: Props){
     const isLoggedIn = useSelector((state: RootState)=> !!state.auth.backendJWTToken)
 
     return isLoggedIn ? children : <Navigate to="/" replace />;
+    // return children;
 }

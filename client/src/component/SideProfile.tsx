@@ -6,6 +6,9 @@ import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
+import { useDispatch } from "react-redux";
+import { supabase } from "../App";
+import { logout } from "../store/authSlice";
 
 export default function SideProfile({
     setOpenModal = () => {},
@@ -18,6 +21,7 @@ export default function SideProfile({
 }){
     let navigate = useNavigate();
     const params = useParams();
+    const dispatch = useDispatch();
     const [id, setId] = useState<string | null>("");
     const [profileImage, setProfileImage] = useState<string>(myImage);
 
@@ -28,6 +32,15 @@ export default function SideProfile({
 
     const [friendModal, setFriendModal] = useState<string | null>(null);
 
+    async function handleLogout(){
+        const { error } = await supabase.auth.signOut();
+        if(error){
+            alert(`failed login ${error.message}`)
+        } else {
+        dispatch(logout())
+        }
+        console.log('logout')
+    }  
 
     const handleProfileImage = (src: string) => {
         setProfileImage(src);
@@ -128,6 +141,10 @@ export default function SideProfile({
                             )
                         })
                     }
+                    <button 
+                        className={styles.logout}
+                        onClick={handleLogout}
+                        >로그아웃</button>
                 </div>
             </div>
 

@@ -92,3 +92,13 @@
     position: relative;
     display: inline-block;
 }
+
+.logout {
+    margin-top: 5%;
+    align-self: center;
+    text-align: center;
+    border-width: 0;
+    background-color: white;
+    font-size: small;
+    font-weight: bold;
+}

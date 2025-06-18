@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setSession } from './store/authSlice';
 import rootStore from './store/rootStore';
 
-const supabase = createClient(process.env.REACT_APP_SUPABASE_URL!, process.env.REACT_APP_SUPABASE_ANON_KEY!)
+export const supabase = createClient(process.env.REACT_APP_SUPABASE_URL!, process.env.REACT_APP_SUPABASE_ANON_KEY!)
 function App() {
   const [session, settingSession] = useState<Session | null>(null)
   // const [users, setUsers] = useState<User[]>([]);
@@ -133,8 +133,9 @@ function App() {
          {errors.password && <p>{errors.password}</p>}
         <div className={styles.buttonForm}>
           <button 
-           className={styles.loginButton}
-           type='submit'
+          className={styles.loginButton}
+          type='submit'
+          onClick={()=>navigate('/main')}
            >로그인</button>
            <button 
             className={styles.signupButton}
