@@ -1,34 +1,47 @@
 import styles from './Main.module.css';
-import { useNavigate } from 'react-router';
 import CardContainer from './component/CardContainer';
 import Card from './component/Card';
 import SideProfile from './component/SideProfile';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import { useSelector, shallowEqual } from 'react-redux';
 import { RootState } from './store/rootStore';
-import { createClient } from '@supabase/supabase-js';
-import { logout } from './store/authSlice';
-
+import axios from 'axios';
+import { User } from './types/User';
+import profile_image from './assets/profile_image.jpg'
+import { useNavigate } from 'react-router';
 
 function Main(){
-    let navigate = useNavigate();
-    const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
-    const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY
-    const supabase = createClient(supabaseUrl!, supabaseAnonKey!)
-    const dispatch = useDispatch();
-
-    // eslint-disable-next-line no-unused-vars
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
-    const [userId, setUserId] = useState('');
-
+    const [searchText, setSearchText] = useState<string>('');
+    const [searchUser, setSearchUser] = useState<User[]>([]);
     const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+    const navigate = useNavigate();
 
-    console.log(user)
+    useEffect(()=>{
+        async function onSearch(){
+            if(searchText === user?.userId){
+                return;
+            }
+            try {
+                const response = await axios.post('/api/users/search', { searchText })
+                const data = response.data.filter((users: { userId: any; })=>users.userId !== user?.userId)
+                const users = data.map((user: any)=>user)
+                setSearchUser(users)
+            } catch(error){
+                console.log(error)
+            }
+        }
+        if(searchText !== '')
+            onSearch()
+    },[searchText, user?.userId])
+
+
+    // console.log(user)
 
     function setOpenModal(){
         setOpen(true);
@@ -46,15 +59,18 @@ function Main(){
         setSelectedCard(null);
     }
 
-    async function handleLogout(){
-        const { error } = await supabase.auth.signOut();
-        if(error){
-            alert(`failed login ${error.message}`)
-        } else {
-        dispatch(logout())
+    async function onSearch(){
+        try {
+            const response = await axios.post('/api/users/search', { searchText })
+            if(response.status === 200){
+                const users = response.data.map((users: any)=>users)
+                setSearchUser(users)
+            }
+        } catch(error){
+            setSearchUser([])
+            console.log(error)
         }
-        console.log('logout')
-    }  
+    }
 
     const feedData = [
         {
@@ -105,7 +121,33 @@ function Main(){
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
-                        <button className={styles.logout} onClick={handleLogout}>로그아웃</button>
+                        <div>
+                            <input 
+                                type="text"
+                                value={searchText}
+                                className={styles.searchBar}
+                                onChange={(e)=>{
+                                e.preventDefault()
+                                setSearchText(e.target.value)}}
+                            />
+                            {searchText.length > 0 && searchUser.length > 0 ? <div>{searchUser.map((user)=>{
+                                return (
+                                <div 
+                                    className={styles.searchProfile}
+                                    onClick={()=>{navigate(`/friendpage/:${user.userId}`)}}
+                                    >
+                                   <img 
+                                    src={profile_image} 
+                                    alt="friend profile"
+                                    className={styles.searchProfileImage}></img>
+                                   <p
+                                    className={styles.searchProfileuserId}>{user.userId}</p> 
+                                </div>)})}</div>: null}
+                        </div>
+                        <button 
+                        className={styles.searchButton}
+                        onClick={onSearch}
+                        >검색</button>
                     </div>
                     {sliceData.map((row, i) => {
                         return(

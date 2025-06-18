@@ -12,10 +12,10 @@
 
 .sidebar {
     display: flex;
-    flex: 1;
     flex-direction: column;
     min-width: 200px;
-    margin-right: 5%;
+    margin-right: 2%;
+    flex: 1;
 }
 
 
@@ -27,12 +27,54 @@
 
 .logoutField{
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
+    align-items: center;
+    flex: 50;
 }
 
-.logout {
-    width: 80px;
-    margin-right: 2%;
+.searchBar {
+    height: 25px;
+    min-width: 200px;
+    flex: 1;
+    border-radius: 10px;
+    border-color: #c9c9c9;
+    border-width: 1px;
+    align-self: flex-start;
+    margin-bottom: 5%;
+}
+
+.searchProfile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5%;
+    flex: 1;
+}
+
+.searchProfileImage {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.searchProfileuserId {
+    font-size: small;
+    font-weight: 500;
+}
+
+.searchButton {
+    max-width: 70px;
+    height: 27px;
+    margin-left: 2%;
+    margin-right: 5%;
+    flex: 1;
+    font-size: medium;
+    background-color: #7DA4FF;
+    border-width: 0;
+    border-radius: 20px;
+    color: white;
+    align-self: flex-start;
 }
 
 .title {
