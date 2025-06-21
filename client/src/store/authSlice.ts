@@ -26,10 +26,13 @@ const authSlice = createSlice({
             state.supabaseSession = null;
             state.backendJWTToken = null;
             state.user = null
+        },
+        setUser(state, action){
+            state.user = action.payload.user;
         }
     }
 })
 
-export const {setSession, logout } = authSlice.actions;
+export const {setSession, logout, setUser } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -17,41 +17,13 @@ function App() {
   const [errors, setErrors] = useState<{email?: string; password?: string}>({})
 
   const dispatch = useDispatch();
-
-  //  useEffect(()=>{
-
-  //   axios.get('/api/users')
-  //   .then(response =>{
-  //     setUsers(response.data);
-  //   })
-  //   .catch(error => {
-  //     console.log('API failed', error);
-  //   })
-  // }, []);
   
   let navigate = useNavigate();
-
-  // useEffect(() => {
-  //   supabase.auth.getSession().then(({ data: {session} }) => {
-  //     setSession(session)
-  //   })
-
-  //   const {
-  //   data: {subscription},
-  // } = supabase.auth.onAuthStateChange((_event, session) => {
-  //   setSession(session)
-  // })
-
-  // return () => subscription.unsubscribe()
-  // }, [])
-
 
   const loginSchema = z.object({
     email: z.string().email('유효한 이메일 주소를 입력해주세요.'),
     password: z.string().min(7, '비밀번호는 최소 7자리 이상이어야 합니다.')
   })
-
-  // type LoginFormData = z.infer<typeof loginSchema>
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,11 +70,13 @@ function App() {
 
       const backendUser = response.data.user;
       const backendJWTToken = response.data.token;
+      console.log(backendUser);
 
       dispatch(setSession({
         supabaseSession: data.session,
         backendJWTToken,
-        user: backendUser
+        user: { 
+          ...backendUser}
       })) 
     } catch(error){
       console.log(error);
