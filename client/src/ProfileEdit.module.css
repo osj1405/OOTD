@@ -27,6 +27,26 @@
     object-fit: cover;
 }
 
+.profileImagePreview {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background-color: #c8c8c8;
+}
+
+.profileImageInput {
+    display: none;
+}
+
+.changeProfile {
+    margin-top: 2%;
+    width: 150px;
+    font-size: 15px;
+    font-weight: bold;
+    border-width: 0;
+    background-color: white;
+}
+
 .changeProfile:hover {
     color: #c9c9c9;
 }

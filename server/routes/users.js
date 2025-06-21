@@ -46,4 +46,22 @@ router.post('/search',async(req, res) => {
     res.status(500).json({ error: 'Database query failed '})
   }
 })
+
+router.post('/update-profile-image', async (req, res) => {
+  const { supabaseId, imageUrl } = req.body
+  
+  try {
+    const updated = await sql`
+    UPDATE public.users 
+    SET profile_image = ${imageUrl} 
+    WHERE id = ${supabaseId} 
+    RETURNING *;`
+    
+    console.log('image update success')
+    return res.status(200).json({user: updated[0]});
+  } catch(error){
+    console.error(error);
+    return res.status(500).json({message: 'DB 업데이트 실패', error})
+  }
+})
 export default router;

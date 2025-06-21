@@ -6,9 +6,10 @@ import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../App";
 import { logout } from "../store/authSlice";
+import { RootState } from "../store/rootStore";
 
 export default function SideProfile({
     setOpenModal = () => {},
@@ -22,13 +23,17 @@ export default function SideProfile({
     let navigate = useNavigate();
     const params = useParams();
     const dispatch = useDispatch();
-    const [id, setId] = useState<string | null>("");
-    const [profileImage, setProfileImage] = useState<string>(myImage);
+    const user = useSelector((state: RootState) => state.auth.user)
+    const [userId, setUserId] = useState(user?.userId);
+    const supabaseId = useSelector((state: RootState) => state.auth.supabaseSession?.user.id)
+    const [profileImage, setProfileImage] = useState(user?.profile_image);
+    console.log(`profileImage in store : ${user?.profile_image}`)
 
-    useEffect(()=> {
-        if(idInfo)
-            setId(idInfo);
-    }, [idInfo])
+    // useEffect(()=> {
+    //     if(idInfo)
+    //         setId(idInfo);
+    // }, [idInfo])
+    
 
     const [friendModal, setFriendModal] = useState<string | null>(null);
 
@@ -42,9 +47,14 @@ export default function SideProfile({
         console.log('logout')
     }  
 
-    const handleProfileImage = (src: string) => {
-        setProfileImage(src);
-    }
+//    async function handleProfileImage(){
+//         try{
+//             const {data, error} = supabase.storage.from('profile-image').list('', {search: supabaseId})
+        
+//         }catch(error){
+
+//         }
+//     }
 
     function setFriendModalOpen(id: string){
         setFriendModal(id);
@@ -82,14 +92,15 @@ export default function SideProfile({
         <>
             <div className={styles.profile}>
                 <div className={styles.profileImageContainer}>
-                    <img src={profileImage} alt="profile" className={styles.profileImage}/>
+                    {profileImage 
+                    ? <img src={profileImage} alt="profile" className={styles.profileImage}/>
+                    : <div className={styles.profileImagePreview}></div>}
                 </div>                        
                 <p 
                     className={styles.id} 
                     onClick={()=>{
-                        if(id === "pumupcld")
-                            navigate(`/mypage/:${params.id}`)}}
-                    >{id}</p>
+                            navigate(`/mypage/:${params.userId}`)}}
+                    >{userId}</p>
                 <p 
                     className={styles.nickname}
                     onClick={() => navigate(`/mypage/:${params.id}`)}>{name}</p>
@@ -97,9 +108,9 @@ export default function SideProfile({
                     <p className={styles.tag}>#lovely</p>
                     <p className={styles.tag}>#Hip</p>
                 </div>
-                {id === "pumupcld" && <><button 
+                {user && <><button 
                     className={styles.profileSetButton}
-                    onClick={()=>{navigate(`/editprofile/:${params.id}`)}}
+                    onClick={()=>{navigate(`/editprofile/:${params.userId}`)}}
                     >프로필 수정</button>
                 <button 
                     className={styles.writePostButton}
@@ -114,26 +125,17 @@ export default function SideProfile({
                                     {row.map((friend, i) => {
                                         return(
                                         <>
-                                        <div
-                                            className={styles.friendModalContainer}
-                                            onMouseEnter={() => setFriendModalOpen(friend.id)}
-                                            onMouseLeave={setFriendModalClose}>
-                                            <Friend 
-                                                key={i} 
-                                                id={friend.id} 
-                                                friendProfileImage={friend.profileImage} 
-                                                // onMouseOver={()=>setFriendModalOpen(friend.id)}
-                                                // onMouseOut={setFriendModalClose} 
-                                                />
-                                            {friendModal === friend.id && <FriendModal isOpen={friendModal} id={friend.id} profileImage={friend.profileImage} />}
-                                        </div>
-                                            {/* <Friend 
-                                                key={i} 
-                                                id={friend.id} 
-                                                friendProfileImage={friend.profileImage} 
-                                                onMouseOver={()=>setFriendModalOpen(friend.id)}
-                                                onMouseOut={setFriendModalClose} />
-                                            {friendModal === friend.id && <FriendModal isOpen={true} id={friend.id} profileImage={friend.profileImage} />} */}
+                                            <div
+                                                className={styles.friendModalContainer}
+                                                onMouseEnter={() => setFriendModalOpen(friend.id)}
+                                                onMouseLeave={setFriendModalClose}>
+                                                <Friend 
+                                                    key={i} 
+                                                    id={friend.id} 
+                                                    friendProfileImage={friend.profileImage} 
+                                                    />
+                                                {friendModal === friend.id && <FriendModal isOpen={friendModal} id={friend.id} profileImage={friend.profileImage} />}
+                                            </div>
                                         </>
                                         )
                                     })}

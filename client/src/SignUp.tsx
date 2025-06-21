@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styles from './SignUp.module.css';
 import { useNavigate } from "react-router";
-import { createClient } from "@supabase/supabase-js";
 import z from 'zod';
 import axios from "axios";
-
-const supabase = createClient('https://erlobqoenedlpiciifjf.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVybG9icW9lbmVkbHBpY2lpZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwMTI1NTcsImV4cCI6MjA2NDU4ODU1N30.LJ8U8dSpCXDzRwwG1cEHOnIIL63f5IWUoJ46YSE42ac')
+import { supabase } from "./App";
 
 export default function SignUp(){
     const [email, setEmail] = useState('');
@@ -30,7 +28,7 @@ export default function SignUp(){
         sex: z.boolean(),
         birth: z.date()
     })
-
+    
     const checkUserId = async() => {
         try{
             await axios.post('/api/users/check-userid', { userId } ) 
@@ -138,7 +136,7 @@ export default function SignUp(){
                     <form className={styles.signupForm}
                     onSubmit={handleSignUp}>
                         <div className={styles.signupForm2}>
-                        <div className={styles.inputForm}>
+                            <div className={styles.inputForm}>
                                 <label>이메일 </label>
                                 <input 
                                     type="email" 
@@ -161,15 +159,15 @@ export default function SignUp(){
                                     onChange={(e)=>{
                                         setUserId(e.target.value)
                                     }}
-                                    value={userId}
+                                    value={userId}                                        
                                     placeholder="추후 변경 가능합니다."
                                     required></input>
-                                {!checkIdDuplication && 
-                                <button 
-                                    className={styles.checkDuplicationButton}
-                                    type="button"
-                                    onClick={checkUserId}
-                                    >중복 확인</button>}
+                                    {!checkIdDuplication && 
+                                    <button 
+                                        className={styles.checkDuplicationButton}
+                                        type="button"
+                                        onClick={checkUserId}
+                                        >중복 확인</button>}
                             </div>
                             <div className={styles.inputForm}>
                                 <label>비밀번호</label>
@@ -191,11 +189,11 @@ export default function SignUp(){
                                     }}
                                     required></input>
                                     {!matchPassword && 
-                                <button 
-                                    className={styles.checkDuplicationButton}
-                                    type="button"
-                                    onClick={checkMatchPassword}
-                                    >비밀번호 확인</button>}
+                                    <button 
+                                        className={styles.checkDuplicationButton}
+                                        type="button"
+                                        onClick={checkMatchPassword}
+                                        >비밀번호 확인</button>}
                             </div>
                             <div className={styles.inputForm}>
                                 <label>이름</label>
@@ -240,13 +238,12 @@ export default function SignUp(){
                                     type="reset"
                                     onClick={()=>{
                                         navigate("/")
-                                    }}>취소</button>
+                                        }}>취소</button>
                                 <button 
                                     type="submit"
                                     className={`${styles.button} ${styles.success}`}
                                     onClick={handleSignUp}>완료</button>
                             </div>
-
                         </div>
                     </form>
                 </div>
