@@ -47,6 +47,23 @@ router.post('/search',async(req, res) => {
   }
 })
 
+router.post('/update-profile', async (req, res) => {
+  const {supabaseId, userId, name, sex, birth, tag, introduce } = req.body
+
+  try {
+    const updated = await sql`
+    UPDATE public.users
+    SET "userId" = ${userId}, name = ${name}, sex = ${sex}, birth = ${birth}, tag = ${tag}, introduce = ${introduce}
+    WHERE id = ${supabaseId}
+    RETURNING *;`
+    console.log('profile update success')
+    return res.status(200).json({user: updated[0]})
+  } catch(error){
+    console.error(error)
+    return res.status(500).json({message: 'DB update fail', error})
+  }
+})
+
 router.post('/update-profile-image', async (req, res) => {
   const { supabaseId, imageUrl } = req.body
   
@@ -64,4 +81,5 @@ router.post('/update-profile-image', async (req, res) => {
     return res.status(500).json({message: 'DB 업데이트 실패', error})
   }
 })
+
 export default router;

@@ -7,7 +7,7 @@ import WriteModal from './component/WriteModal';
 import feedImage from './assets/feed_image.jpg';
 import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
@@ -19,7 +19,7 @@ function Main(){
     const [selectedCard, setSelectedCard] = useState(null);
     const [searchText, setSearchText] = useState<string>('');
     const [searchUser, setSearchUser] = useState<User[]>([]);
-    const user = useSelector((state: RootState) => state.auth.user, shallowEqual);
+    const user = useSelector((state: RootState) => state.auth.user);
     const navigate = useNavigate();
 
     useEffect(()=>{
@@ -117,7 +117,8 @@ function Main(){
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} idInfo={user?.userId} name={user?.name}/>
+                    <SideProfile setOpenModal={setOpenModal} />
+                    {user?.userId}
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>

@@ -2,6 +2,8 @@
 
 # dependencies
 .env
+client/.env
+server/.env
 client/node_modules
 server/node_modules
 /.pnp

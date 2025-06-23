@@ -109,7 +109,7 @@ function App() {
           <button 
           className={styles.loginButton}
           type='submit'
-          onClick={()=>navigate('/main')}
+          onClick={handleLogin}
            >로그인</button>
            <button 
             className={styles.signupButton}

@@ -7,4 +7,6 @@ export type User = {
   profile_image?: string;
   sex?: boolean;
   birth?: Date;
+  tag?: string;
+  introduce?: string;
 }

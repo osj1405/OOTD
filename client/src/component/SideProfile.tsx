@@ -8,31 +8,44 @@ import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../App";
-import { logout } from "../store/authSlice";
+import { logout, setUser } from "../store/authSlice";
 import { RootState } from "../store/rootStore";
 
 export default function SideProfile({
     setOpenModal = () => {},
-    idInfo,
-    name
 }:{
     setOpenModal?: () => void,
-    idInfo: string | undefined,
-    name: string | undefined
 }){
     let navigate = useNavigate();
     const params = useParams();
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user)
-    const [userId, setUserId] = useState(user?.userId);
-    const supabaseId = useSelector((state: RootState) => state.auth.supabaseSession?.user.id)
     const [profileImage, setProfileImage] = useState(user?.profile_image);
-    console.log(`profileImage in store : ${user?.profile_image}`)
+    const [userId, setUserId] = useState(user?.userId);
+    const [name, setName] = useState(user?.name)
+    const [introduce, setIntroduce] = useState(user?.introduce)
+    const supabaseId = useSelector((state: RootState) => state.auth.supabaseSession?.user.id)
 
-    // useEffect(()=> {
-    //     if(idInfo)
-    //         setId(idInfo);
-    // }, [idInfo])
+    useEffect(()=>{
+        console.log(user)
+        if(user){
+            setUserId(user.userId)
+            setName(user.name)
+            setIntroduce(user.introduce)
+            setProfileImage(user?.profile_image)
+        }
+        
+    }, [user])
+    console.log(`profileImage in store : ${user?.profile_image}`)
+    console.log(`user: ${user}`)
+    
+    useEffect(()=> {
+        setUserId(user?.userId)
+        setName(user?.name)
+        setProfileImage(user?.profile_image)
+        setIntroduce(user?.introduce)
+
+    }, [user])
     
 
     const [friendModal, setFriendModal] = useState<string | null>(null);
@@ -46,15 +59,6 @@ export default function SideProfile({
         }
         console.log('logout')
     }  
-
-//    async function handleProfileImage(){
-//         try{
-//             const {data, error} = supabase.storage.from('profile-image').list('', {search: supabaseId})
-        
-//         }catch(error){
-
-//         }
-//     }
 
     function setFriendModalOpen(id: string){
         setFriendModal(id);
@@ -93,7 +97,7 @@ export default function SideProfile({
             <div className={styles.profile}>
                 <div className={styles.profileImageContainer}>
                     {profileImage 
-                    ? <img src={profileImage} alt="profile" className={styles.profileImage}/>
+                    ? <img src={user?.profile_image} alt="profile" className={styles.profileImage}/>
                     : <div className={styles.profileImagePreview}></div>}
                 </div>                        
                 <p 
@@ -107,6 +111,9 @@ export default function SideProfile({
                 <div className={styles.tagContainer}>
                     <p className={styles.tag}>#lovely</p>
                     <p className={styles.tag}>#Hip</p>
+                </div>
+                <div className={styles.tagContainer}>
+                    <p>{introduce}</p>
                 </div>
                 {user && <><button 
                     className={styles.profileSetButton}
