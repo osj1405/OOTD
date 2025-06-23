@@ -12,6 +12,86 @@
     padding-bottom: 20px;
 }
 
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 10%;
+}
+
+.profileImageContainer {
+    border-radius: 50%;
+    max-width: 180px;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileImage {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border-width: 0;
+    object-fit: cover;
+}
+
+.profileImagePreview {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border-width: 0;
+    background-color: #c9c9c9;
+}
+
+
+.id {
+    font-weight: bold;
+    font-size: large;
+    margin-left: 10%;
+    align-self: flex-start;
+}
+
+.nickname {
+    align-self: flex-start;
+    margin-left: 10%;
+    padding: 0px;
+    margin-top: 0;
+    font-size: medium;
+    font-weight: 700;
+}
+
+.tagContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    max-width: 100px;
+    margin-left: 10%;
+    align-self: flex-start;
+}
+
+.tag {
+    color: #5f7edd;
+}
+
+.tag:hover{
+    color: blue;
+}
+
+.friendsContainer {
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    margin-left: 10%;
+}
+
+.friendModalContainer {
+    position: relative;
+    display: inline-block;
+}
+
 .contentContainer {
     display: flex;
     flex-direction: row;

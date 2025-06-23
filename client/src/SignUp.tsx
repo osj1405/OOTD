@@ -115,7 +115,7 @@ export default function SignUp(){
             userId,
             name,
             sex,
-            birth
+            birth,
         })
 
         alert(`회원가입 성공!`)

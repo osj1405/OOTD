@@ -8,40 +8,71 @@ import axios from "axios";
 import { setUser } from "./store/authSlice";
 
 export default function ProfileEdit(){
+    const user = useSelector((state: RootState) => state.auth.user)
     const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-    const [userId, setUserId] = useState("pumupcld");
-    const [userName, setName] = useState("수진");
-    const [sexual, setSex] = useState<boolean | null>(null);
-    const [birth, setBirth] = useState<Date | null>(null);
-    const [tag, setTag] = useState("");
-    const [introduce, setIntroduce] = useState("");
+    const [userId, setUserId] = useState(user?.userId);
+    const [name, setName] = useState(user?.name);
+    const [sex, setSex] = useState(user?.sex);
+    const [birth, setBirth] = useState(user?.birth);
+    const [tag, setTag] = useState(user?.tag);
+    const [introduce, setIntroduce] = useState(user?.introduce);
+    const [checkIdDuplication, setIdDuplication] = useState(false);
 
-    const navigator = useNavigate();
+    const navigate = useNavigate();
     const params = useParams();
     
-    const user = useSelector((state: RootState) => state.auth.user)
     const [profileImageUrl, setProfileImageUrl] = useState(user?.profile_image)
 
     const supabaseSession = useSelector((state: RootState) => state.auth.supabaseSession)
+    const supabaseId = supabaseSession?.user.id
     const dispatch = useDispatch()
 
     const imageInputRef = useRef<HTMLInputElement | null>(null);
     
+
     const onClickImageUpload = () => {
         if(imageInputRef.current)
             imageInputRef.current.click();
     }
-
-    
-    useEffect(()=>{
-        console.log(profileImageFile)
-    }, [profileImageFile])
 
     const handleFileChange = async (e: any) => {
         const file = e.target.files[0]
         setProfileImageFile(e.target.files[0])
 
         await uploadProfileImage(file)
+    }
+
+    async function updateProfile(){
+        try {
+            if(userId !== user?.userId){
+                if(!checkIdDuplication){
+                    alert('아이디 중복 확인을 해주세요')
+                    return;
+                }
+            }
+            const response = await axios.post('/api/users/update-profile', {
+                supabaseId,
+                userId,
+                name,
+                sex,
+                birth,
+                tag,
+                introduce,
+            })
+
+            const  updatedUser = response.data.user;
+            console.log('updated user', updatedUser)
+            dispatch(setUser({
+                user: updatedUser,
+            }))
+
+            alert('프로필 업데이트 완료')
+            
+        } catch(error){
+            console.error(error)
+            alert('프로필 업데이트 실패')
+        }
+
     }
 
     async function uploadProfileImage(file: File) {
@@ -55,7 +86,7 @@ export default function ProfileEdit(){
         console.log(`fileExt: ${fileExt}`);
         console.log(`filepath: ${filePath}`)
 
-        const { data, error } = await supabase.storage.from('profile-image').list('', {search: supabaseId})
+        const { data } = await supabase.storage.from('profile-image').list('', {search: supabaseId})
 
         console.log('2');
 
@@ -121,10 +152,36 @@ export default function ProfileEdit(){
         }
     }, [user])
 
+    const handleName = (e: any) => {
+        const newName = e.target.value;
+        setName(newName);
+    }
+
     const handleSex = (event: any) => {
         // console.log(event.target.value);
         const value = event.target.value;
         setSex(value.toString());
+    }
+
+    const handleBirth = (e: any) => {
+        const currentBirth = e.target.value;
+        setBirth(currentBirth)
+    }
+
+    const checkUserId = async() => {
+        try{
+            await axios.post('/api/users/check-userid', { userId } ) 
+            setIdDuplication(true);
+        }catch(error){
+            if(axios.isAxiosError(error)){
+                if(error.response?.status === 409){
+                    alert('이미 사용 중인 아이디입니다. ');
+                    setUserId('');
+                    return;
+                }
+            }
+        }
+        
     }
 
     return (
@@ -145,58 +202,85 @@ export default function ProfileEdit(){
                     className={styles.changeProfile}
                     onClick={onClickImageUpload}>사진 변경하기</button>
                 <hr></hr>
-                <div className={styles.inputField}>
-                    <label>이름</label>
-                    <input type="text" placeholder={userName}></input>
-                </div>
-                <div className={styles.inputField}>
-                    <label>아이디</label>
-                    <input type="text" placeholder={userId} readOnly={true}></input>
-                </div>
-                <div className={styles.inputField}>
-                    <label>성별</label>
-                        <button 
-                            className={styles.sexButton}
-                            value={"female"}
-                            onClick={handleSex}
-                            >여성</button>
-                        <button 
-                            className={styles.sexButton}
-                            value={"male"}
-                            onClick={handleSex}
-                            >남성</button>
-                </div>
-                <div className={styles.inputField}>
-                    <label>생일</label>
-                    <input type="date"></input>
-                </div>
-                <div className={styles.inputField}>
-                    <label>태그</label>
-                    <input 
-                        type="text" 
-                        multiple={true} 
-                        className={styles.tagField}
-                        placeholder={tag}
+                <div className={styles.inputContainer}>
+                    <div className={styles.inputField}>
+                        <label>이름</label>
+                        <input 
+                            type="text" 
+                            placeholder={name}
+                            onChange={handleName}></input>
+                    </div>
+                    <div className={styles.inputField}>
+                        <label>아이디</label>
+                        <input type="text" placeholder={userId} />
+                        {!checkIdDuplication && 
+                            <div>
+                                <button 
+                                    type="button"
+                                    value={userId}
+                                    onClick={checkUserId}
+                                    className={styles.checkDuplicationButton}
+                                    >중복 확인</button>
+                            </div>
+                        }
+                    </div>
+                    <div className={styles.inputField}>
+                        <label>성별</label>
+                            <button 
+                                className={styles.sexButton}
+                                value={"female"}
+                                onClick={()=>setSex(true)}
+                                >여성</button>
+                            <button 
+                                className={styles.sexButton}
+                                value={"male"}
+                                onClick={()=>setSex(false)}
+                                >남성</button>
+                    </div>
+                    <div className={styles.inputField}>
+                        <label>생일</label>
+                        <input 
+                            type="date"
+                            onChange={handleBirth}
+                            placeholder="생일을 선택하세요"
+                            value={birth?.toString().split('T')[0]}
+                            ></input>
+                    </div>
+                    <div className={styles.inputField}>
+                        <label>태그</label>
+                        <input
+                            type="text" 
+                            multiple={true} 
+                            className={styles.tagField}
+                            value={tag}
+                            placeholder="나만의 컨셉들을 적어주세요! ex) #Hip"
                         ></input>
-                </div>
-                <div className={styles.inputField}>
-                    <label>소개</label>
-                    <input 
-                        type="text" 
-                        multiple={true}
-                        className={styles.introduceField}
-                        placeholder={introduce}
-                        ></input>
-                </div>
-                <div className={styles.editButtonField}>
-                    <button 
-                        className={styles.cancel}
-                        onClick={()=>navigator(`/mypage/:${params.id}`)}
-                        >취소</button>
-                    <button 
-                        className={styles.success}
-                        onClick={()=>navigator(`/mypage/:${params.id}`)}
-                        >완료</button>
+                    </div>
+                    <div className={styles.inputField}>
+                        <label>소개</label>
+                        <input 
+                            type="text" 
+                            multiple={true}
+                            className={styles.introduceField}
+                            value={introduce}
+                            placeholder="나를 소개해주세요!"
+                            onChange={(e)=>setIntroduce(e.target.value)}
+                            ></input>
+                    </div>
+                    <div className={styles.editButtonField}>
+                        <button 
+                            className={styles.cancel}
+                            type="reset"
+                            onClick={()=>navigate(`/mypage/:${params.id}`)}
+                            >취소</button>
+                        <button 
+                            className={styles.success}
+                            type="submit"
+                                    onClick={()=>{
+                                        updateProfile()
+                                        navigate('/main')}}
+                            >완료</button>
+                    </div>
                 </div>
             </div>
         </div>

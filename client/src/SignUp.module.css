@@ -67,7 +67,7 @@ p {
 label {
     display: inline-block;
     text-align: end;
-    width: 100px;
+    min-width: 120px;
     font-weight: medium;
     margin-right: 2%;
 }
@@ -79,6 +79,7 @@ label {
   border-radius: 3px;
   border-width: 1px;
   margin-right: 7%;
+  margin-left: 10px;
 }
 
 .checkDuplicationButton {
@@ -102,6 +103,7 @@ label {
     font-size: medium;
     font-weight: bold;
     margin-right: 5%;
+    margin-left: 10px;
 }
 
 .sexButton:focus{

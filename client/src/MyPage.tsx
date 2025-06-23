@@ -33,7 +33,7 @@ export default function MyPage(){
                 <p className={styles.title}>OOTD</p>
                 <div className={styles.contentContainer}>
                     <div className={styles.sidebar}>
-                        <SideProfile setOpenModal={setOpenModal} idInfo={user?.userId} name={user?.name}/>
+                        <SideProfile setOpenModal={setOpenModal}/>
                     </div>
                     <div className={styles.content}>
                         <div className={styles.goMainContainer}>
