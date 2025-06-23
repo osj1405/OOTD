@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
-import myImage from '../assets/profile_image.jpg';
 import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../App";
-import { logout, setUser } from "../store/authSlice";
+import { logout } from "../store/authSlice";
 import { RootState } from "../store/rootStore";
 
 export default function SideProfile({
@@ -24,7 +23,6 @@ export default function SideProfile({
     const [userId, setUserId] = useState(user?.userId);
     const [name, setName] = useState(user?.name)
     const [introduce, setIntroduce] = useState(user?.introduce)
-    const supabaseId = useSelector((state: RootState) => state.auth.supabaseSession?.user.id)
 
     useEffect(()=>{
         console.log(user)

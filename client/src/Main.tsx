@@ -40,9 +40,6 @@ function Main(){
             onSearch()
     },[searchText, user?.userId])
 
-
-    // console.log(user)
-
     function setOpenModal(){
         setOpen(true);
     }
@@ -118,7 +115,6 @@ function Main(){
             <div className={styles.contentContainer}>
                 <div className={styles.sidebar}>
                     <SideProfile setOpenModal={setOpenModal} />
-                    {user?.userId}
                 </div>
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
