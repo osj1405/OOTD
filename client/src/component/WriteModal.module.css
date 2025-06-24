@@ -26,6 +26,64 @@
     justify-self: flex-start;
 }
 
+.imagesContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.carouselContainer {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    margin-top: 20px;
+    padding: 0 20px;
+}
+
+.carouselButton {
+    border-width: 0px;
+    font-size: x-large;
+    color: #353535;
+    background-color: #f5f5f5;
+    opacity: 0.7;
+}
+
+.image {
+    width: 300px;
+    height: 400px;
+    border-radius: 10px;
+    object-fit: cover;
+    padding: 0px;
+    overflow: hidden;
+    transition: opacity 1s;
+}
+
+.current {
+    position: relative;
+    bottom: 3%;
+    z-index: 3;
+    opacity: 1;
+}
+
+.prev {
+    z-index: 2;
+    opacity: 0.6;
+    position: absolute;
+    right: 53%; 
+}
+
+.next {
+    z-index: 2;
+    opacity: 0.6;
+    position: absolute;
+    left: 53%;
+}
+
+.imageArrayContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+}
+
 .cancelButton {
     margin-top: 5%;
     width: 200px;
@@ -39,5 +97,9 @@
 .emptyImage {
     padding: 250px 200px;
     background-color: #d0d0d0;
-    border-radius: 20px;
+    border-radius: 10px;
+    width: 300px;
+    height: 400px;
+    padding: 0px;
+    object-fit: cover;
 }
