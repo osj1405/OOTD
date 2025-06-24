@@ -253,6 +253,7 @@ export default function ProfileEdit(){
                             multiple={true} 
                             className={styles.tagField}
                             value={tag}
+                            onChange={(e)=>setTag(e.target.value)}
                             placeholder="나만의 컨셉들을 적어주세요! ex) #Hip"
                         ></input>
                     </div>
