@@ -59,7 +59,7 @@
 
 .current {
     position: relative;
-    bottom: 3%;
+    bottom: 2%;
     z-index: 3;
     opacity: 1;
 }
@@ -84,6 +84,21 @@
     gap: 3px;
 }
 
+.contentField {
+    width: 500px;
+    height: 50px;
+    border-width: 0;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.buttonField {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 3%;
+}
 .cancelButton {
     margin-top: 5%;
     width: 200px;
@@ -91,6 +106,16 @@
     border-width: 0;
     color: white;
     background-color: #e35454;
+    border-radius: 10px;
+}
+
+.uploadButton {
+    margin-top: 5%;
+    width: 200px;
+    height: 30px;
+    border-width: 0;
+    color: white;
+    background-color: #4863e8;
     border-radius: 10px;
 }
 

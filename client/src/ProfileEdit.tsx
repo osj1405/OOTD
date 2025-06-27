@@ -37,7 +37,7 @@ export default function ProfileEdit(){
 
     const handleFileChange = async (e: any) => {
         const file = e.target.files[0]
-        setProfileImageFile(e.target.files[0])
+        setProfileImageFile(file)
 
         await uploadProfileImage(file)
     }
