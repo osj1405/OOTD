@@ -18,13 +18,11 @@ export default function WriteModal({
 }:WriteModalProps){
     // eslint-disable-next-line no-unused-vars
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string []>([])
-    const [thumnail, setThumnail] = useState<string[]>([])
     const [images, setImages] = useState<string[]>([])
     const [uploadImageFilePath, setUploadImageFilePath] = useState<string []>([])
     const [content, setContent] = useState<string>("")
 
     // eslint-disable-next-line no-unused-vars
-    const [files, setFiles] = useState<File[]>([]); // 서버 전송용
     const imagesExample = [feed_image, feed_image2, feed_image3]
     const todayDate = new Date();
     const day = ["일", "월", "화", "수", "목", "금", "토"];
