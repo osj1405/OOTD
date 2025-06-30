@@ -4,12 +4,12 @@ const router = express.Router()
 import sql from '../db.js'
 
 router.post('/upload', async(req, res) => {
-    const {supabaseId, thumnail, post_images, content} = req.body;
+    const {supabaseId, thumnail, uploadImageFilePath, content} = req.body;
     
-    console.log(`supabaseId: ${supabaseId} thumnail: ${thumnail} images: ${post_images} content: ${content}`)
+    console.log(`supabaseId: ${supabaseId} thumnail: ${thumnail} images: ${uploadImageFilePath} content: ${content}`)
         
     console.log('post 1')
-    if(!supabaseId || !thumnail || !post_images){
+    if(!supabaseId || !thumnail || !uploadImageFilePath){
         console.log(`post 2`)
         return res.status(400).json({error: '데이터가 누락되었습니다.'})
     }
@@ -18,7 +18,7 @@ router.post('/upload', async(req, res) => {
     console.log(`post 3`)
     const response = await sql`
     INSERT INTO public.feed (user_id, thumnail, images, content)
-    VALUES (${supabaseId}, ${thumnail}, ${post_images}, ${content})
+    VALUES (${supabaseId}, ${thumnail}, ${uploadImageFilePath}, ${content})
     RETURNING *;`
 
     if(response.length === 0){
