@@ -1,8 +1,5 @@
 import styles from "./WriteModal.module.css"
 import { useState, useRef, useEffect } from "react";
-import feed_image from '../assets/feed_image.jpg'
-import feed_image2 from '../assets/feed_image2.jpg'
-import feed_image3 from '../assets/profile_image.jpg'
 import { useSelector } from "react-redux";
 import { RootState } from "../store/rootStore";
 import { supabase } from "../App";
@@ -22,7 +19,6 @@ export default function WriteModal({
     const [content, setContent] = useState<string>("")
 
     // eslint-disable-next-line no-unused-vars
-    const imagesExample = [feed_image, feed_image2, feed_image3]
     const todayDate = new Date();
     const day = ["일", "월", "화", "수", "목", "금", "토"];
     const todayDay = day[todayDate.getDay()]
@@ -50,6 +46,7 @@ export default function WriteModal({
         const fileList = e.target.files  
 
         if(fileList){
+            setCurrentIndex(0)
             const fileArray = Array.from(fileList)
             
             if(fileArray.length === 0){
@@ -177,7 +174,7 @@ export default function WriteModal({
         }
         setUploadImageFilePath([])
         setImagePreviewUrl([])
-
+        setCurrentIndex(0)
         onClose()
     }
 
@@ -188,46 +185,39 @@ export default function WriteModal({
                     <p className={styles.functionName}>Posting</p>
                     <p>오늘의 스타일을 업로드하세요!</p>
                     <p>{todayDate.getMonth()+1}월 {todayDate.getDate()}일 {todayDay}요일</p>
-                    <div className={styles.imagesContainer}>
+                    <div className={styles.carouselContainer}>
                         <button 
                             className={styles.carouselButton}
-                            onClick={()=>goPrev(imagePreviewUrl.length > 0 ? imagePreviewUrl : imagesExample)}>&lt;</button>
-                        <div className={styles.carouselContainer}>
+                            onClick={()=>goPrev(imagePreviewUrl)}>&lt;</button>
+                        <div className={styles.imagesContainer}>
                             {imagePreviewUrl.length > 0 
                                 ? imagePreviewUrl.map((img, index)=>{
-                                    const isCurrent = index === currentIndex;
-                                    
-                                    const isPrev = index === (currentIndex - 1 + imagePreviewUrl.length) % imagePreviewUrl.length;
-                                    const isNext = index === (currentIndex + 1) % imagePreviewUrl.length;
-                                
+                                    console.log(`image ${index}`)
                                     const styleList = [`${styles.image}`]
-                                    if(isCurrent) styleList.push(`${styles.current}`);
-                                    else if(!isCurrent && !isNext && isPrev) styleList.push(`${styles.prev}`);
-                                    else if(!isCurrent && isNext) styleList.push(`${styles.next}`);
+                                    if(index === currentIndex){
+                                        styleList.push(`${styles.current}`)
+                                    } else if(index === (currentIndex + 1) % imagePreviewUrl.length){
+                                        styleList.push(`${styles.next}`)
+                                    } else if(index === (currentIndex - 1 + imagePreviewUrl.length) % imagePreviewUrl.length){
+                                        styleList.push(`${styles.prev}`)
+                                    } else {
+                                        styleList.push(`${styles.elseImage}`)
+                                    }
 
-                                    return <img key={index}src={img} alt="이미지 미리보기" className={styleList.join(' ')}/>
+                                    return <img key={index} src={img} alt="이미지 미리보기" className={styleList.join(' ')}/>
                                 }) :
-                                <div>
-                                    <div className={`${styles.image} ${styles.current}`}></div>
-                                    <div className={`${styles.image} ${styles.prev}`}></div>
+                                <>
+                                    <div className={`${styles.image} ${styles.current}`}>
+                                        <p className={styles.preview}>오늘의 스타일 샷</p>
+                                    </div>
                                     <div className={`${styles.image} ${styles.next}`}></div>
-                                </div>
-                                // : imagesExample.map((img, index) => {
-                                // const isCurrent = index === currentIndex;
-                                // const isPrev = index === (currentIndex - 1 + imagesExample.length) % imagesExample.length;
-                                // const isNext = index === (currentIndex + 1) % imagesExample.length;
-                                
-                                // const styleList = [`${styles.image}`]
-                                // if(isCurrent) styleList.push(`${styles.current}`);
-                                // else if(isPrev) styleList.push(`${styles.prev}`);
-                                // else if(isNext) styleList.push(`${styles.next}`);
-
-                                // return <img key={index} src={img} className={styleList.join(' ')} alt="임의의 이미지"/>
-                            }
+                                    <div className={`${styles.image} ${styles.prev}`}></div>
+                                </>
+                                }
                         </div>
                         <button 
                             className={styles.carouselButton}
-                            onClick={()=>goNext(imagePreviewUrl.length > 0 ? imagePreviewUrl : imagesExample)}>&gt;</button>
+                            onClick={()=>goNext(imagePreviewUrl)}>&gt;</button>
                     </div>
                     <form>
                         <div className={styles.upload}>

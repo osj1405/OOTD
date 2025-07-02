@@ -1,5 +1,18 @@
 .App {
+  display: flex;
   text-align: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 10%;
 }
 
 .App-logo {
@@ -52,13 +65,38 @@
   margin-top: 5%;
 }
 
+.formContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slogan {
+  writing-mode: sideways-lr;
+  font-size: xx-large;
+  padding-bottom: 30%;
+  padding-top: 10%;
+  align-self: flex-start;
+}
+
+.slogan2 {
+  writing-mode: vertical-rl;
+  font-size: xx-large;
+  padding-top: 30%;
+  padding-bottom: 10%;
+}
+
 .loginForm{
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
   align-items: center;
   gap: 25px;
-  margin-top: 8%;
+  margin-top: 15%;
+  width: 400px;
 }
+
 
 .buttonForm{
   display: flex;
