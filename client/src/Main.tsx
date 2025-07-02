@@ -11,17 +11,23 @@ import { useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
+import { Feed } from './types/Feed';
 import profile_image from './assets/profile_image.jpg'
 import { useNavigate } from 'react-router';
 
 function Main(){
     const [open, setOpen] = useState(false);
-    const [selectedCard, setSelectedCard] = useState(null);
+    const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
     const [searchText, setSearchText] = useState<string>('');
     const [searchUser, setSearchUser] = useState<User[]>([]);
+    const [feeds, setFeeds] = useState<Feed []>([])
     const user = useSelector((state: RootState) => state.auth.user);
     const navigate = useNavigate();
 
+    useEffect(()=>{
+        readFeed()
+    }, [])
+    
     useEffect(()=>{
         async function onSearch(){
             if(searchText === user?.userId){
@@ -69,6 +75,21 @@ function Main(){
         }
     }
 
+    async function readFeed(){
+    try{
+        const response = await axios.post('/api/feed/read')
+        if(response.status === 200){
+            const feeds = response.data.map((feeds: any) => feeds)
+            setFeeds(feeds)
+            console.log(`setFeed!`)
+        }
+        
+    } catch(error){
+        console.log(error)
+        console.log(`feed read fail`)
+    }
+}
+
     const feedData = [
         {
             id: "pumupcld",
@@ -104,8 +125,8 @@ function Main(){
 
     const sliceData = [];
     const rows = 4;
-    for(let i = 0; i < feedData.length; i += rows){
-        sliceData.push(feedData.slice(i, i + rows));
+    for(let i = 0; i < feeds.length; i += rows){
+        sliceData.push(feeds.slice(i, i + rows));
     }
 
     return(
@@ -151,7 +172,14 @@ function Main(){
                             <CardContainer key={i}>
                                 {row.map((feed, i) => {
                                     return (
-                                        <Card key={i} id={feed.id} thumnail={feed.thumnail} time={feed.time}
+                                        <Card 
+                                            key={i} 
+                                            id={feed.id} 
+                                            user_id={feed.user_id} 
+                                            userId={feed.userId ? feed.userId : "none"} 
+                                            profile_image={feed.profile_image}
+                                            thumnail={feed.thumnail} 
+                                            timestamp={feed.created_at}
                                             onClick={()=>handleCardClick(feed)}></Card>
                                     )
                                 })}

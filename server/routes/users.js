@@ -82,4 +82,15 @@ router.post('/update-profile-image', async (req, res) => {
   }
 })
 
+router.post('/getUserName', async (req, res) => {
+  const { user_id } = req.body
+  try {
+    const userName = await sql `SELECT "userId" FROM public.users WHERE id = ${user_id}`
+    res.status(200).json(userName)
+  } catch(error){
+    console.error(error)
+    res.status(500).json({error: `Database query failed`})
+  }
+})
+
 export default router;
