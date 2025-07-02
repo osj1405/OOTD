@@ -4,8 +4,6 @@ import Card from './component/Card';
 import SideProfile from './component/SideProfile';
 import { useEffect, useState } from 'react';
 import WriteModal from './component/WriteModal';
-import feedImage from './assets/feed_image.jpg';
-import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
 import { useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
@@ -89,39 +87,6 @@ function Main(){
         console.log(`feed read fail`)
     }
 }
-
-    const feedData = [
-        {
-            id: "pumupcld",
-            thumnail: feedImage,
-            content: "더현대 다녀왔어용",
-            time: "14:02"
-        },
-        {
-            id: "raylist03",
-            thumnail: feedImage2,
-            content: "데이트~.~",
-            time: "14:02"
-        },
-        {
-            id: "yollkie",
-            thumnail: feedImage,
-            content: "리락쿠마",
-            time: "14:02"
-        },
-        {
-            id: "noidraiz",
-            thumnail: feedImage2,
-            content: "카페 왔당",
-            time: "14:02"
-        },
-        {
-            id: "chubuki",
-            thumnail: feedImage,
-            content: "귀여운 것들 천국!!",
-            time: "14:02"
-        }
-    ]
 
     const sliceData = [];
     const rows = 4;

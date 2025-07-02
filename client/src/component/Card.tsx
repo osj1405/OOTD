@@ -3,7 +3,7 @@ interface CardProps {
     id: string,
     user_id: string,
     profile_image?: string,
-    userId: string,
+    userId?: string,
     thumnail: string,
     timestamp: number,
     onClick: () => void
@@ -33,7 +33,7 @@ export default function Card({
                 >
                 <img className={styles.image} src={feedThumnailPath} alt="thumnail"></img>
                 <div className={styles.profile}>
-                    <img src={profile_image} className={styles.profileImage} alt="profile"/>
+                   {profile_image && <img src={profile_image} className={styles.profileImage} alt="profile"/>}
                     <p className={styles.id}>{userId}</p>
                 </div>
                 
