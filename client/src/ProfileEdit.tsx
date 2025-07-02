@@ -9,7 +9,6 @@ import { setUser } from "./store/authSlice";
 
 export default function ProfileEdit(){
     const user = useSelector((state: RootState) => state.auth.user)
-    const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
     const [userId, setUserId] = useState(user?.userId);
     const [name, setName] = useState(user?.name);
     const [sex, setSex] = useState(user?.sex);
@@ -37,7 +36,6 @@ export default function ProfileEdit(){
 
     const handleFileChange = async (e: any) => {
         const file = e.target.files[0]
-        setProfileImageFile(e.target.files[0])
 
         await uploadProfileImage(file)
     }
@@ -253,6 +251,7 @@ export default function ProfileEdit(){
                             multiple={true} 
                             className={styles.tagField}
                             value={tag}
+                            onChange={(e)=>setTag(e.target.value)}
                             placeholder="나만의 컨셉들을 적어주세요! ex) #Hip"
                         ></input>
                     </div>

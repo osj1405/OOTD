@@ -22,6 +22,7 @@ export default function SideProfile({
     const [profileImage, setProfileImage] = useState(user?.profile_image);
     const [userId, setUserId] = useState(user?.userId);
     const [name, setName] = useState(user?.name)
+    const [tag, setTag] = useState(user?.tag)
     const [introduce, setIntroduce] = useState(user?.introduce)
 
     useEffect(()=>{
@@ -107,11 +108,10 @@ export default function SideProfile({
                     className={styles.nickname}
                     onClick={() => navigate(`/mypage/:${params.id}`)}>{name}</p>
                 <div className={styles.tagContainer}>
-                    <p className={styles.tag}>#lovely</p>
-                    <p className={styles.tag}>#Hip</p>
+                    <p className={styles.tag}>{tag}</p>
                 </div>
-                <div className={styles.tagContainer}>
-                    <p>{introduce}</p>
+                <div className={styles.introduceContainer}>
+                    <p className={styles.introduce}>{introduce}</p>
                 </div>
                 {user && <><button 
                     className={styles.profileSetButton}
