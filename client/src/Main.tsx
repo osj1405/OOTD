@@ -78,7 +78,9 @@ function Main(){
         const response = await axios.post('/api/feed/read')
         if(response.status === 200){
             const feeds = response.data.map((feeds: any) => feeds)
-            setFeeds(feeds)
+            const sortedFeeds = feeds.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
+            console.log(`sorted Feeds: ${[...sortedFeeds]}`)
+            setFeeds(sortedFeeds)
             console.log(`setFeed!`)
         }
         

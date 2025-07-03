@@ -50,7 +50,8 @@ export default function MyPage(){
             const user_id = user?.id
             const response = await axios.post('/api/feed/readDay', { user_id, created_at, created_at_end })
             console.log(response.data)
-            setFeeds(response.data)
+            const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
+            setFeeds(sortedFeeds)
         } catch(error){
             console.error(error)
         }

@@ -5,7 +5,7 @@ interface CardProps {
     profile_image?: string,
     userId?: string,
     thumnail: string,
-    timestamp: number,
+    timestamp: string,
     onClick: () => void
 }
 

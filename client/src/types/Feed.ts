@@ -6,5 +6,5 @@ export type Feed = {
     thumnail: string;
     images: string[];
     content?: string;
-    created_at: number;
+    created_at: string;
 }
