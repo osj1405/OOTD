@@ -9,7 +9,6 @@ import { Feed } from './types/Feed';
 import CardContainer from './component/CardContainer';
 import Card from './component/Card';
 import FeedModal from './component/FeedModal';
-// import { useLocation } from 'react-router';
 
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState(new Date());
@@ -18,8 +17,6 @@ export default function FriendPage() {
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null)
 
     const params = useParams<{id: string}>();
-    // const location = useLocation()
-    // const receivedData = location.state
     const friendId = params.id
 
     
@@ -29,6 +26,7 @@ export default function FriendPage() {
 
     useEffect(()=>{
         readDayFeed(new Date(selectedDay))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay])
 
     useEffect(()=>{
@@ -76,7 +74,7 @@ export default function FriendPage() {
     function closeCardModal(){
         setSelectedCard(null);
     }
-    
+
     const sliceData = []
     const rows= 4
 
@@ -104,25 +102,25 @@ export default function FriendPage() {
                             selectedDay={selectedDay}
                             onSelectDay={onSelectDay} />
                         {selectedDay && sliceData.length > 0
-                                                ? sliceData.map((row, i) => {
-                                                    return (
-                                                        <CardContainer key={i}>
-                                                            {row.map((feed, index) =>{
-                                                                return (
-                                                                    <Card 
-                                                                        key={index} 
-                                                                        id={feed.id}
-                                                                        user_id={feed.user_id}
-                                                                        userId={feed.userId}
-                                                                        thumnail={feed.thumnail}
-                                                                        timestamp={feed.created_at}
-                                                                        onClick={()=>handleCardClick(feed)}></Card>
-                                                                )
-                                                            })}
-                                                        </CardContainer>
-                                                    )
-                                                })
-                                                : <div></div>}
+                            ? sliceData.map((row, i) => {
+                                return (
+                                    <CardContainer key={i}>
+                                        {row.map((feed, index) =>{
+                                            return (
+                                                <Card 
+                                                    key={index} 
+                                                    id={feed.id}
+                                                    user_id={feed.user_id}
+                                                    userId={feed.userId}
+                                                    thumnail={feed.thumnail}
+                                                    timestamp={feed.created_at}
+                                                    onClick={()=>handleCardClick(feed)}></Card>
+                                            )
+                                        })}
+                                    </CardContainer>
+                                )
+                            })
+                            : <div></div>}
                     </div>
                 </div>
                 {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal}/>}

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import styles from './SideProfile.module.css';
-// import { useNavigate } from "react-router";
 import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
@@ -12,8 +11,6 @@ export default function FriendSideProfile({
 }:{
     user: User | null
 }){
-    // let navigate = useNavigate();
-
     const [friendModal, setFriendModal] = useState<string | null>(null);
     const [friend, setFriend] = useState<User | null>(null)
 

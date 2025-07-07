@@ -125,7 +125,7 @@
 }
 
 .followButton{
-    height: 25px;
+    height: 30px;
     background-color: whitesmoke;
     border-color: whitesmoke;
     color: #101010;
@@ -133,4 +133,5 @@
     width: 180px;
     margin-top: 5%;
     align-self: center;
+    font-weight: bold;
 }

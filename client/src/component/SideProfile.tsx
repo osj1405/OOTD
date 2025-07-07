@@ -75,7 +75,7 @@ export default function SideProfile({
                 <p 
                     className={styles.id} 
                     onClick={()=>{
-                            navigate(`/mypage/:${params.userId}`)}}
+                            navigate(`/mypage/:${user?.userId}`)}}
                     >{user?.userId}</p>
                 <p 
                     className={styles.nickname}
