@@ -93,4 +93,28 @@ router.post('/getUserName', async (req, res) => {
   }
 })
 
+router.post('/getFriendProfile', async(req, res) => {
+  const { userId } = req.body
+  if (!userId || typeof userId !== 'string') {
+    return res.status(400).json({ error: '유효하지 않은 아이디입니다.' });
+  }
+  console.log(`userId: ${userId}`)
+  try {
+    const user = await sql `SELECT * FROM public.users WHERE "userId" = ${userId}`
+
+    if(user.length === 0){
+      return res.status(200).json({message: '사용자가 존재하지 않습니다.'})
+    }
+    else {
+      console.log(`friend: ${user[0]}`)
+      return res.status(200).json(user[0]);
+    }
+
+  } catch(error){
+    console.error(error)
+    res.status(500).json({error: `Database query failed`})
+  }
+
+})
+
 export default router;

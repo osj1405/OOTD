@@ -10,7 +10,6 @@ import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
 import { Feed } from './types/Feed';
-import profile_image from './assets/profile_image.jpg'
 import { useNavigate } from 'react-router';
 
 function Main(){
@@ -25,8 +24,9 @@ function Main(){
     useEffect(()=>{
         readFeed()
     }, [])
-    
+
     useEffect(()=>{
+        console.log(`search text: ${searchText}`)
         async function onSearch(){
             if(searchText === user?.userId){
                 return;
@@ -42,7 +42,8 @@ function Main(){
         }
         if(searchText !== '')
             onSearch()
-    },[searchText, user?.userId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[searchText])
 
     function setOpenModal(){
         setOpen(true);
@@ -64,7 +65,8 @@ function Main(){
         try {
             const response = await axios.post('/api/users/search', { searchText })
             if(response.status === 200){
-                const users = response.data.map((users: any)=>users)
+                const data = response.data.filter((users: { userId: any; })=>users.userId !== user?.userId)
+                const users = data.map((user: any)=>user)
                 setSearchUser(users)
             }
         } catch(error){
@@ -96,6 +98,7 @@ function Main(){
         sliceData.push(feeds.slice(i, i + rows));
     }
 
+
     return(
         <>
         <div className={styles.container}>
@@ -119,10 +122,16 @@ function Main(){
                                 return (
                                 <div 
                                     className={styles.searchProfile}
-                                    onClick={()=>{navigate(`/friendpage/:${user.userId}`)}}
+                                    onClick={()=>{
+                                        setSearchUser([])
+                                        navigate(`/friendpage/${user.userId}`, {
+                                        state: {
+                                            data: user
+                                        }
+                                    })}}
                                     >
                                    <img 
-                                    src={profile_image} 
+                                    src={user.profile_image} 
                                     alt="friend profile"
                                     className={styles.searchProfileImage}></img>
                                    <p
