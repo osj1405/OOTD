@@ -126,8 +126,20 @@
 
 .followButton{
     height: 30px;
+    background-color: #7da4ff;
+    border-color: #7da4ff;
+    color: white;
+    border-radius: 5px;
+    width: 180px;
+    margin-top: 5%;
+    align-self: center;
+    font-weight: bold;
+}
+
+.unfollowButton{
+    height: 30px;
     background-color: whitesmoke;
-    border-color: whitesmoke;
+    border-color: #bbbbbb;
     color: #101010;
     border-radius: 5px;
     width: 180px;

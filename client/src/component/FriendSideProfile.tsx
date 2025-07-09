@@ -5,20 +5,45 @@ import Friend from "./Friend";
 import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { User } from "../types/User";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/rootStore";
 
 export default function FriendSideProfile({
-    user
+    friend_info
 }:{
-    user: User | null
+    friend_info: User | null
 }){
     const [friendModal, setFriendModal] = useState<string | null>(null);
     const [friend, setFriend] = useState<User | null>(null)
+    const user = useSelector((state: RootState)=> state.auth.user)
+    const [following, setFollowing] = useState(false)
 
     useEffect(()=>{
-        if(user){
-            setFriend({...user})
+        if(friend_info){
+            setFriend({...friend_info})
         }
-    }, [user])
+    }, [friend_info])
+
+    useEffect(()=>{
+        async function checkFollowing(){
+            try {
+                if(user && friend_info){
+                    const response = await axios.post('/api/frineds/check-following', { user_id: user?.id, friends_id: friend_info.id })
+                    if(response.data.length > 0){
+                        setFollowing(true)
+                    }
+                } else {
+                    console.log('user information undefined')
+                    return
+                }
+            } catch(error){
+                console.log(error)
+            }
+        }
+
+        checkFollowing()
+    }, [])
 
     function setFriendModalOpen(id: string){
         setFriendModal(id);
@@ -52,6 +77,38 @@ export default function FriendSideProfile({
         sliceDate.push(friendsData.slice(i, i + rows));
     }
 
+    async function follow(){
+        try{
+            if(friend_info && user){
+                const response = await axios.post('/api/friends/', { following_id: friend_info.id, followed_id: user.id})
+                if(response.status === 200){
+                    setFollowing(true)
+                }
+            } else {
+                console.log('user information undefined')
+                return
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+    
+    async function unfollow(){
+        try {
+            if(friend_info && user){
+                const response = await axios.post('/api/friends/unfollow', { user_id: user.id, following_id: friend_info.id})
+                if(response.status === 200){
+                    setFollowing(false)
+                } else {
+                    console.log('user information undefined')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
     return (
         <>
             <div className={styles.profile}>
@@ -73,7 +130,14 @@ export default function FriendSideProfile({
                     <p className={styles.introduce}>{friend?.introduce}</p>
                 </div>
                 <div className={styles.followButtonContainer}>
-                    <button className={styles.followButton}>Follow</button>
+                    {following 
+                    ? <button 
+                        className={styles.unfollowButton}
+                        onClick={unfollow}>Following
+                        </button>
+                    : <button 
+                        className={styles.followButton}
+                        onClick={follow}>Follow</button>}
                 </div>
                 <div className={styles.friendsContainer}>
                     <p>Friends</p>
