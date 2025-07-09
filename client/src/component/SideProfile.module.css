@@ -78,6 +78,8 @@
     color: #101010;
     border-radius: 5px;
     width: 180px;
+    justify-self: center;
+    margin-left: 10%;
 }
 
 .writePostButton {
@@ -89,6 +91,8 @@
     width: 180px;
     margin-top: 5%;
     align-self: center;
+    justify-self: center;
+    margin-left: 10%;
 }
 
 .friendsContainer {
@@ -112,5 +116,22 @@
     border-width: 0;
     background-color: white;
     font-size: small;
+    font-weight: bold;
+}
+
+.followButtonContainer {
+    justify-content: center;
+    margin-left: 10%;
+}
+
+.followButton{
+    height: 30px;
+    background-color: whitesmoke;
+    border-color: whitesmoke;
+    color: #101010;
+    border-radius: 5px;
+    width: 180px;
+    margin-top: 5%;
+    align-self: center;
     font-weight: bold;
 }

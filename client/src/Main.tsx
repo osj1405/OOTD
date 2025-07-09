@@ -4,25 +4,29 @@ import Card from './component/Card';
 import SideProfile from './component/SideProfile';
 import { useEffect, useState } from 'react';
 import WriteModal from './component/WriteModal';
-import feedImage from './assets/feed_image.jpg';
-import feedImage2 from './assets/feed_image2.jpg';
 import FeedModal from './component/FeedModal';
 import { useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
-import profile_image from './assets/profile_image.jpg'
+import { Feed } from './types/Feed';
 import { useNavigate } from 'react-router';
 
 function Main(){
     const [open, setOpen] = useState(false);
-    const [selectedCard, setSelectedCard] = useState(null);
+    const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
     const [searchText, setSearchText] = useState<string>('');
     const [searchUser, setSearchUser] = useState<User[]>([]);
+    const [feeds, setFeeds] = useState<Feed []>([])
     const user = useSelector((state: RootState) => state.auth.user);
     const navigate = useNavigate();
 
     useEffect(()=>{
+        readFeed()
+    }, [])
+
+    useEffect(()=>{
+        console.log(`search text: ${searchText}`)
         async function onSearch(){
             if(searchText === user?.userId){
                 return;
@@ -38,7 +42,8 @@ function Main(){
         }
         if(searchText !== '')
             onSearch()
-    },[searchText, user?.userId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[searchText])
 
     function setOpenModal(){
         setOpen(true);
@@ -60,7 +65,8 @@ function Main(){
         try {
             const response = await axios.post('/api/users/search', { searchText })
             if(response.status === 200){
-                const users = response.data.map((users: any)=>users)
+                const data = response.data.filter((users: { userId: any; })=>users.userId !== user?.userId)
+                const users = data.map((user: any)=>user)
                 setSearchUser(users)
             }
         } catch(error){
@@ -69,44 +75,29 @@ function Main(){
         }
     }
 
-    const feedData = [
-        {
-            id: "pumupcld",
-            thumnail: feedImage,
-            content: "더현대 다녀왔어용",
-            time: "14:02"
-        },
-        {
-            id: "raylist03",
-            thumnail: feedImage2,
-            content: "데이트~.~",
-            time: "14:02"
-        },
-        {
-            id: "yollkie",
-            thumnail: feedImage,
-            content: "리락쿠마",
-            time: "14:02"
-        },
-        {
-            id: "noidraiz",
-            thumnail: feedImage2,
-            content: "카페 왔당",
-            time: "14:02"
-        },
-        {
-            id: "chubuki",
-            thumnail: feedImage,
-            content: "귀여운 것들 천국!!",
-            time: "14:02"
+    async function readFeed(){
+    try{
+        const response = await axios.post('/api/feed/read')
+        if(response.status === 200){
+            const feeds = response.data.map((feeds: any) => feeds)
+            const sortedFeeds = feeds.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
+            console.log(`sorted Feeds: ${[...sortedFeeds]}`)
+            setFeeds(sortedFeeds)
+            console.log(`setFeed!`)
         }
-    ]
+        
+    } catch(error){
+        console.log(error)
+        console.log(`feed read fail`)
+    }
+}
 
     const sliceData = [];
     const rows = 4;
-    for(let i = 0; i < feedData.length; i += rows){
-        sliceData.push(feedData.slice(i, i + rows));
+    for(let i = 0; i < feeds.length; i += rows){
+        sliceData.push(feeds.slice(i, i + rows));
     }
+
 
     return(
         <>
@@ -131,10 +122,16 @@ function Main(){
                                 return (
                                 <div 
                                     className={styles.searchProfile}
-                                    onClick={()=>{navigate(`/friendpage/:${user.userId}`)}}
+                                    onClick={()=>{
+                                        setSearchUser([])
+                                        navigate(`/friendpage/${user.userId}`, {
+                                        state: {
+                                            data: user
+                                        }
+                                    })}}
                                     >
                                    <img 
-                                    src={profile_image} 
+                                    src={user.profile_image} 
                                     alt="friend profile"
                                     className={styles.searchProfileImage}></img>
                                    <p
@@ -151,7 +148,14 @@ function Main(){
                             <CardContainer key={i}>
                                 {row.map((feed, i) => {
                                     return (
-                                        <Card key={i} id={feed.id} thumnail={feed.thumnail} time={feed.time}
+                                        <Card 
+                                            key={i} 
+                                            id={feed.id} 
+                                            user_id={feed.user_id} 
+                                            userId={feed.userId ? feed.userId : "none"} 
+                                            profile_image={feed.profile_image}
+                                            thumnail={feed.thumnail} 
+                                            timestamp={feed.created_at}
                                             onClick={()=>handleCardClick(feed)}></Card>
                                     )
                                 })}

@@ -34,4 +34,29 @@ router.post('/upload', async(req, res) => {
     return res.status(500).json({message: 'DB feed 저장 오류'})
 })
 
+router.post('/read', async(_, res) => {
+    try {
+        const feeds = await sql `SELECT * FROM public.feed_with_user`;
+        res.status(200).json(feeds)
+        console.log(feeds)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({error: 'Database query failed'})
+    }
+})
+
+router.post('/readDay', async(req, res) => {
+    const { user_id, created_at, created_at_end } = req.body;
+
+    try {
+        const feeds = await sql `SELECT * FROM public.feed_with_user WHERE created_at >= ${created_at} AND created_at <= ${created_at_end} AND user_id = ${user_id} `
+
+        res.status(200).json(feeds)
+        console.log(`day feed: ${feeds}`)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({erorr: `Database query failed`})
+    }
+})
+
 export default router;
