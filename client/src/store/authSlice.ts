@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { Session } from "@supabase/supabase-js";
 import { User } from "../types/User";
 
@@ -10,7 +10,7 @@ interface AuthState {
 const initialState: AuthState = {
     supabaseSession: null,
     backendJWTToken: null,
-    user: null
+    user: null,
 }
 
 const authSlice = createSlice({
@@ -29,7 +29,7 @@ const authSlice = createSlice({
         },
         setUser(state, action){
             state.user = action.payload.user;
-        }
+        },
     }
 })
 

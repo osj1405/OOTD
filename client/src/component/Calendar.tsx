@@ -5,7 +5,7 @@ import Week from "./Week";
 import Day from "./Day";
 
 interface CalenderProps {
-    selectedDay: Date;
+    selectedDay?: Date;
     onSelectDay?: (day: Date) => void;
 }
 
@@ -98,7 +98,7 @@ export default function Calendar({
                                 anotherMonth={day.getMonth() + 1 !== month} 
                                 today={day.getFullYear() === today.getFullYear() && day.getMonth() === today.getMonth() && day.getDate() === today.getDate()}
                                 onClick={onSelectDay}  
-                                selected={selectedDay.getTime() === day.getTime()} 
+                                selected={selectedDay?.getTime() === day.getTime()} 
                                 ></Day>
                             )
                         })}

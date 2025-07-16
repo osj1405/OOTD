@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
 import FriendsWrap from "./FriendsWrap";
-import Friend from "./Friend";
+import { Friends }  from '../types/Friend'
 import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../App";
 import { logout } from "../store/authSlice";
 import { RootState } from "../store/rootStore";
+import axios from "axios";
+import { setFollower, setFollowing } from "../store/friendsSlice";
+import Friend from "./Friend";
 
 export default function SideProfile({
     setOpenModal = () => {},
@@ -19,8 +22,76 @@ export default function SideProfile({
     const params = useParams();
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user)
-
+    const followings = useSelector((state: RootState) => state.friends.followings)
+    const followers = useSelector((state: RootState) => state.friends.followers)
     const [friendModal, setFriendModal] = useState<string | null>(null);
+    const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
+    const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
+    const [currentList, setCurrentList] = useState("Following")
+    const [followList, setFollowList] = useState(true)
+
+    const followingRef = useRef("Following")
+    const followerRef = useRef("Follower")
+
+    useEffect(()=>{
+        console.log(`followings: ${followings}`)
+        console.log('effect')
+        const rows = 3;
+        const tempData = [];
+        if(followings){
+            for(let i = 0; i < followings.length; i += rows){
+                tempData.push(followings.slice(i, i + rows));
+            }
+        }
+        setSliceFollowingData(tempData)
+    }, [followings])
+
+    useEffect(()=>{
+        const rows = 3;
+        const tempData = [];
+        if(followers){
+            for(let i = 0; i < followers.length; i += rows){
+                tempData.push(followers.slice(i, i + rows));
+            }
+        }
+        setSliceFollowerData(tempData)
+    }, [followers])
+
+    
+    useEffect(()=>{
+        console.log(friendModal)
+    }, [friendModal])
+    
+
+    useEffect(()=>{
+        async function getFollowing(){
+            try {
+                const user_id = user?.id
+                const response = await axios.post('/api/friends/get_following', { user_id })
+                if(response.status === 200 && response.data.length > 0){
+                    dispatch(setFollowing(response.data))
+                }
+
+            } catch(error){
+                console.log(error)
+            }
+        }
+
+        async function getFollower(){
+            try {
+                const user_id = user?.id
+                const response = await axios.post('/api/friends/get_follower', { user_id })
+                if(response.status === 200 && response.data.length > 0){
+                    console.log(`followers data - ${response.data}`)
+                    dispatch(setFollower(response.data))
+                }
+            } catch(error){
+                console.log(error)
+            }
+        }
+        getFollowing()
+        getFollower()
+    }, [])
 
     async function handleLogout(){
         const { error } = await supabase.auth.signOut();
@@ -33,35 +104,12 @@ export default function SideProfile({
     }  
 
     function setFriendModalOpen(id: string){
+        console.log('enter')
         setFriendModal(id);
     }
     
     function setFriendModalClose(){
         setFriendModal(null);
-    }
-
-    const friendsData = [
-        {
-            id: "yollkie",
-            profileImage: FriendImage
-        }, 
-        {
-            id: "noidraiz",
-            profileImage: FriendImage
-        },
-        {
-            id: "raylist03",
-            profileImage: FriendImage
-        },
-        {
-            id: "chuboki",
-            profileImage: FriendImage
-        }
-    ]
-    const rows = 3;
-    const sliceDate = [];
-    for(let i = 0; i < friendsData.length; i += rows){
-        sliceDate.push(friendsData.slice(i, i + rows));
     }
 
     return (
@@ -95,9 +143,13 @@ export default function SideProfile({
                     onClick={setOpenModal}>포스트하기</button>
                 </>}
                 <div className={styles.friendsContainer}>
-                    <p>Friends</p>
-                    {
-                        sliceDate.map((row, i) => {
+                    <div className={styles.followListContainer}>
+                        <p onClick={()=>setFollowList(true)}>Following</p>
+                        <p onClick={()=>setFollowList(false)}>Follower</p>
+                    </div>
+                    {followList
+                    ? sliceFollowingData?.length > 0 ?
+                        sliceFollowingData.map((row, i) => {
                             return(
                                 <FriendsWrap key={i} >
                                     {row.map((friend, i) => {
@@ -105,21 +157,46 @@ export default function SideProfile({
                                         <>
                                             <div
                                                 className={styles.friendModalContainer}
-                                                onMouseEnter={() => setFriendModalOpen(friend.id)}
+                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
                                                     key={i} 
-                                                    id={friend.id} 
-                                                    friendProfileImage={friend.profileImage} 
+                                                    id={friend.userId} 
+                                                    friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.id && <FriendModal isOpen={friendModal} id={friend.id} profileImage={friend.profileImage} />}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
                                             </div>
                                         </>
                                         )
                                     })}
                                 </FriendsWrap>
                             )
-                        })
+                        }) : <p>친구를 팔로우하세요!</p>
+                     :
+                        sliceFollowerData?.length > 0 ?
+                        sliceFollowerData.map((row, i) => {
+                            return(
+                                <FriendsWrap key={i} >
+                                    {row.map((friend, i) => {
+                                        return(
+                                        <>
+                                            <div
+                                                className={styles.friendModalContainer}
+                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
+                                                onMouseLeave={setFriendModalClose}>
+                                                <Friend 
+                                                    key={i} 
+                                                    id={friend.userId} 
+                                                    friendProfileImage={friend.profile_image} 
+                                                    />
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                            </div>
+                                        </>
+                                        )
+                                    })}
+                                </FriendsWrap>
+                            )
+                        }) : <p className={styles.followMessage}>팔로워를 찾아보세요!</p>
                     }
                     <button 
                         className={styles.logout}

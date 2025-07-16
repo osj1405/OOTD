@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import authRouter from './routes/auth.js';
 import usersRouter from './routes/users.js';
 import feedRouter from './routes/feed.js';
+import followRouter from './routes/follow.js';
 
 const app = express()
 const port = 4000
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/feed', feedRouter)
+app.use('/api/friends', followRouter);
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);

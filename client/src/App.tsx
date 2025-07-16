@@ -10,7 +10,6 @@ import rootStore from './store/rootStore';
 
 export const supabase = createClient(process.env.REACT_APP_SUPABASE_URL!, process.env.REACT_APP_SUPABASE_ANON_KEY!)
 function App() {
-  const [session, settingSession] = useState<Session | null>(null)
   // const [users, setUsers] = useState<User[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +76,8 @@ function App() {
         backendJWTToken,
         user: { 
           ...backendUser}
-      })) 
+      }))
+
     } catch(error){
       console.log(error);
     }

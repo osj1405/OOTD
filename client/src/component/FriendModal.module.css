@@ -28,12 +28,26 @@
     margin-top: 3%;
 }
 
-.id {
-    margin-top: 3%;
+.rightContainer {
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
     margin-left: 5%;
+    text-align: left;
+}
+
+.id {
     font-size: large;
     font-weight: bold;
-    align-self: start;
+}
+
+.name {
+    font-size: small;
+}
+
+.introduce {
+    font-size: small;
+    font-weight: 300;
 }
 
 .followButton {
