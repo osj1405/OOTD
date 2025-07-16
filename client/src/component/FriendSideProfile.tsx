@@ -29,12 +29,13 @@ export default function FriendSideProfile({
         async function checkFollowing(){
             try {
                 if(user && friend_info){
-                    const response = await axios.post('/api/frineds/check-following', { user_id: user?.id, friends_id: friend_info.id })
+                    const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info.id })
                     if(response.data.length > 0){
                         setFollowing(true)
                     }
                 } else {
-                    console.log('user information undefined')
+                    console.log(`user information undefined: ${user}`)
+                    console.log(`friend information undefined: ${friend_info}`)
                     return
                 }
             } catch(error){
@@ -43,7 +44,7 @@ export default function FriendSideProfile({
         }
 
         checkFollowing()
-    }, [])
+    })
 
     function setFriendModalOpen(id: string){
         setFriendModal(id);

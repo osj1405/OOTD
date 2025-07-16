@@ -96,11 +96,11 @@
 }
 
 .friendsContainer {
+    width: 100%;
     font-weight: bold;
     font-size: large;
     display: flex;
     flex-direction: column;
-    text-align: start;
     margin-left: 10%;
 }
 
