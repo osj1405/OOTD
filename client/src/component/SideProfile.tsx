@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from './SideProfile.module.css';
 import { useNavigate, useParams } from "react-router";
 import FriendsWrap from "./FriendsWrap";
@@ -25,7 +25,13 @@ export default function SideProfile({
     const followings = useSelector((state: RootState) => state.friends.followings)
     const followers = useSelector((state: RootState) => state.friends.followers)
     const [friendModal, setFriendModal] = useState<string | null>(null);
-    const [sliceData, setSliceData] = useState<Friends [][]>([])
+    const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
+    const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
+    const [currentList, setCurrentList] = useState("Following")
+    const [followList, setFollowList] = useState(true)
+
+    const followingRef = useRef("Following")
+    const followerRef = useRef("Follower")
 
     useEffect(()=>{
         console.log(`followings: ${followings}`)
@@ -37,10 +43,20 @@ export default function SideProfile({
                 tempData.push(followings.slice(i, i + rows));
             }
         }
-        setSliceData(tempData)
+        setSliceFollowingData(tempData)
     }, [followings])
 
-    
+    useEffect(()=>{
+        const rows = 3;
+        const tempData = [];
+        if(followers){
+            for(let i = 0; i < followers.length; i += rows){
+                tempData.push(followers.slice(i, i + rows));
+            }
+        }
+        setSliceFollowerData(tempData)
+    }, [followers])
+
     
     useEffect(()=>{
         console.log(friendModal)
@@ -53,9 +69,6 @@ export default function SideProfile({
                 const user_id = user?.id
                 const response = await axios.post('/api/friends/get_following', { user_id })
                 if(response.status === 200 && response.data.length > 0){
-                    console.log("response data", response.data);
-                    console.log("dispatch payload", JSON.stringify(response.data));
-                    console.log(Array.isArray(response.data))
                     dispatch(setFollowing(response.data))
                 }
 
@@ -72,7 +85,6 @@ export default function SideProfile({
                     console.log(`followers data - ${response.data}`)
                     dispatch(setFollower(response.data))
                 }
-                console.log(`followers: ${followers}`)
             } catch(error){
                 console.log(error)
             }
@@ -131,9 +143,13 @@ export default function SideProfile({
                     onClick={setOpenModal}>포스트하기</button>
                 </>}
                 <div className={styles.friendsContainer}>
-                    <p>Friends</p>
-                    { sliceData?.length > 0 ?
-                        sliceData.map((row, i) => {
+                    <div className={styles.followListContainer}>
+                        <p onClick={()=>setFollowList(true)}>Following</p>
+                        <p onClick={()=>setFollowList(false)}>Follower</p>
+                    </div>
+                    {followList
+                    ? sliceFollowingData?.length > 0 ?
+                        sliceFollowingData.map((row, i) => {
                             return(
                                 <FriendsWrap key={i} >
                                     {row.map((friend, i) => {
@@ -156,6 +172,31 @@ export default function SideProfile({
                                 </FriendsWrap>
                             )
                         }) : <p>친구를 팔로우하세요!</p>
+                     :
+                        sliceFollowerData?.length > 0 ?
+                        sliceFollowerData.map((row, i) => {
+                            return(
+                                <FriendsWrap key={i} >
+                                    {row.map((friend, i) => {
+                                        return(
+                                        <>
+                                            <div
+                                                className={styles.friendModalContainer}
+                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
+                                                onMouseLeave={setFriendModalClose}>
+                                                <Friend 
+                                                    key={i} 
+                                                    id={friend.userId} 
+                                                    friendProfileImage={friend.profile_image} 
+                                                    />
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                            </div>
+                                        </>
+                                        )
+                                    })}
+                                </FriendsWrap>
+                            )
+                        }) : <p className={styles.followMessage}>팔로워를 찾아보세요!</p>
                     }
                     <button 
                         className={styles.logout}
