@@ -30,8 +30,8 @@ export default function SideProfile({
     const [currentList, setCurrentList] = useState("Following")
     const [followList, setFollowList] = useState(true)
 
-    const followingRef = useRef("Following")
-    const followerRef = useRef("Follower")
+    const barRef = useRef<HTMLDivElement>(null);
+   
 
     useEffect(()=>{
         console.log(`followings: ${followings}`)
@@ -112,6 +112,23 @@ export default function SideProfile({
         setFriendModal(null);
     }
 
+    function changePositionFollowerList(){
+        if(barRef.current){
+            barRef.current.style.transform = `translateX(95px)`;
+            // barRef.current.style.position = 'relative';
+            // barRef.current.style.right = '80px';
+
+            // barRef.current.style.position = 'absolute';
+        }
+    }
+
+    function changePositionFollowingList(){
+        if(barRef.current){
+            barRef.current.style.transform = `translateX(0px)`;
+            // barRef.current.style.position = 'relative';
+            // barRef.current.style.left = '80px';        
+        }
+    }
     return (
         <>
             <div className={styles.profile}>
@@ -144,9 +161,17 @@ export default function SideProfile({
                 </>}
                 <div className={styles.friendsContainer}>
                     <div className={styles.followListContainer}>
-                        <p onClick={()=>setFollowList(true)}>Following</p>
-                        <p onClick={()=>setFollowList(false)}>Follower</p>
+                        <p onClick={()=>{
+                            changePositionFollowingList()
+                            setFollowList(true)}}>Following</p>
+                        <p onClick={()=>{
+                            changePositionFollowerList()
+                            setFollowList(false)}}>Follower</p>
                     </div>
+                    <div 
+                        className={styles.followBar}
+                        ref={barRef}
+                        ></div>
                     {followList
                     ? sliceFollowingData?.length > 0 ?
                         sliceFollowingData.map((row, i) => {
