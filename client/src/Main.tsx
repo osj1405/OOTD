@@ -5,12 +5,13 @@ import SideProfile from './component/SideProfile';
 import { useEffect, useState } from 'react';
 import WriteModal from './component/WriteModal';
 import FeedModal from './component/FeedModal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
 import { Feed } from './types/Feed';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
+import { setFollower, setFollowing } from './store/friendsSlice';
 
 function Main(){
     const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ function Main(){
     const [searchUser, setSearchUser] = useState<User[]>([]);
     const [feeds, setFeeds] = useState<Feed []>([])
     const user = useSelector((state: RootState) => state.auth.user);
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     useEffect(()=>{
         readFeed()

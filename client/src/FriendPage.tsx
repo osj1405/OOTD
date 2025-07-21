@@ -98,7 +98,7 @@ export default function FriendPage() {
                             <button
                                 className={styles.goMainButton}
                                 onClick={()=>{
-                                    navigate("/main")
+                                    navigate("/main", {state: {refreshFriends: true} })
                                 }}>Main</button>
                         </div>
                         <Calendar

@@ -55,6 +55,7 @@ router.post('/get_follower', async(req, res)=>{
         if(data.length === 0){
             return res.status(200).json({message: '아직 팔로워가 없습니다.'})
         }
+        console.log([...data])
         return res.status(200).json(data)
     } catch(error){
         console.error(`팔로워 가져오기 오류 ${error}`)

@@ -2,8 +2,8 @@ import { Friends } from "../types/Friend";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface FriendsState {
-    followings: Friends[] | null,
-    followers: Friends[] | null,
+    followings: Friends[],
+    followers: Friends[]
 }
 
 const initialState: FriendsState = {
@@ -20,9 +20,13 @@ const friendsSlice = createSlice({
         },
         setFollower(state, action){
             state.followers = action.payload
-        }
+        },
+        resetFriends(state){
+            state.followings = []
+            state.followers = []
+        },
     }
 })
 
-export const { setFollowing, setFollower } = friendsSlice.actions;
+export const { setFollowing, setFollower, resetFriends } = friendsSlice.actions;
 export default friendsSlice.reducer;

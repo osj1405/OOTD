@@ -1,16 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import styles from './SideProfile.module.css';
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import FriendsWrap from "./FriendsWrap";
 import { Friends }  from '../types/Friend'
-import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { useDispatch, useSelector } from "react-redux";
 import { supabase } from "../App";
 import { logout } from "../store/authSlice";
 import { RootState } from "../store/rootStore";
 import axios from "axios";
-import { setFollower, setFollowing } from "../store/friendsSlice";
+import { resetFriends, setFollower, setFollowing } from "../store/friendsSlice";
 import Friend from "./Friend";
 
 export default function SideProfile({
@@ -19,6 +18,8 @@ export default function SideProfile({
     setOpenModal?: () => void,
 }){
     let navigate = useNavigate();
+    const location = useLocation();
+
     const params = useParams();
     const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.auth.user)
@@ -27,11 +28,25 @@ export default function SideProfile({
     const [friendModal, setFriendModal] = useState<string | null>(null);
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
-    const [currentList, setCurrentList] = useState("Following")
     const [followList, setFollowList] = useState(true)
 
     const barRef = useRef<HTMLDivElement>(null);
    
+    useEffect(() => {
+        if (user?.id) {
+            getFollowing();
+            getFollower();
+        }
+    }, [user?.id]);
+
+    useEffect(() => {
+        if (location.state?.refreshFriends) {
+            dispatch(setFollower([]));
+            dispatch(setFollowing([]));
+            getFollower();
+            getFollowing();
+        }
+    }, [location.state]);
 
     useEffect(()=>{
         console.log(`followings: ${followings}`)
@@ -63,42 +78,13 @@ export default function SideProfile({
     }, [friendModal])
     
 
-    useEffect(()=>{
-        async function getFollowing(){
-            try {
-                const user_id = user?.id
-                const response = await axios.post('/api/friends/get_following', { user_id })
-                if(response.status === 200 && response.data.length > 0){
-                    dispatch(setFollowing(response.data))
-                }
-
-            } catch(error){
-                console.log(error)
-            }
-        }
-
-        async function getFollower(){
-            try {
-                const user_id = user?.id
-                const response = await axios.post('/api/friends/get_follower', { user_id })
-                if(response.status === 200 && response.data.length > 0){
-                    console.log(`followers data - ${response.data}`)
-                    dispatch(setFollower(response.data))
-                }
-            } catch(error){
-                console.log(error)
-            }
-        }
-        getFollowing()
-        getFollower()
-    }, [])
-
     async function handleLogout(){
         const { error } = await supabase.auth.signOut();
         if(error){
             alert(`failed login ${error.message}`)
         } else {
         dispatch(logout())
+        dispatch(resetFriends())
         }
         console.log('logout')
     }  
@@ -115,20 +101,40 @@ export default function SideProfile({
     function changePositionFollowerList(){
         if(barRef.current){
             barRef.current.style.transform = `translateX(95px)`;
-            // barRef.current.style.position = 'relative';
-            // barRef.current.style.right = '80px';
-
-            // barRef.current.style.position = 'absolute';
         }
     }
 
     function changePositionFollowingList(){
         if(barRef.current){
             barRef.current.style.transform = `translateX(0px)`;
-            // barRef.current.style.position = 'relative';
-            // barRef.current.style.left = '80px';        
         }
     }
+
+    async function getFollowing(){
+        try {
+            const user_id = user?.id
+            const response = await axios.post('/api/friends/get_following', { user_id })
+            if(response.status === 200 && response.data.length > 0){
+                dispatch(setFollowing(response.data))
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    async function getFollower(){
+        try {
+            const user_id = user?.id
+            const response = await axios.post('/api/friends/get_follower', { user_id })
+            if(response.status === 200 && response.data.length > 0){
+                console.log(`followers data - ${response.data}`)
+                    dispatch(setFollower(response.data))
+                }
+            } catch(error){
+                console.log(error)
+            }
+        }
+
     return (
         <>
             <div className={styles.profile}>
