@@ -28,5 +28,5 @@ const friendsSlice = createSlice({
     }
 })
 
-export const { setFollowing, setFollower, resetFriends } = friendsSlice.actions;
+export const { setFollowing, setFollower, resetFriends} = friendsSlice.actions;
 export default friendsSlice.reducer;

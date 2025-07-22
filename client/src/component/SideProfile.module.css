@@ -125,6 +125,7 @@
 .followMessage {
     align-self: center;
     font-size: small;
+    min-height: 75px;
 }
 
 .friendModalContainer {

@@ -3,7 +3,8 @@ import styles from "./FriendModal.module.css";
 import { useNavigate } from "react-router";
 import { RootState } from "../store/rootStore";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { setFollowing } from "../store/friendsSlice";
 
 export default function FriendModal ({
     isOpen,
@@ -21,14 +22,31 @@ export default function FriendModal ({
     introduce?: string
 }){
     const navigate = useNavigate();
-    const user = useSelector((state: RootState) => state.auth.user)
-    const [following, setFollowing] = useState(true)
-    const followings = useSelector((state: RootState) => state.friends.followings)
     const dispatch = useDispatch()
+    const user = useSelector((state: RootState) => state.auth.user)
+    const [followings, setFollowings] = useState(true)
+
+    useEffect(()=>{
+        async function getFollowing(){
+        try {
+            const user_id = user?.id
+            const response = await axios.post('/api/friends/get_following', { user_id })
+            if(response.status === 200){
+                dispatch(setFollowing(response.data))
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+        getFollowing()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [followings])
 
     if(!isOpen)
         return null;
     
+
     async function follow(){
         try{
             if(id && user){
@@ -50,7 +68,7 @@ export default function FriendModal ({
             if(id && user){
                 const response = await axios.post('/api/friends/unfollow', { user_id: user.id, following_id: id})
                 if(response.status === 200){
-                    setFollowing(false)
+                    setFollowings(false)
                 } else {
                     console.log('user information undefined')
                     return
@@ -80,7 +98,7 @@ export default function FriendModal ({
                         <p className={styles.introduce}>{introduce}</p>
                     </div>
                      <div className={styles.followButtonContainer}>
-                        {following 
+                        {followings
                         ? <button 
                             className={styles.unfollowButton}
                             onClick={unfollow}

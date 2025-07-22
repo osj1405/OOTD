@@ -25,7 +25,7 @@ export default function SideProfile({
     const user = useSelector((state: RootState) => state.auth.user)
     const followings = useSelector((state: RootState) => state.friends.followings)
     const followers = useSelector((state: RootState) => state.friends.followers)
-    const [friendModal, setFriendModal] = useState<string | null>(null);
+    const [friendModal, setFriendModal] = useState<Friends | null>(null);
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
     const [followList, setFollowList] = useState(true)
@@ -37,6 +37,7 @@ export default function SideProfile({
             getFollowing();
             getFollower();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user?.id]);
 
     useEffect(() => {
@@ -46,6 +47,7 @@ export default function SideProfile({
             getFollower();
             getFollowing();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.state]);
 
     useEffect(()=>{
@@ -89,7 +91,7 @@ export default function SideProfile({
         console.log('logout')
     }  
 
-    function setFriendModalOpen(id: string){
+    function setFriendModalOpen(id: Friends){
         console.log('enter')
         setFriendModal(id);
     }
@@ -188,21 +190,22 @@ export default function SideProfile({
                                         <>
                                             <div
                                                 className={styles.friendModalContainer}
-                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
+                                                onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
                                                     key={i} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.following_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce}/>}
                                             </div>
                                         </>
                                         )
                                     })}
                                 </FriendsWrap>
+                                
                             )
-                        }) : <p>친구를 팔로우하세요!</p>
+                        }) : <p className={styles.followMessage}>친구를 팔로우하세요!</p>
                      :
                         sliceFollowerData?.length > 0 ?
                         sliceFollowerData.map((row, i) => {
@@ -213,14 +216,14 @@ export default function SideProfile({
                                         <>
                                             <div
                                                 className={styles.friendModalContainer}
-                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
+                                                onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
                                                     key={i} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.followed_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce}/>}
                                             </div>
                                         </>
                                         )

@@ -5,7 +5,7 @@ import Friend from "./Friend";
 import FriendModal from "./FriendModal";
 import { User } from "../types/User";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/rootStore";
 import { Friends } from "../types/Friend";
 
