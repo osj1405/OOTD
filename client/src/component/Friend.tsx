@@ -6,8 +6,8 @@ export default function Friend({
     // onMouseOver = () => {},
     // onMouseOut = () => {}
 }:{
-    id: string,
-    friendProfileImage: string,
+    id?: string,
+    friendProfileImage?: string,
     // onMouseOver: () => void,
     // onMouseOut: () => void
 }){

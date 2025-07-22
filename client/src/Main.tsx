@@ -19,7 +19,7 @@ function Main(){
     const [searchUser, setSearchUser] = useState<User[]>([]);
     const [feeds, setFeeds] = useState<Feed []>([])
     const user = useSelector((state: RootState) => state.auth.user);
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     useEffect(()=>{
         readFeed()

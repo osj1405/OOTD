@@ -11,7 +11,7 @@ import Card from './component/Card';
 import FeedModal from './component/FeedModal';
 
 export default function FriendPage() {
-    const [selectedDay, setSelectedDay] = useState(new Date());
+    const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [feeds, setFeeds] = useState<Feed []>([])
     const [friend, setFriend] = useState<User | null>(null)
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null)
@@ -25,7 +25,8 @@ export default function FriendPage() {
     }
 
     useEffect(()=>{
-        readDayFeed(new Date(selectedDay))
+        if(selectedDay)
+            readDayFeed(new Date(selectedDay))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay])
 
@@ -54,11 +55,13 @@ export default function FriendPage() {
 
    
     async function readDayFeed(day: Date){
+        if(!selectedDay)
+            return
         try{
-            const created_at = new Date(day.setHours(0, 0, 0, 0)).toISOString();
+            const created_at = new Date(day.setHours(0, 0, 0, 0)).toISOString()
             const created_at_end = new Date(day.setHours(23, 59, 59, 999)).toISOString()
             const user_id = friend?.id
-            const response = await axios.post('/api/feed/readDay', { user_id, created_at, created_at_end })
+            const response = await axios.post('/api/feed/readDay', { user_id: user_id, created_at: created_at, created_at_end: created_at_end })
             console.log(response.data)
             const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
             setFeeds(sortedFeeds)
@@ -88,18 +91,18 @@ export default function FriendPage() {
                 <p className={styles.title}>OOTD</p>
                 <div className={styles.contentContainer}>
                     <div className={styles.sidebar}>
-                        <FriendSideProfile user={friend}/>
+                        <FriendSideProfile friend_info={friend}/>
                     </div>
                     <div className={styles.content}>
                         <div className={styles.goMainContainer}>
                             <button
                                 className={styles.goMainButton}
                                 onClick={()=>{
-                                    navigate("/main")
+                                    navigate("/main", {state: {refreshFriends: true} })
                                 }}>Main</button>
                         </div>
                         <Calendar
-                            selectedDay={selectedDay}
+                            selectedDay={selectedDay? selectedDay : undefined}
                             onSelectDay={onSelectDay} />
                         {selectedDay && sliceData.length > 0
                             ? sliceData.map((row, i) => {

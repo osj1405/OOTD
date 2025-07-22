@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from './authSlice';
+import friendsReducer from './friendsSlice';
 
 const rootStore = configureStore({ 
     reducer: {
         auth: authReducer,
+        friends: friendsReducer
     },
 })
 

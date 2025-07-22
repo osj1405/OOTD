@@ -1,24 +1,74 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from './SideProfile.module.css';
 import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
-import FriendImage from '../assets/friends_profile_image.jpg';
 import FriendModal from "./FriendModal";
 import { User } from "../types/User";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/rootStore";
+import { Friends } from "../types/Friend";
 
 export default function FriendSideProfile({
-    user
+    friend_info = null
 }:{
-    user: User | null
+    friend_info: User | null
 }){
     const [friendModal, setFriendModal] = useState<string | null>(null);
-    const [friend, setFriend] = useState<User | null>(null)
+    // const [friend, setFriend] = useState<User | null>(null)
+    const user = useSelector((state: RootState)=> state.auth.user)
+    const [following, setFollowing] = useState(false)
+    const [follower, setFollower] = useState(false)
+    const [followings, setFollowings] = useState<Friends []>([])
+    const [followers, setFollowers] = useState<Friends []>([])
+    const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
+    const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
+    const [followList, setFollowList] = useState(true)
+
+    const barRef = useRef<HTMLDivElement>(null)
 
     useEffect(()=>{
-        if(user){
-            setFriend({...user})
+        checkFollowing()
+        checkFollower()
+        getFollowing()
+        getFollower()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [friend_info])
+
+    useEffect(()=>{
+        getFollower()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [following])
+    useEffect(()=>{
+        getFollowing()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [follower])
+
+
+    useEffect(()=>{
+        console.log(`followings: ${followings}`)
+        console.log('effect')
+        const rows = 3;
+        const tempData = [];
+        if(followings){
+            for(let i = 0; i < followings.length; i += rows){
+                tempData.push(followings.slice(i, i + rows));
+            }
         }
-    }, [user])
+        setSliceFollowingData(tempData)
+    }, [followings])
+
+    useEffect(()=>{
+        const rows = 3;
+        const tempData = [];
+        if(followers){
+            for(let i = 0; i < followers.length; i += rows){
+                tempData.push(followers.slice(i, i + rows));
+            }
+        }
+        setSliceFollowerData(tempData)
+    }, [followers])
+
 
     function setFriendModalOpen(id: string){
         setFriendModal(id);
@@ -28,57 +78,181 @@ export default function FriendSideProfile({
         setFriendModal(null);
     }
 
-    const friendsData = [
-        {
-            id: "yollkie",
-            profileImage: FriendImage
-        }, 
-        {
-            id: "noidraiz",
-            profileImage: FriendImage
-        },
-        {
-            id: "raylist03",
-            profileImage: FriendImage
-        },
-        {
-            id: "chuboki",
-            profileImage: FriendImage
+    async function checkFollowing(){
+        try {
+            if(user && friend_info){
+                const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info.id })
+                if(response.data.length > 0 && !following){
+                    setFollowing(true)
+                    }
+            } else {
+                console.log(`user information undefined: ${user}`)
+                console.log(`friend information undefined: ${friend_info}`)
+                setFollowing(false)
+                return
+            }
+        } catch(error){
+            console.log(error)
         }
-    ]
-    const rows = 3;
-    const sliceDate = [];
-    for(let i = 0; i < friendsData.length; i += rows){
-        sliceDate.push(friendsData.slice(i, i + rows));
+    }
+
+    async function checkFollower(){
+        try {
+            if(user && friend_info){
+                const response = await axios.post('/api/friends/check-follower', { user_id: user?.id, friends_id: friend_info.id})
+                if(response.status === 200){
+                    setFollower(true)
+                } else {
+                    setFollower(false)
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    
+    async function follow(){
+        try{
+            if(friend_info && user){
+                const response = await axios.post('/api/friends/', { following_id: friend_info.id, followed_id: user.id})
+                if(response.status === 200){
+                    setFollowing(true)
+                    getFollower()
+                }
+            } else {
+                console.log('user information undefined')
+                return
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+    
+    async function unfollow(){
+        try {
+            if(friend_info && user){
+                const response = await axios.post('/api/friends/unfollow', { user_id: user.id, following_id: friend_info.id})
+                if(response.status === 200){
+                    setFollowing(false)
+                    getFollower()
+                } else {
+                    console.log('user information undefined')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    async function getFollowing(){
+            try {
+                const user_id = friend_info?.id
+                const response = await axios.post('/api/friends/get_following', { user_id })
+                if(response.status === 200){
+                    setFollowings(response.data)
+                }
+            } catch(error){
+                console.log(error)
+            }
+    }
+
+    async function getFollower(){
+            try {
+                const user_id = friend_info?.id
+                const response = await axios.post('/api/friends/get_follower', { user_id })
+                if(response.status === 200){
+                    console.log(`followers data - ${response.data}`)
+                    setFollowers(response.data)
+                }
+            } catch(error){
+                console.log(error)
+            }
+    }
+
+    async function deleteFollower(){
+        try {
+            if(friend_info && user){
+                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user.id, follower_id: friend_info.id})
+                if(reponse.status === 200){
+                    setFollower(false)
+                } else {
+                    console.log('something wrong')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+
+    function changePositionFollowerList(){
+        if(barRef.current){
+            barRef.current.style.transform = `translateX(95px)`;
+        }
+    }
+
+    function changePositionFollowingList(){
+        if(barRef.current){
+            barRef.current.style.transform = `translateX(0px)`;
+        }
     }
 
     return (
         <>
             <div className={styles.profile}>
                 <div className={styles.profileImageContainer}>
-                    {friend?.profile_image
-                    ? <img src={friend.profile_image} alt="profile" className={styles.profileImage}/>
+                    {friend_info?.profile_image
+                    ? <img src={friend_info.profile_image} alt="profile" className={styles.profileImage}/>
                     : <div className={styles.profileImagePreview}></div>}
                 </div>                        
                 <p 
                     className={styles.id} 
-                    >{friend?.userId}</p>
+                    >{friend_info?.userId}</p>
                 <p 
                     className={styles.nickname}
-                    >{friend?.name}</p>
+                    >{friend_info?.name}</p>
                 <div className={styles.tagContainer}>
-                    <p className={styles.tag}>{friend?.tag}</p>
+                    <p className={styles.tag}>{friend_info?.tag}</p>
                 </div>
                 <div className={styles.introduceContainer}>
-                    <p className={styles.introduce}>{friend?.introduce}</p>
+                    <p className={styles.introduce}>{friend_info?.introduce}</p>
                 </div>
                 <div className={styles.followButtonContainer}>
-                    <button className={styles.followButton}>Follow</button>
+                    {following 
+                    ? <button 
+                        className={styles.unfollowButton}
+                        onClick={unfollow}>Following
+                        </button>
+                    : <button 
+                        className={styles.followButton}
+                        onClick={follow}>Follow</button>}
+                    {follower 
+                    && <button 
+                        className={styles.unfollowButton}
+                        onClick={deleteFollower}>팔로워 삭제</button>}
                 </div>
-                <div className={styles.friendsContainer}>
-                    <p>Friends</p>
-                    {
-                        sliceDate.map((row, i) => {
+               <div className={styles.friendsContainer}>
+                    <div className={styles.followListContainer}>
+                        <p onClick={()=>{
+                            changePositionFollowingList()
+                            setFollowList(true)
+                            }}>Following</p>
+                        <p onClick={()=>{
+                            changePositionFollowerList()
+                            setFollowList(false)
+                            }}>Follower</p>
+                    </div>
+                    <div 
+                        className={styles.followBar}
+                        ref={barRef}
+                        ></div>
+                    {followList
+                    ? sliceFollowingData?.length > 0 ?
+                        sliceFollowingData.map((row, i) => {
                             return(
                                 <FriendsWrap key={i} >
                                     {row.map((friend, i) => {
@@ -86,21 +260,46 @@ export default function FriendSideProfile({
                                         <>
                                             <div
                                                 className={styles.friendModalContainer}
-                                                onMouseEnter={() => setFriendModalOpen(friend.id)}
+                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
                                                     key={i} 
-                                                    id={friend.id} 
-                                                    friendProfileImage={friend.profileImage} 
+                                                    id={friend.userId} 
+                                                    friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.id && <FriendModal isOpen={friendModal} id={friend.id} profileImage={friend.profileImage} />}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={true}/>}
                                             </div>
                                         </>
                                         )
                                     })}
                                 </FriendsWrap>
                             )
-                        })
+                        }) : <p>친구를 팔로우하세요!</p>
+                     :
+                        sliceFollowerData?.length > 0 ?
+                        sliceFollowerData.map((row, i) => {
+                            return(
+                                <FriendsWrap key={i} >
+                                    {row.map((friend, i) => {
+                                        return(
+                                        <>
+                                            <div
+                                                className={styles.friendModalContainer}
+                                                onMouseEnter={() => setFriendModalOpen(friend.userId)}
+                                                onMouseLeave={setFriendModalClose}>
+                                                <Friend 
+                                                    key={i} 
+                                                    id={friend.userId} 
+                                                    friendProfileImage={friend.profile_image} 
+                                                    />
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={false}/>}
+                                            </div>
+                                        </>
+                                        )
+                                    })}
+                                </FriendsWrap>
+                            )
+                        }) : <p className={styles.followMessage}>팔로워를 찾아보세요!</p>
                     }
                 </div>
             </div>

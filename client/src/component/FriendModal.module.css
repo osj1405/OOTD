@@ -6,11 +6,13 @@
     top: 80%;
     left: 80%;
     width: 350px;
-    height: 220px;
+    height: 180px;
     border-radius: 5%;
-    background-color: #ffffff;
+    border-color: #101010;
+    border-width: 3px;
+    background-color:#ffffff;
     padding: 1%;
-    z-index: 100;
+    z-index: 10;
 }
 
 .profileImage {
@@ -28,19 +30,30 @@
     margin-top: 3%;
 }
 
-.id {
-    margin-top: 3%;
+.rightContainer {
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
     margin-left: 5%;
+    text-align: left;
+}
+
+.id {
     font-size: large;
     font-weight: bold;
-    align-self: start;
+}
+
+.name {
+    font-size: small;
+}
+
+.introduce {
+    font-size: small;
+    font-weight: 300;
 }
 
 .followButton {
-    position: absolute;
-    justify-self: end;
-    top: 80%;
-    left: 65%;
+    margin-top: 10px;
     height: 30px;
     width: 100px;
     font-weight: bold;
@@ -49,4 +62,17 @@
     background-color: #408DFE;
     border-radius: 5%;
     color: white;
+}
+
+.unfollowButton{
+    margin-top: 10px;
+    height: 30px;
+    width: 100px;
+    font-weight: bold;
+    font-size: small;
+    border-width: 0;
+    background-color: whitesmoke;
+    border-color: #bbbbbb;
+    border-radius: 5%;
+    color: #101010;
 }

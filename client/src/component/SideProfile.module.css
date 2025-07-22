@@ -96,12 +96,36 @@
 }
 
 .friendsContainer {
+    width: 100%;
     font-weight: bold;
     font-size: large;
     display: flex;
     flex-direction: column;
-    text-align: start;
+    align-items: flex-start;
     margin-left: 10%;
+}
+
+.followListContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 10%;
+    padding: 0;
+    margin: 0;
+}
+
+.followBar {
+    width: 80px;
+    height: 1.5px;
+    background-color: black;
+    margin-top: 1px;
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.followMessage {
+    align-self: center;
+    font-size: small;
+    min-height: 75px;
 }
 
 .friendModalContainer {
@@ -126,8 +150,20 @@
 
 .followButton{
     height: 30px;
+    background-color: #7da4ff;
+    border-color: #7da4ff;
+    color: white;
+    border-radius: 5px;
+    width: 180px;
+    margin-top: 5%;
+    align-self: center;
+    font-weight: bold;
+}
+
+.unfollowButton{
+    height: 30px;
     background-color: whitesmoke;
-    border-color: whitesmoke;
+    border-color: #bbbbbb;
     color: #101010;
     border-radius: 5px;
     width: 180px;
