@@ -18,6 +18,7 @@ export default function FriendSideProfile({
     // const [friend, setFriend] = useState<User | null>(null)
     const user = useSelector((state: RootState)=> state.auth.user)
     const [following, setFollowing] = useState(false)
+    const [follower, setFollower] = useState(false)
     const [followings, setFollowings] = useState<Friends []>([])
     const [followers, setFollowers] = useState<Friends []>([])
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
@@ -28,11 +29,19 @@ export default function FriendSideProfile({
 
     useEffect(()=>{
         checkFollowing()
+        checkFollower()
         getFollowing()
         getFollower()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [friend_info])
 
+    useEffect(()=>{
+        getFollower()
+    }, [following])
+    useEffect(()=>{
+        getFollowing()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [follower])
 
 
     useEffect(()=>{
@@ -69,23 +78,40 @@ export default function FriendSideProfile({
     }
 
     async function checkFollowing(){
-            try {
-                if(user && friend_info){
-                    const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info.id })
-                    if(response.data.length > 0 && !following){
-                        setFollowing(true)
+        try {
+            if(user && friend_info){
+                const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info.id })
+                if(response.data.length > 0 && !following){
+                    setFollowing(true)
                     }
+            } else {
+                console.log(`user information undefined: ${user}`)
+                console.log(`friend information undefined: ${friend_info}`)
+                setFollowing(false)
+                return
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    async function checkFollower(){
+        try {
+            if(user && friend_info){
+                const response = await axios.post('/api/friends/check-follower', { user_id: user?.id, friends_id: friend_info.id})
+                if(response.status === 200){
+                    setFollower(true)
                 } else {
-                    console.log(`user information undefined: ${user}`)
-                    console.log(`friend information undefined: ${friend_info}`)
-                    setFollowing(false)
+                    setFollower(false)
                     return
                 }
-            } catch(error){
-                console.log(error)
             }
+        } catch(error){
+            console.log(error)
         }
+    }
 
+    
     async function follow(){
         try{
             if(friend_info && user){
@@ -145,6 +171,22 @@ export default function FriendSideProfile({
             }
     }
 
+    async function deleteFollower(){
+        try {
+            if(friend_info && user){
+                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user.id, follower_id: friend_info.id})
+                if(reponse.status === 200){
+                    setFollower(false)
+                } else {
+                    console.log('something wrong')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
 
     function changePositionFollowerList(){
         if(barRef.current){
@@ -187,6 +229,10 @@ export default function FriendSideProfile({
                     : <button 
                         className={styles.followButton}
                         onClick={follow}>Follow</button>}
+                    {follower 
+                    && <button 
+                        className={styles.unfollowButton}
+                        onClick={deleteFollower}>팔로워 삭제</button>}
                 </div>
                <div className={styles.friendsContainer}>
                     <div className={styles.followListContainer}>
