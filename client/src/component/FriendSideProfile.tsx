@@ -37,6 +37,7 @@ export default function FriendSideProfile({
 
     useEffect(()=>{
         getFollower()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [following])
     useEffect(()=>{
         getFollowing()
