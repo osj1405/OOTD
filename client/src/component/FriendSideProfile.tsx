@@ -17,7 +17,6 @@ export default function FriendSideProfile({
     const [friendModal, setFriendModal] = useState<string | null>(null);
     // const [friend, setFriend] = useState<User | null>(null)
     const user = useSelector((state: RootState)=> state.auth.user)
-    const dispatch = useDispatch()
     const [following, setFollowing] = useState(false)
     const [followings, setFollowings] = useState<Friends []>([])
     const [followers, setFollowers] = useState<Friends []>([])

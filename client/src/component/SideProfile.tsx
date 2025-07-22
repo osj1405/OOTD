@@ -114,7 +114,7 @@ export default function SideProfile({
         try {
             const user_id = user?.id
             const response = await axios.post('/api/friends/get_following', { user_id })
-            if(response.status === 200 && response.data.length > 0){
+            if(response.status === 200){
                 dispatch(setFollowing(response.data))
             }
         } catch(error){
@@ -195,7 +195,7 @@ export default function SideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
                                             </div>
                                         </>
                                         )
@@ -220,7 +220,7 @@ export default function SideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
                                             </div>
                                         </>
                                         )

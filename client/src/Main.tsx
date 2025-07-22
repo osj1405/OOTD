@@ -5,13 +5,12 @@ import SideProfile from './component/SideProfile';
 import { useEffect, useState } from 'react';
 import WriteModal from './component/WriteModal';
 import FeedModal from './component/FeedModal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from './store/rootStore';
 import axios from 'axios';
 import { User } from './types/User';
 import { Feed } from './types/Feed';
-import { useNavigate, useLocation } from 'react-router';
-import { setFollower, setFollowing } from './store/friendsSlice';
+import { useNavigate } from 'react-router';
 
 function Main(){
     const [open, setOpen] = useState(false);

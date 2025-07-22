@@ -6,11 +6,13 @@
     top: 80%;
     left: 80%;
     width: 350px;
-    height: 220px;
+    height: 180px;
     border-radius: 5%;
-    background-color: #ffffff;
+    border-color: #101010;
+    border-width: 3px;
+    background-color:#ffffff;
     padding: 1%;
-    z-index: 100;
+    z-index: 10;
 }
 
 .profileImage {
@@ -63,4 +65,20 @@
     background-color: #408DFE;
     border-radius: 5%;
     color: white;
+}
+
+.unfollowButton{
+    position: absolute;
+    justify-self: end;
+    top: 60%;
+    left: 50%;
+    height: 30px;
+    width: 100px;
+    font-weight: bold;
+    font-size: small;
+    border-width: 0;
+    background-color: whitesmoke;
+    border-color: #bbbbbb;
+    border-radius: 5%;
+    color: #101010;
 }
