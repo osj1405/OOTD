@@ -53,10 +53,7 @@
 }
 
 .followButton {
-    position: absolute;
-    justify-self: end;
-    top: 80%;
-    left: 65%;
+    margin-top: 10px;
     height: 30px;
     width: 100px;
     font-weight: bold;
@@ -68,10 +65,7 @@
 }
 
 .unfollowButton{
-    position: absolute;
-    justify-self: end;
-    top: 60%;
-    left: 50%;
+    margin-top: 10px;
     height: 30px;
     width: 100px;
     font-weight: bold;

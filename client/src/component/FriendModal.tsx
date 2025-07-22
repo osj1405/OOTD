@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { RootState } from "../store/rootStore";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { setFollowing } from "../store/friendsSlice";
+import { setFollowing, setFollower } from "../store/friendsSlice";
 
 export default function FriendModal ({
     isOpen,
@@ -12,19 +12,22 @@ export default function FriendModal ({
     userId,
     profileImage,
     name,
-    introduce
+    introduce,
+    isFollowing
 }:{
     isOpen: string | null,
     id?: string,
     userId?: string,
     profileImage?: string,
     name?: string,
-    introduce?: string
+    introduce?: string,
+    isFollowing: boolean
 }){
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const user = useSelector((state: RootState) => state.auth.user)
     const [followings, setFollowings] = useState(true)
+    const [followed, setFollowed] = useState(true)
 
     useEffect(()=>{
         async function getFollowing(){
@@ -42,6 +45,22 @@ export default function FriendModal ({
         getFollowing()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [followings])
+
+    useEffect(()=>{
+        async function getFollower(){
+            try {
+                const user_id = user?.id
+                const response = await axios.post('/api/friends/get_follower', { user_id })
+                if(response.status === 200){
+                dispatch(setFollower(response.data))
+            }
+            } catch(error){
+
+            }
+        }
+        getFollower()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [followed])
 
     if(!isOpen)
         return null;
@@ -79,6 +98,22 @@ export default function FriendModal ({
         }
     }
 
+    async function deleteFollower(){
+        try {
+            if(id && user){
+                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user.id, follower_id: id})
+                if(reponse.status === 200){
+                    setFollowed(false)
+                } else {
+                    console.log('something wrong')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
     return(
         <>
             <div className={styles.container}>
@@ -90,24 +125,29 @@ export default function FriendModal ({
                         className={styles.profileImage}
                         onClick={()=>navigate(`/friendpage/${userId}`)}
                         /> : <div className={styles.profileImage}></div>}
-                    <div 
-                        className={styles.rightContainer}
-                        onClick={()=>navigate(`/friendpage/${userId}`)}>
-                        <p className={styles.id}>{userId}</p>
-                        <p className={styles.name}>{name}</p>
-                        <p className={styles.introduce}>{introduce}</p>
-                    </div>
-                     <div className={styles.followButtonContainer}>
-                        {followings
-                        ? <button 
-                            className={styles.unfollowButton}
-                            onClick={unfollow}
-                            >Following
-                            </button>
-                        : <button 
-                            className={styles.followButton}
-                            onClick={follow}
-                            >Follow</button>}
+                        <div
+                            className={styles.rightContainer}
+                            onClick={()=>navigate(`/friendpage/${userId}`)}>
+                            <p className={styles.id}>{userId}</p>
+                            <p className={styles.name}>{name}</p>
+                            <p className={styles.introduce}>{introduce}</p>
+                            <div className={styles.followButtonContainer}>
+                        </div>
+                        {isFollowing 
+                            ? followings
+                                ? <button 
+                                    className={styles.unfollowButton}
+                                    onClick={unfollow}
+                                    >Following
+                                    </button>
+                                : <button 
+                                    className={styles.followButton}
+                                    onClick={follow}
+                                    >Follow</button>
+                            : <button 
+                                className={styles.unfollowButton}
+                                onClick={deleteFollower}>팔로워 삭제</button>
+                        }
                     </div>
                 </div>
             </div>

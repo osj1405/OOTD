@@ -90,4 +90,16 @@ router.post('/unfollow', async(req, res) => {
     }
 })
 
+router.post('/deleteFollower', async(req, res) => {
+    const { user_id, follower_id } = req.body;
+    try {
+        const data = await sql`DELETE FROM public.friends WHERE following_id = ${user_id} AND followed_id = ${follower_id}`
+        console.log(`팔로워 삭제 성공`)
+        return res.status(200).json(data)
+    } catch(error){
+        console.error(`팔로워 삭제 에러 ${error}`)
+        return res.status(500).json({message: 'server error'})
+    }
+})
+
 export default router;

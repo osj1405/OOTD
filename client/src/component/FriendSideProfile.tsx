@@ -220,7 +220,7 @@ export default function FriendSideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={true}/>}
                                             </div>
                                         </>
                                         )
@@ -245,7 +245,7 @@ export default function FriendSideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={false}/>}
                                             </div>
                                         </>
                                         )
