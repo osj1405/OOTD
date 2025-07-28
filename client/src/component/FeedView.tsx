@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import styles from './FeedView.module.css'
 import LikeButton from "./LikeButton";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/rootStore";
 
 interface FeedProps {
     id: string;
@@ -31,7 +33,7 @@ export default function FeedView({
     const [likeCount, setLikeCount] = useState(like_count)
     const [isLiked, setIsLiked] = useState(false)
     const writeDate = new Date(created_at).toDateString()
-
+    const user = useSelector((state: RootState) => state.auth.user)
     useEffect(()=>{
             images.forEach(async (img)=>{
                 await getImageUrl(img)
@@ -85,6 +87,7 @@ export default function FeedView({
     
     async function checkLike(){
         try {
+            const user_id = user?.id
             const response = await axios.post('/api/feed/checkLike', { user_id: user_id, feed_id: id})
             if(response.status === 200){
                 setIsLiked(response.data.liked)
@@ -96,7 +99,7 @@ export default function FeedView({
 
     async function setLike(){
         if(isLiked) return;
-
+        const user_id = user?.id
         try {
             const response = await axios.post('/api/feed/like', {user_id: user_id, feed_id: id})
             if(response.status === 200){
@@ -111,6 +114,7 @@ export default function FeedView({
     async function cancelLike(){
         if(!isLiked) return;
         
+        const user_id = user?.id
         try {
             const response = await axios.post('/api/feed/unlike', { user_id: user_id, feed_id: id})
             if(response.status === 200){
