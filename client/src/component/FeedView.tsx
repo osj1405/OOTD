@@ -28,7 +28,7 @@ export default function FeedView({
 }: FeedProps){
     const [feedImages, setFeedImages] = useState<string[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [likeCount, setLikeCount] = useState<number>(like_count)
+    const [likeCount, setLikeCount] = useState(like_count)
     const [isLiked, setIsLiked] = useState(false)
     const writeDate = new Date(created_at).toDateString()
 
@@ -70,6 +70,19 @@ export default function FeedView({
     }
     
     
+    async function getLikeCount(){
+            try {
+                const response = await axios.post('/api/feed/getLike', { feed_id: id})
+                if(response.status === 200){
+                    console.log(`count: ${response.data}`)
+                    const count = response.data
+                    setLikeCount(count)
+                }
+            } catch(error){
+                console.log(error)
+            }
+    }
+    
     async function checkLike(){
         try {
             const response = await axios.post('/api/feed/checkLike', { user_id: user_id, feed_id: id})
@@ -87,7 +100,7 @@ export default function FeedView({
         try {
             const response = await axios.post('/api/feed/like', {user_id: user_id, feed_id: id})
             if(response.status === 200){
-                setLikeCount(likeCount + 1)
+                getLikeCount()
                 setIsLiked(true)
             }
         } catch(error){
@@ -101,7 +114,7 @@ export default function FeedView({
         try {
             const response = await axios.post('/api/feed/unlike', { user_id: user_id, feed_id: id})
             if(response.status === 200){
-                setLikeCount(likeCount - 1)
+                getLikeCount()
                 setIsLiked(false)
             }
         } catch(error){

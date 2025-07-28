@@ -80,6 +80,18 @@ router.post('/checkLike', async(req, res)=>{
     }
 })
 
+router.post('/getLike', async(req, res) => {
+    const { feed_id } = req.body;
+    try {
+        const likeCount = await sql`SELECT * FROM public."Feed_Like" WHERE feed_id = ${feed_id}`
+        console.log(likeCount.length)
+        res.status(200).json(likeCount.length)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
 router.post('/like', async(req, res)=>{
     const { user_id, feed_id} = req.body;
     try {
