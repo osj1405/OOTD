@@ -23,6 +23,22 @@
     width: 80px;
 }
 
+.feeds {
+    display: flex;
+    flex-direction: row;
+}
+
+.calendars {
+    display: flex;
+    flex-direction: column;
+}
+
+.allFeeds {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10%;
+    margin-right: 10%;
+}
 
 .Field {
     display: flex;

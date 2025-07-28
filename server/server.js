@@ -36,7 +36,6 @@ app.get('/api/users', async (_, res) => {
   try {
     const users = await sql`SELECT * FROM users`;
     res.json(users);
-    console.log(users);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database query failed' });

@@ -34,8 +34,7 @@ export default function FeedModal({
     }
     return (
         <>
-            <div 
-                className={styles.container}>
+            <div className={styles.container}>
                 <div className={styles.content}>
                     <p 
                         className={styles.cancel}
@@ -66,10 +65,6 @@ export default function FeedModal({
                             className={styles.carouselButton}
                             onClick={()=>goNext()}>&gt;</button>
                     </div>
-                    {/* <img 
-                        src={feedThumnailPath} 
-                        alt="style"
-                        className={styles.photo}/> */}
                     <div className={styles.information}>
                         <p className={styles.id}>{card.userId}</p>
                         <p className={styles.feedContent}>{card.content}</p>
