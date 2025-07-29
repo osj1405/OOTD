@@ -20,12 +20,24 @@
 .profile {
     align-self: flex-start;
     display: flex;
+    width: 100%;
     flex-direction: row;
     justify-items: center;
     align-items: center;
-    padding-top: 3%;
     margin-left: 3%;
     padding-right: 10px;
+    margin-top: 0;
+    padding: 0;
+}
+
+.likeCount {
+    display: flex;
+    align-items: center;
+    margin-left: 5%;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    gap: 10%;
 }
 
 .profileImage {
@@ -48,4 +60,5 @@
     font-weight: 300;
     font-size: small;
     margin-left: 5px;
+    margin-top: 0;
 }

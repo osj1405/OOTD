@@ -122,6 +122,7 @@ export default function MyPage(){
                                                         userId={feed.userId}
                                                         thumnail={feed.thumnail}
                                                         timestamp={feed.created_at}
+                                                        like_count={feed.like_count}
                                                         onClick={()=>handleCardClick(feed)}></Card>
                                                 )
                                             })}
