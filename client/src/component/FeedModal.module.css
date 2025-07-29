@@ -87,12 +87,22 @@
     flex-direction: column;
 }
 
+.likeZone {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10%;
+    padding: 0;
+    margin-bottom: 0;
+    gap: 10px;
+}
 
 .id {
     align-self: flex-start;
     margin-left: 10%;
     font-size: large;
     font-weight: bold;
+    margin-top: 0;
 }
 
 .feedContent {
