@@ -11,11 +11,13 @@ import { Feed } from "./types/Feed";
 import CardContainer from "./component/CardContainer";
 import Card from "./component/Card";
 import FeedModal from "./component/FeedModal";
+import FeedView from "./component/FeedView";
 
 export default function MyPage(){
     const [selectedDay, setSelectedDay] = useState(()=>{return new Date()});
     const [open, setOpen] = useState(false);
     const [feeds, setFeeds] = useState<Feed []>([])
+    const [allFeeds, setAllFeeds] = useState<Feed []>([])
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
 
     const user = useSelector((state: RootState) => state.auth.user)
@@ -26,6 +28,11 @@ export default function MyPage(){
         readDayFeed(new Date(selectedDay))
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay])
+
+    useEffect(() => {
+        readMyFeed()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const onSelectDay = (day: any) => {
         setSelectedDay(day)
@@ -41,6 +48,19 @@ export default function MyPage(){
     
     function closeCardModal(){
         setSelectedCard(null);
+    }
+
+    async function readMyFeed(){
+        try {
+            const user_id = user?.id
+            const response = await axios.post('/api/feed/readMyFeed', { user_id })
+            if(response.status === 200){
+                const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime())
+                setAllFeeds(sortedFeeds)
+            }
+        } catch(error){
+            console.log(error)
+        }
     }
 
     async function readDayFeed(day: Date){
@@ -84,29 +104,57 @@ export default function MyPage(){
                                 navigate("/main")
                             }}>Main</button>
                         </div>
-                        <Calendar 
-                            selectedDay={selectedDay}
-                            onSelectDay={onSelectDay}/>
-                        {selectedDay && sliceData.length > 0
-                        ? sliceData.map((row, i) => {
-                            return (
-                                <CardContainer key={i}>
-                                    {row.map((feed, index) =>{
+                        <div className={styles.feeds}>
+                            <div className={styles.calendars}>
+                                <Calendar 
+                                    selectedDay={selectedDay}
+                                    onSelectDay={onSelectDay}/>
+                                {selectedDay && sliceData.length > 0
+                                ? sliceData.map((row, i) => {
+                                    return (
+                                        <CardContainer key={i}>
+                                            {row.map((feed, index) =>{
+                                                return (
+                                                    <Card 
+                                                        key={index} 
+                                                        id={feed.id}
+                                                        user_id={feed.user_id}
+                                                        userId={feed.userId}
+                                                        thumnail={feed.thumnail}
+                                                        timestamp={feed.created_at}
+                                                        like_count={feed.like_count}
+                                                        onClick={()=>handleCardClick(feed)}></Card>
+                                                )
+                                            })}
+                                        </CardContainer>
+                                    )
+                                })
+                                : <div></div>}
+                            </div>
+                            <div className={styles.allFeeds}>
+                                {
+                                    allFeeds.map((feed, index) => {
+                                        console.log(`feeds: ${feed.userId}`)
                                         return (
-                                            <Card 
-                                                key={index} 
+                                            <>
+                                            <FeedView
+                                                key={index}
                                                 id={feed.id}
                                                 user_id={feed.user_id}
                                                 userId={feed.userId}
+                                                profile_image={feed.profile_image}
                                                 thumnail={feed.thumnail}
-                                                timestamp={feed.created_at}
-                                                onClick={()=>handleCardClick(feed)}></Card>
+                                                images={feed.images}
+                                                content={feed.content}
+                                                created_at={feed.created_at} 
+                                                like_count={feed.like_count}
+                                                />
+                                            </>
                                         )
-                                    })}
-                                </CardContainer>
-                            )
-                        })
-                        : <div></div>}
+                                    })
+                                }
+                            </div>
+                        </div>
                     </div>    
                 </div>
                 {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal}/>}

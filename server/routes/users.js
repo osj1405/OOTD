@@ -98,7 +98,6 @@ router.post('/getFriendProfile', async(req, res) => {
   if (!userId || typeof userId !== 'string') {
     return res.status(400).json({ error: '유효하지 않은 아이디입니다.' });
   }
-  console.log(`userId: ${userId}`)
   try {
     const user = await sql `SELECT * FROM public.users WHERE "userId" = ${userId}`
 
@@ -106,7 +105,6 @@ router.post('/getFriendProfile', async(req, res) => {
       return res.status(200).json({message: '사용자가 존재하지 않습니다.'})
     }
     else {
-      console.log(`friend: ${user[0]}`)
       return res.status(200).json(user[0]);
     }
 

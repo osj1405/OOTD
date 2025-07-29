@@ -1,59 +1,67 @@
-import styles from "./FeedModal.module.css";
-import { useState, useEffect } from "react";
-import { Feed } from "../types/Feed";
+import { useEffect, useState } from "react";
+import styles from './FeedView.module.css'
 import LikeButton from "./LikeButton";
+import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/rootStore";
-import axios from "axios";
-export default function FeedModal({
-    card,
-    onClose = () => {}
-}:{
-    card: Feed,
-    onClose: () => void
-}){
-    const [images, setImages] = useState<string[]>([])
+
+interface FeedProps {
+    id: string;
+    user_id: string;
+    userId?: string;
+    profile_image?: string;
+    thumnail: string;
+    images: string[];
+    content?: string;
+    created_at: string;
+    like_count: number;
+}
+
+export default function FeedView({
+    id,
+    user_id,
+    userId,
+    profile_image,
+    thumnail,
+    images,
+    content,
+    like_count,
+    created_at
+}: FeedProps){
+    const [feedImages, setFeedImages] = useState<string[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [likeCount, setLikeCount] = useState(card.like_count)
+    const [likeCount, setLikeCount] = useState(like_count)
     const [isLiked, setIsLiked] = useState(false)
-    const writeDate = new Date(card.created_at).toDateString()
+    const writeDate = new Date(created_at).toDateString()
     const user = useSelector((state: RootState) => state.auth.user)
+    useEffect(()=>{
+            images.forEach(async (img)=>{
+                await getImageUrl(img)
+            })
+    },[images])
     
     useEffect(()=>{
-        card.images.forEach(async (img)=>{
-            await getImageUrl(img)
-        })
-    }, [card.images])
+        console.log(feedImages)
+    }, [feedImages])
 
     useEffect(()=>{
         checkLike()
     }, [])
 
+
     function getImageUrl(image: string){
-        const fullUrl  = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${card.user_id}/${card.id}/${image}`
-        console.log(`image url: ${fullUrl}`)
-        setImages(prev=>[...prev, fullUrl])
-    }
-    
-    function goNext(){
-        setCurrentIndex(prev => (prev + 1) % images.length)
+        const fullUrl  = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${user_id}/${id}/${image}`
+        setFeedImages(prev=>[...prev, fullUrl])
     }
 
     function goPrev(){
         setCurrentIndex(prev => (prev - 1 + images.length) % images.length)
     }
 
-    async function checkLike(){
-        try {
-            const user_id = user?.id
-            const response = await axios.post('/api/feed/checkLike', { user_id: user_id, feed_id: card.id})
-            if(response.status === 200){
-                setIsLiked(response.data.liked)
-            }
-        } catch(error){
-            console.log(error)
-        }
+    function goNext(){
+        setCurrentIndex(prev => (prev + 1) % images.length)
     }
+
 
     function clickLike(){
         if(!isLiked){
@@ -62,10 +70,11 @@ export default function FeedModal({
             cancelLike()
         }
     }
-
+    
+    
     async function getLikeCount(){
             try {
-                const response = await axios.post('/api/feed/getLike', { feed_id: card.id})
+                const response = await axios.post('/api/feed/getLike', { feed_id: id})
                 if(response.status === 200){
                     console.log(`count: ${response.data}`)
                     const count = response.data
@@ -75,12 +84,24 @@ export default function FeedModal({
                 console.log(error)
             }
     }
+    
+    async function checkLike(){
+        try {
+            const user_id = user?.id
+            const response = await axios.post('/api/feed/checkLike', { user_id: user_id, feed_id: id})
+            if(response.status === 200){
+                setIsLiked(response.data.liked)
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
 
     async function setLike(){
         if(isLiked) return;
         const user_id = user?.id
         try {
-            const response = await axios.post('/api/feed/like', {user_id: user_id, feed_id: card.id})
+            const response = await axios.post('/api/feed/like', {user_id: user_id, feed_id: id})
             if(response.status === 200){
                 getLikeCount()
                 setIsLiked(true)
@@ -95,7 +116,7 @@ export default function FeedModal({
         
         const user_id = user?.id
         try {
-            const response = await axios.post('/api/feed/unlike', { user_id: user_id, feed_id: card.id})
+            const response = await axios.post('/api/feed/unlike', { user_id: user_id, feed_id: id})
             if(response.status === 200){
                 getLikeCount()
                 setIsLiked(false)
@@ -109,17 +130,12 @@ export default function FeedModal({
         <>
             <div className={styles.container}>
                 <div className={styles.content}>
-                    <p 
-                        className={styles.cancel}
-                        onClick={onClose}
-                        >X</p>
-                    <p className={styles.title}>OOTD</p>
                     <div className={styles.carouselContainer}>
                         <button 
                             className={styles.carouselButton}
                             onClick={()=>goPrev()}>&lt;</button>
                         <div className={styles.imagesContainer}>
-                            {images.map((img, index)=>{
+                            {feedImages.map((img, index)=>{
                                 console.log(`image: ${index}`)
                                 console.log(`image url: ${img}`)
                                 const styleList = [`${styles.image}`]
@@ -143,12 +159,12 @@ export default function FeedModal({
                             <LikeButton isLiked={isLiked} width="20px" height="20px" onClick={clickLike}/>
                             <p>{likeCount}</p>
                         </div>
-                        <p className={styles.id}>{card.userId}</p>
-                        <p className={styles.feedContent}>{card.content}</p>
+                        <p className={styles.id}>{userId ? userId : "undefined"}</p>
+                        <p className={styles.feedContent}>{content}</p>
                         <p className={styles.time}>{writeDate}</p>
                     </div>
-                </div>                
-            </div>
+                </div>
+             </div>
         </>
-    );
+    )
 }

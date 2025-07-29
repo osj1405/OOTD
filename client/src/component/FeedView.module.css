@@ -1,43 +1,35 @@
 .container {
-    position: fixed;
-    display: flex;
+    max-width: 550px;
+    min-height: 500px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    align-items: center;
+    margin-bottom: 5%;
     width: 100%;
     height: 100%;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-}
-
-.cancel {
-    justify-self: flex-end;
-    margin-right: 5%;
-    font-size: large;
-    font-weight: bolder;
-    padding: 0;
-    margin-top: 2%;
-}
-
-.title {
-    margin-top: 0;
-    font-size: x-large;
-    font-weight: bold;
+    margin-left: 0;
+    padding: 10px;
 }
 
 .content {
     background-color: #f5f5f5;
+    width: 520px;
     border-width: 1px;
     border-radius: 5px;
-    padding: 10px
+    padding: 10px;
 }
 
 .carouselContainer {
     display: flex;
-    margin-top: 5%;
+    padding: 0;
+    flex-direction: row;
+    margin-top: 10px;
 }
 
 .carouselButton {
     border-width: 0px;
-    height: 100px;
+    width: 20px;
+    height: 30px;
     font-size: x-large;
     color: #353535;
     background-color: #f5f5f5;
@@ -49,13 +41,14 @@
     display: flex;
     position: relative;
     justify-content: center;
-    width: 600px;
-    height: 400px;
+    justify-self: center;
+    width: 480px;
+    height: 320px;
 }
 
 .image {
-    width: 300px;
-    height: 400px;
+    width: 240px;
+    height: 320px;
     position: absolute;
     object-fit: cover;
     overflow: hidden;
@@ -85,21 +78,15 @@
 .information {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    align-self: flex-start;
+    align-items: flex-start;
+    margin-top: 0;
 }
 
-.likeZone {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-left: 10%;
-    padding: 0;
-    margin-bottom: 0;
-    gap: 10px;
-}
 
 .id {
-    align-self: flex-start;
-    margin-left: 10%;
+    margin-left: 20px;
     font-size: large;
     font-weight: bold;
     margin-top: 0;
@@ -107,16 +94,27 @@
 
 .feedContent {
     align-self: flex-start;
-    margin-left: 10%;
+    margin-left: 20px;
     font-size: medium;
     font-weight: 500;
     margin-top: 0;
 }
 
 .time {
-    align-self: flex-start;
-    margin-left: 10%;
-    font-size: smaller;
+    align-self: flex-end;
+    margin-right: 20px;
+    font-size: x-small;
     font-weight: 400;
     padding-bottom: 2%;
+    margin-top: 0;
+}
+
+.likeZone {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 20px;
+    padding: 0;
+    margin-bottom: 0;
+    gap: 10px;
 }

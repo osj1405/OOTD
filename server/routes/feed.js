@@ -38,7 +38,6 @@ router.post('/read', async(_, res) => {
     try {
         const feeds = await sql `SELECT * FROM public.feed_with_user`;
         res.status(200).json(feeds)
-        console.log(feeds)
     } catch(error){
         console.error(error)
         res.status(500).json({error: 'Database query failed'})
@@ -49,12 +48,86 @@ router.post('/readDay', async(req, res) => {
     const { user_id, created_at, created_at_end } = req.body;
     try {
         const feeds = await sql `SELECT * FROM public.feed_with_user WHERE created_at BETWEEN ${created_at} AND ${created_at_end} AND user_id = ${user_id}`
-
         res.status(200).json(feeds)
-        console.log(`day feed: ${feeds}`)
     } catch(error){
         console.error(error)
         res.status(500).json({error: `Database query failed`})
+    }
+})
+
+router.post('/readMyFeed', async(req, res) => {
+    const { user_id } = req.body;
+    try {
+        const myFeeds = await sql `SELECT * FROM public.feed_with_user WHERE user_id = ${user_id}`
+        res.status(200).json(myFeeds)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
+router.post('/checkLike', async(req, res)=>{
+    const { user_id, feed_id } = req.body;
+    try {
+        const isLiked = await sql`SELECT * FROM public."Feed_Like" WHERE feed_id = ${feed_id} AND like_id = ${user_id}`
+
+        const liked = isLiked.length > 0
+
+        res.status(200).json({liked})
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
+router.post('/getLike', async(req, res) => {
+    const { feed_id } = req.body;
+    try {
+        const likeCount = await sql`SELECT * FROM public."Feed_Like" WHERE feed_id = ${feed_id}`
+        console.log(likeCount.length)
+        res.status(200).json(likeCount.length)
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
+router.post('/like', async(req, res)=>{
+    const { user_id, feed_id} = req.body;
+    try {
+        const data = await sql`
+        INSERT INTO public."Feed_Like" (feed_id, like_id)
+        VALUES (${feed_id} , ${user_id})
+        RETURNING *;`
+
+        if(data.length === 0){
+            console.log('like fail')
+            return res.status(400).json({ success: false, message: '좋아요 실패' });
+        }
+        console.log('like success')
+        return res.status(200).json({success: true})
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
+router.post('/unlike', async(req, res) => {
+    const { user_id, feed_id } = req.body
+    
+    try{
+        const data = await sql`DELETE FROM public."Feed_Like" WHERE feed_id = ${feed_id} AND like_id = ${user_id}`
+        
+        if(data.length > 0){
+            console.log('unlike fail')
+            return res.status(400).json({success: false, message: '좋아요 취소 실패'})
+        }
+
+        console.log('unlike success')
+        return res.status(200).json({ success: true });
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
     }
 })
 

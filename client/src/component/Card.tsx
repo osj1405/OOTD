@@ -1,4 +1,5 @@
 import styles from './Card.module.css';
+import LikeButton from './LikeButton';
 interface CardProps {
     id: string,
     user_id: string,
@@ -6,6 +7,7 @@ interface CardProps {
     userId?: string,
     thumnail: string,
     timestamp: string,
+    like_count: number,
     onClick: () => void
 }
 
@@ -16,14 +18,12 @@ export default function Card({
     profile_image,
     thumnail,
     timestamp,
+    like_count,
     onClick = () => {}
 }: CardProps){
-
     const feedThumnailPath = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${user_id}/${id}/${thumnail}`
 
     const writeDate = new Date(timestamp).toDateString()
-
-    
     
     return(
         <>
@@ -35,6 +35,10 @@ export default function Card({
                 <div className={styles.profile}>
                    {profile_image && <img src={profile_image} className={styles.profileImage} alt="profile"/>}
                     <p className={styles.id}>{userId}</p>
+                    <div className={styles.likeCount}>
+                        <LikeButton isLiked={true} onClick={()=>{}} width='10px' height='10px'/>
+                        <p>{like_count}</p>
+                    </div>
                 </div>
                 
                 <p className={styles.date}>{writeDate}</p>

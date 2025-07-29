@@ -9,10 +9,12 @@ import { Feed } from './types/Feed';
 import CardContainer from './component/CardContainer';
 import Card from './component/Card';
 import FeedModal from './component/FeedModal';
+import FeedView from './component/FeedView';
 
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [feeds, setFeeds] = useState<Feed []>([])
+    const [allFeeds, setAllFeeds] = useState<Feed []>([])
     const [friend, setFriend] = useState<User | null>(null)
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null)
 
@@ -51,6 +53,10 @@ export default function FriendPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    useEffect(()=>{
+        readFriendsFeed()
+    }, [friend])
+
     const navigate = useNavigate();
 
    
@@ -67,6 +73,19 @@ export default function FriendPage() {
             setFeeds(sortedFeeds)
         } catch(error){
             console.error(error)
+        }
+    }
+
+    async function readFriendsFeed(){
+        try {
+            const user_id = friend?.id
+            const response = await axios.post('/api/feed/readMyFeed', { user_id })
+            if(response.status === 200){
+                const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime())
+                setAllFeeds(sortedFeeds)
+            }
+        } catch(error){
+            console.log(error)
         }
     }
 
@@ -101,29 +120,56 @@ export default function FriendPage() {
                                     navigate("/main", {state: {refreshFriends: true} })
                                 }}>Main</button>
                         </div>
-                        <Calendar
-                            selectedDay={selectedDay? selectedDay : undefined}
-                            onSelectDay={onSelectDay} />
-                        {selectedDay && sliceData.length > 0
-                            ? sliceData.map((row, i) => {
-                                return (
-                                    <CardContainer key={i}>
-                                        {row.map((feed, index) =>{
-                                            return (
-                                                <Card 
-                                                    key={index} 
+                        <div className={styles.feeds}>
+                            <div className={styles.calendars}>
+                                <Calendar
+                                    selectedDay={selectedDay? selectedDay : undefined}
+                                    onSelectDay={onSelectDay} />
+                                {selectedDay && sliceData.length > 0
+                                    ? sliceData.map((row, i) => {
+                                        return (
+                                            <CardContainer key={i}>
+                                                {row.map((feed, index) =>{
+                                                    return (
+                                                        <Card 
+                                                            key={index} 
+                                                            id={feed.id}
+                                                            user_id={feed.user_id}
+                                                            userId={feed.userId}
+                                                            thumnail={feed.thumnail}
+                                                            timestamp={feed.created_at}
+                                                            like_count={feed.like_count}
+                                                            onClick={()=>handleCardClick(feed)}></Card>
+                                                    )
+                                                })}
+                                            </CardContainer>
+                                        )
+                                    })
+                                    : <div></div>}
+                            </div>
+                            <div className={styles.allFeeds}>
+                                {
+                                    allFeeds.map((feed, index) => {
+                                        return(
+                                            <>
+                                                <FeedView
+                                                    key={index}
                                                     id={feed.id}
                                                     user_id={feed.user_id}
                                                     userId={feed.userId}
+                                                    profile_image={feed.profile_image}
                                                     thumnail={feed.thumnail}
-                                                    timestamp={feed.created_at}
-                                                    onClick={()=>handleCardClick(feed)}></Card>
-                                            )
-                                        })}
-                                    </CardContainer>
-                                )
-                            })
-                            : <div></div>}
+                                                    images={feed.images}
+                                                    content={feed.content}
+                                                    created_at={feed.created_at}
+                                                    like_count={feed.like_count}
+                                                />
+                                            </>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal}/>}
