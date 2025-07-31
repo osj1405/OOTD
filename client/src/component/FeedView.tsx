@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import styles from './FeedView.module.css'
 import LikeButton from "./LikeButton";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/rootStore";
+import useLike from "../hooks/useLike";
 
 interface FeedProps {
     id: string;
-    user_id: string;
+    user_id: number;
     userId?: string;
     profile_image?: string;
     thumnail: string;
@@ -30,10 +28,9 @@ export default function FeedView({
 }: FeedProps){
     const [feedImages, setFeedImages] = useState<string[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
-    const [likeCount, setLikeCount] = useState(like_count)
-    const [isLiked, setIsLiked] = useState(false)
     const writeDate = new Date(created_at).toDateString()
-    const user = useSelector((state: RootState) => state.auth.user)
+    const { isLiked, likeCount, toggleLike} = useLike(user_id, id)
+    
     useEffect(()=>{
             images.forEach(async (img)=>{
                 await getImageUrl(img)
@@ -44,9 +41,6 @@ export default function FeedView({
         console.log(feedImages)
     }, [feedImages])
 
-    useEffect(()=>{
-        checkLike()
-    }, [])
 
 
     function getImageUrl(image: string){
@@ -60,70 +54,6 @@ export default function FeedView({
 
     function goNext(){
         setCurrentIndex(prev => (prev + 1) % images.length)
-    }
-
-
-    function clickLike(){
-        if(!isLiked){
-            setLike()
-        } else {
-            cancelLike()
-        }
-    }
-    
-    
-    async function getLikeCount(){
-            try {
-                const response = await axios.post('/api/feed/getLike', { feed_id: id})
-                if(response.status === 200){
-                    console.log(`count: ${response.data}`)
-                    const count = response.data
-                    setLikeCount(count)
-                }
-            } catch(error){
-                console.log(error)
-            }
-    }
-    
-    async function checkLike(){
-        try {
-            const user_id = user?.id
-            const response = await axios.post('/api/feed/checkLike', { user_id: user_id, feed_id: id})
-            if(response.status === 200){
-                setIsLiked(response.data.liked)
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function setLike(){
-        if(isLiked) return;
-        const user_id = user?.id
-        try {
-            const response = await axios.post('/api/feed/like', {user_id: user_id, feed_id: id})
-            if(response.status === 200){
-                getLikeCount()
-                setIsLiked(true)
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function cancelLike(){
-        if(!isLiked) return;
-        
-        const user_id = user?.id
-        try {
-            const response = await axios.post('/api/feed/unlike', { user_id: user_id, feed_id: id})
-            if(response.status === 200){
-                getLikeCount()
-                setIsLiked(false)
-            }
-        } catch(error){
-            console.log(error)
-        }
     }
 
     return (
@@ -156,7 +86,7 @@ export default function FeedView({
                     </div>
                     <div className={styles.information}>
                         <div className={styles.likeZone}>
-                            <LikeButton isLiked={isLiked} width="20px" height="20px" onClick={clickLike}/>
+                            <LikeButton isLiked={isLiked} width="20px" height="20px" onClick={toggleLike}/>
                             <p>{likeCount}</p>
                         </div>
                         <p className={styles.id}>{userId ? userId : "undefined"}</p>

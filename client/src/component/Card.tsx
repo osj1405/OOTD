@@ -2,7 +2,7 @@ import styles from './Card.module.css';
 import LikeButton from './LikeButton';
 interface CardProps {
     id: string,
-    user_id: string,
+    user_id: number,
     profile_image?: string,
     userId?: string,
     thumnail: string,
