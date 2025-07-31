@@ -12,27 +12,19 @@ import CardContainer from "./component/CardContainer";
 import Card from "./component/Card";
 import FeedModal from "./component/FeedModal";
 import FeedView from "./component/FeedView";
+import useDayFeed from "./hooks/useDayFeed";
+import useUserFeed from "./hooks/useUserFeed";
 
 export default function MyPage(){
     const [selectedDay, setSelectedDay] = useState(()=>{return new Date()});
     const [open, setOpen] = useState(false);
-    const [feeds, setFeeds] = useState<Feed []>([])
-    const [allFeeds, setAllFeeds] = useState<Feed []>([])
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
 
     const user = useSelector((state: RootState) => state.auth.user)
     
+    const feeds = useDayFeed(user?.id, selectedDay)
+    const allFeeds = useUserFeed(user?.id)
     let navigate = useNavigate();
-
-    useEffect(()=>{
-        readDayFeed(new Date(selectedDay))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDay])
-
-    useEffect(() => {
-        readMyFeed()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     const onSelectDay = (day: any) => {
         setSelectedDay(day)
@@ -50,32 +42,6 @@ export default function MyPage(){
         setSelectedCard(null);
     }
 
-    async function readMyFeed(){
-        try {
-            const user_id = user?.id
-            const response = await axios.post('/api/feed/readMyFeed', { user_id })
-            if(response.status === 200){
-                const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime())
-                setAllFeeds(sortedFeeds)
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function readDayFeed(day: Date){
-        try{
-            const created_at = new Date(day.setHours(0, 0, 0, 0)).toISOString();
-            const created_at_end = new Date(day.setHours(23, 59, 59, 999)).toISOString()
-            const user_id = user?.id
-            const response = await axios.post('/api/feed/readDay', { user_id, created_at, created_at_end })
-            console.log(response.data)
-            const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
-            setFeeds(sortedFeeds)
-        } catch(error){
-            console.error(error)
-        }
-    }
 
     function handleCardClick(cardData: any){
         setSelectedCard(cardData)
