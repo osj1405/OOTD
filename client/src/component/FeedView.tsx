@@ -4,7 +4,7 @@ import LikeButton from "./LikeButton";
 import useLike from "../hooks/useLike";
 
 interface FeedProps {
-    id: string;
+    id: number;
     user_id: number;
     userId?: string;
     profile_image?: string;

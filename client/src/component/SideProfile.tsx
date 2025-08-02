@@ -29,6 +29,7 @@ export default function SideProfile({
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
     const [followList, setFollowList] = useState(true)
+    // const { followings, followers } = useGetFollow(user?.id)
 
     const barRef = useRef<HTMLDivElement>(null);
    
@@ -74,11 +75,6 @@ export default function SideProfile({
         setSliceFollowerData(tempData)
     }, [followers])
 
-    
-    useEffect(()=>{
-        console.log(friendModal)
-    }, [friendModal])
-    
 
     async function handleLogout(){
         const { error } = await supabase.auth.signOut();
@@ -197,7 +193,7 @@ export default function SideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.following_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowing={true}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.following_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowingList={true}/>}
                                             </div>
                                         </>
                                         )
@@ -223,7 +219,7 @@ export default function SideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.followed_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowing={false}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.followed_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowingList={false}/>}
                                             </div>
                                         </>
                                         )

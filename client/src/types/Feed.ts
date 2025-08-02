@@ -1,5 +1,5 @@
 export type Feed = {
-    id: string;
+    id: number;
     user_id: number;
     userId: string;
     profile_image?: string;

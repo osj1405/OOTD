@@ -15,12 +15,11 @@ export default function FriendSideProfile({
     friend_info: User | null
 }){
     const [friendModal, setFriendModal] = useState<string | null>(null);
-    // const [friend, setFriend] = useState<User | null>(null)
     const user = useSelector((state: RootState)=> state.auth.user)
-    const [following, setFollowing] = useState(false)
-    const [follower, setFollower] = useState(false)
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [isFollower, setIsFollower] = useState(false)
     const [followings, setFollowings] = useState<Friends []>([])
-    const [followers, setFollowers] = useState<Friends []>([])
+    const [followers, setFollowers] = useState<Friends[]>([])
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
     const [followList, setFollowList] = useState(true)
@@ -38,12 +37,12 @@ export default function FriendSideProfile({
     useEffect(()=>{
         getFollower()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [following])
+    }, [isFollowing])
+
     useEffect(()=>{
         getFollowing()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [follower])
-
+    }, [isFollower])
 
     useEffect(()=>{
         console.log(`followings: ${followings}`)
@@ -78,117 +77,6 @@ export default function FriendSideProfile({
         setFriendModal(null);
     }
 
-    async function checkFollowing(){
-        try {
-            if(user && friend_info){
-                const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info.id })
-                if(response.data.length > 0 && !following){
-                    setFollowing(true)
-                    }
-            } else {
-                console.log(`user information undefined: ${user}`)
-                console.log(`friend information undefined: ${friend_info}`)
-                setFollowing(false)
-                return
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function checkFollower(){
-        try {
-            if(user && friend_info){
-                const response = await axios.post('/api/friends/check-follower', { user_id: user?.id, friends_id: friend_info.id})
-                if(response.status === 200){
-                    setFollower(true)
-                } else {
-                    setFollower(false)
-                    return
-                }
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    
-    async function follow(){
-        try{
-            if(friend_info && user){
-                const response = await axios.post('/api/friends/', { following_id: friend_info.id, followed_id: user.id})
-                if(response.status === 200){
-                    setFollowing(true)
-                    getFollower()
-                }
-            } else {
-                console.log('user information undefined')
-                return
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-    
-    async function unfollow(){
-        try {
-            if(friend_info && user){
-                const response = await axios.post('/api/friends/unfollow', { user_id: user.id, following_id: friend_info.id})
-                if(response.status === 200){
-                    setFollowing(false)
-                    getFollower()
-                } else {
-                    console.log('user information undefined')
-                    return
-                }
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function getFollowing(){
-            try {
-                const user_id = friend_info?.id
-                const response = await axios.post('/api/friends/get_following', { user_id })
-                if(response.status === 200){
-                    setFollowings(response.data)
-                }
-            } catch(error){
-                console.log(error)
-            }
-    }
-
-    async function getFollower(){
-            try {
-                const user_id = friend_info?.id
-                const response = await axios.post('/api/friends/get_follower', { user_id })
-                if(response.status === 200){
-                    console.log(`followers data - ${response.data}`)
-                    setFollowers(response.data)
-                }
-            } catch(error){
-                console.log(error)
-            }
-    }
-
-    async function deleteFollower(){
-        try {
-            if(friend_info && user){
-                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user.id, follower_id: friend_info.id})
-                if(reponse.status === 200){
-                    setFollower(false)
-                } else {
-                    console.log('something wrong')
-                    return
-                }
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-
     function changePositionFollowerList(){
         if(barRef.current){
             barRef.current.style.transform = `translateX(95px)`;
@@ -199,6 +87,111 @@ export default function FriendSideProfile({
         if(barRef.current){
             barRef.current.style.transform = `translateX(0px)`;
         }
+    }
+
+    async function checkFollowing(){
+        try {
+            if(user?.id && friend_info?.id){
+                const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info?.id })
+                if(response.data.length > 0 && !isFollowing){
+                    setIsFollowing(true)
+                    }
+            } else {
+                setIsFollowing(false)
+                return
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    async function checkFollower(){
+        try {
+            if(user?.id && friend_info?.id){
+                const response = await axios.post('/api/friends/check-follower', { user_id: user?.id, friends_id: friend_info?.id})
+                if(response.status === 200){
+                    setIsFollower(true)
+                } else {
+                    setIsFollower(false)
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+    }
+
+    async function getFollowing(){
+            try {
+                const response = await axios.post('/api/friends/get_following', { user_id: friend_info?.id })
+                if(response.status === 200){
+                    setFollowings([...response.data])
+                }
+            } catch(error){
+                console.log(error)
+            }
+    }
+
+    async function getFollower(){
+            try {
+                const response = await axios.post('/api/friends/get_follower', { user_id: friend_info?.id })
+                if(response.status === 200){
+                    console.log(`followers data - ${response.data}`)
+                    setFollowers([...response.data])
+                }
+            } catch(error){
+                console.log(error)
+            }
+    }
+
+    async function toggleFollow(){
+        if(!isFollowing){
+            try{
+                if(friend_info?.id && user?.id){
+                    const response = await axios.post('/api/friends/', { following_id: friend_info?.id, followed_id: user?.id})
+                    if(response.status === 200){
+                        setIsFollowing(true)
+                    }
+                } else {
+                    console.log('user information undefined')
+                    return
+                }
+            } catch(error){
+                console.log(error)
+            }
+        } else {
+            try {
+                if(friend_info?.id && user?.id){
+                    const response = await axios.post('/api/friends/unfollow', { user_id: user?.id, following_id: friend_info?.id})
+                    if(response.status === 200){
+                        setIsFollowing(false)
+                    } else {
+                        console.log('user information undefined')
+                        return
+                    }
+                }
+            } catch(error){
+                console.log(error)
+            }
+        }
+    }
+
+    async function deleteFollower(){
+        if(!isFollower) return
+        try {
+            if(friend_info?.id && user?.id){
+                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user?.id, follower_id: friend_info?.id})
+                if(reponse.status === 200){
+                    setIsFollower(false)
+                } else {
+                    console.log('something wrong')
+                    return
+                }
+            }
+        } catch(error){
+            console.log(error)
+        }
+
     }
 
     return (
@@ -222,15 +215,15 @@ export default function FriendSideProfile({
                     <p className={styles.introduce}>{friend_info?.introduce}</p>
                 </div>
                 <div className={styles.followButtonContainer}>
-                    {following 
+                    {isFollowing 
                     ? <button 
                         className={styles.unfollowButton}
-                        onClick={unfollow}>Following
+                        onClick={toggleFollow}>Following
                         </button>
                     : <button 
                         className={styles.followButton}
-                        onClick={follow}>Follow</button>}
-                    {follower 
+                        onClick={toggleFollow}>Follow</button>}
+                    {isFollower 
                     && <button 
                         className={styles.unfollowButton}
                         onClick={deleteFollower}>팔로워 삭제</button>}
@@ -267,7 +260,7 @@ export default function FriendSideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={true}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.following_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowingList={true}/>}
                                             </div>
                                         </>
                                         )
@@ -292,7 +285,7 @@ export default function FriendSideProfile({
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowing={false}/>}
+                                                {friendModal === friend.userId && <FriendModal isOpen={friendModal} id={friend.followed_id} userId={friend.userId} profileImage={friend.profile_image} name={friend.name} introduce={friend.introduce} isFollowingList={false}/>}
                                             </div>
                                         </>
                                         )
@@ -306,4 +299,5 @@ export default function FriendSideProfile({
 
         </>
     );
+
 }
