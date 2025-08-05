@@ -78,11 +78,12 @@ router.post('/get_following', async(req, res)=>{
 })
 
 router.post('/unfollow', async(req, res) => {
-    const { user_id, following_id } = req.body;
+    const { followed_id, following_id } = req.body;
     try {
-        const data = await sql`DELETE FROM public.friends WHERE following_id = ${following_id} AND followed_id = ${user_id}`
+        const data = await sql`DELETE FROM public.friends WHERE following_id = ${following_id} AND followed_id = ${followed_id} RETURNING *`
         console.log('unfollow success')
-        return res.status(200).json(data)
+        console.log(`unfollow response data: ${data}`)
+        return res.status(200).json(...data)
     } catch(error){
         console.error(`unfollow 에러 ${error}`)
         return res.status(500).json({message: 'server error'})

@@ -8,6 +8,7 @@ export default function useLike(user_id: number | undefined, feed_id: number){
     useEffect(()=>{
         checkLike()
         getLikeCount()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user_id, feed_id])
 
     async function getLikeCount(){

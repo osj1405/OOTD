@@ -20,6 +20,6 @@ export default function useDayFeed(user_id: number | undefined, day: Date | null
         }
         if(day)
             readDayFeed(day)
-    })
+    }, [user_id, day])
     return feeds
 }

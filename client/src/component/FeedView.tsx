@@ -32,21 +32,21 @@ export default function FeedView({
     const { isLiked, likeCount, toggleLike} = useLike(user_id, id)
     
     useEffect(()=>{
-            images.forEach(async (img)=>{
-                await getImageUrl(img)
-            })
-    },[images])
-    
-    useEffect(()=>{
-        console.log(feedImages)
-    }, [feedImages])
+        const fullUrls = images.map((image)=>(
+            `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${user_id}/${id}/${image}`
+        ))
+        if (feedImages.join('') !== fullUrls.join('')) {
+            setFeedImages(fullUrls);
+            console.log('set feed success');
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[id])
 
 
-
-    function getImageUrl(image: string){
-        const fullUrl  = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${user_id}/${id}/${image}`
-        setFeedImages(prev=>[...prev, fullUrl])
-    }
+    // function getImageUrl(image: string){
+    //     const fullUrl  = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${user_id}/${id}/${image}`
+    //     setFeedImages(prev=>[...prev, fullUrl])
+    // }
 
     function goPrev(){
         setCurrentIndex(prev => (prev - 1 + images.length) % images.length)
@@ -66,8 +66,6 @@ export default function FeedView({
                             onClick={()=>goPrev()}>&lt;</button>
                         <div className={styles.imagesContainer}>
                             {feedImages.map((img, index)=>{
-                                console.log(`image: ${index}`)
-                                console.log(`image url: ${img}`)
                                 const styleList = [`${styles.image}`]
                                 if(index === currentIndex){
                                     styleList.push(`${styles.current}`)

@@ -29,7 +29,6 @@ export default function SideProfile({
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
     const [followList, setFollowList] = useState(true)
-    // const { followings, followers } = useGetFollow(user?.id)
 
     const barRef = useRef<HTMLDivElement>(null);
    
@@ -181,7 +180,7 @@ export default function SideProfile({
                         sliceFollowingData.map((row, i) => {
                             return(
                                 <FriendsWrap key={i} >
-                                    {row.map((friend, i) => {
+                                    {row.map((friend, index) => {
                                         return(
                                         <>
                                             <div
@@ -189,7 +188,7 @@ export default function SideProfile({
                                                 onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
-                                                    key={i} 
+                                                    key={friend.following_id} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
@@ -215,7 +214,7 @@ export default function SideProfile({
                                                 onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
-                                                    key={i} 
+                                                    key={friend.followed_id} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />

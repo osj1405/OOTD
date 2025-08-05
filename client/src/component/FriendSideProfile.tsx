@@ -4,10 +4,11 @@ import FriendsWrap from "./FriendsWrap";
 import Friend from "./Friend";
 import FriendModal from "./FriendModal";
 import { User } from "../types/User";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/rootStore";
 import { Friends } from "../types/Friend";
+import useGetFollowInfo from "../hooks/useGetFollowInfo";
+import useFollow from "../hooks/useFollow";
 
 export default function FriendSideProfile({
     friend_info = null
@@ -16,37 +17,21 @@ export default function FriendSideProfile({
 }){
     const [friendModal, setFriendModal] = useState<string | null>(null);
     const user = useSelector((state: RootState)=> state.auth.user)
-    const [isFollowing, setIsFollowing] = useState(false)
-    const [isFollower, setIsFollower] = useState(false)
-    const [followings, setFollowings] = useState<Friends []>([])
-    const [followers, setFollowers] = useState<Friends[]>([])
+    const {isFollowing, isFollower, toggleFollow, deleteFollower} = useFollow(user?.id, friend_info?.id)
+    const { followings, followers, refresh } = useGetFollowInfo(friend_info?.id)
     const [sliceFollowingData, setSliceFollowingData] = useState<Friends [][]>([])
     const [sliceFollowerData, setSliceFollowerData] = useState<Friends [][]>([])
     const [followList, setFollowList] = useState(true)
-
+    
     const barRef = useRef<HTMLDivElement>(null)
 
     useEffect(()=>{
-        checkFollowing()
-        checkFollower()
-        getFollowing()
-        getFollower()
+        refresh()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [friend_info])
+    }, [isFollower, isFollowing])
+
 
     useEffect(()=>{
-        getFollower()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFollowing])
-
-    useEffect(()=>{
-        getFollowing()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isFollower])
-
-    useEffect(()=>{
-        console.log(`followings: ${followings}`)
-        console.log('effect')
         const rows = 3;
         const tempData = [];
         if(followings){
@@ -87,111 +72,6 @@ export default function FriendSideProfile({
         if(barRef.current){
             barRef.current.style.transform = `translateX(0px)`;
         }
-    }
-
-    async function checkFollowing(){
-        try {
-            if(user?.id && friend_info?.id){
-                const response = await axios.post('/api/friends/check-following', { user_id: user?.id, friends_id: friend_info?.id })
-                if(response.data.length > 0 && !isFollowing){
-                    setIsFollowing(true)
-                    }
-            } else {
-                setIsFollowing(false)
-                return
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function checkFollower(){
-        try {
-            if(user?.id && friend_info?.id){
-                const response = await axios.post('/api/friends/check-follower', { user_id: user?.id, friends_id: friend_info?.id})
-                if(response.status === 200){
-                    setIsFollower(true)
-                } else {
-                    setIsFollower(false)
-                    return
-                }
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
-
-    async function getFollowing(){
-            try {
-                const response = await axios.post('/api/friends/get_following', { user_id: friend_info?.id })
-                if(response.status === 200){
-                    setFollowings([...response.data])
-                }
-            } catch(error){
-                console.log(error)
-            }
-    }
-
-    async function getFollower(){
-            try {
-                const response = await axios.post('/api/friends/get_follower', { user_id: friend_info?.id })
-                if(response.status === 200){
-                    console.log(`followers data - ${response.data}`)
-                    setFollowers([...response.data])
-                }
-            } catch(error){
-                console.log(error)
-            }
-    }
-
-    async function toggleFollow(){
-        if(!isFollowing){
-            try{
-                if(friend_info?.id && user?.id){
-                    const response = await axios.post('/api/friends/', { following_id: friend_info?.id, followed_id: user?.id})
-                    if(response.status === 200){
-                        setIsFollowing(true)
-                    }
-                } else {
-                    console.log('user information undefined')
-                    return
-                }
-            } catch(error){
-                console.log(error)
-            }
-        } else {
-            try {
-                if(friend_info?.id && user?.id){
-                    const response = await axios.post('/api/friends/unfollow', { user_id: user?.id, following_id: friend_info?.id})
-                    if(response.status === 200){
-                        setIsFollowing(false)
-                    } else {
-                        console.log('user information undefined')
-                        return
-                    }
-                }
-            } catch(error){
-                console.log(error)
-            }
-        }
-    }
-
-    async function deleteFollower(){
-        if(!isFollower) return
-        try {
-            if(friend_info?.id && user?.id){
-                const reponse = await axios.post('/api/friends/deleteFollower', { user_id: user?.id, follower_id: friend_info?.id})
-                if(reponse.status === 200){
-                    setIsFollower(false)
-                } else {
-                    console.log('something wrong')
-                    return
-                }
-            }
-        } catch(error){
-            console.log(error)
-        }
-
     }
 
     return (

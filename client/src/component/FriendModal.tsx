@@ -23,8 +23,8 @@ export default function FriendModal ({
 }){
     const navigate = useNavigate();
     const user = useSelector((state: RootState) => state.auth.user)
-    const { isFollowing, isFollower, toggleFollow, deleteFollower } = useFollow(user?.id, id)
-
+    const {isFollowing, isFollower, toggleFollow, deleteFollower} = useFollow(user?.id, id)
+    
     if(!isOpen)
         return null;
 

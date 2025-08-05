@@ -17,8 +17,9 @@ export default function useUserFeed(user_id: number | undefined){
                 console.log(error)
             }
         }
-        readUserFeed()
-    })
+        if(user_id)
+            readUserFeed()
+    }, [user_id])
 
     return feeds
 }

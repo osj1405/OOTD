@@ -58,8 +58,10 @@ router.post('/readDay', async(req, res) => {
 router.post('/readMyFeed', async(req, res) => {
     const { user_id } = req.body;
     try {
-        const myFeeds = await sql `SELECT * FROM public.feed_with_user WHERE user_id = ${user_id}`
-        res.status(200).json(myFeeds)
+        if(user_id){
+            const myFeeds = await sql `SELECT * FROM public.feed_with_user WHERE user_id = ${user_id}`
+            res.status(200).json(myFeeds)
+        }
     } catch(error){
         console.error(error)
         res.status(500).json({ error: 'Database query failed'})
