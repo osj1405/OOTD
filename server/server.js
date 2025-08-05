@@ -42,30 +42,6 @@ app.get('/api/users', async (_, res) => {
   }
 });
 
-
-// app.post('/api/signin', async(req, res) => {
-//   const [email, password] = req.body
-//   if(!email || !password){
-//     return res.status(400).json({message: '이메일과 비밀번호를 입력하세요. '})
-//   }
-//   try{
-//     const user = await sql `SELECT * FROM users WHERE email=${email}`
-
-//     if(user.length === 0){
-//       return res.status(404).json({ message: '존재하지 않는 사용자입니다.' });
-//     }
-
-//     if(user[0].password !== password ){
-//       return res.status(401).json({message: '비밀번호가 일치하지 않습니다. '})
-//     }
-
-//     res.status(200).json({message: '로그인 성공', user: user[0]})
-//   } catch(error){
-//     console.error('로그인 에러:', error);
-//     res.status(500).json({ message: '서버 오류' });
-//   }
-// })
-
 app.listen(port, () => {
   console.log("")
   console.log(`Example app listening on port ${port}`)

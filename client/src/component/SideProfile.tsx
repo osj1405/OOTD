@@ -74,11 +74,6 @@ export default function SideProfile({
         setSliceFollowerData(tempData)
     }, [followers])
 
-    
-    useEffect(()=>{
-        console.log(friendModal)
-    }, [friendModal])
-    
 
     async function handleLogout(){
         const { error } = await supabase.auth.signOut();
@@ -185,7 +180,7 @@ export default function SideProfile({
                         sliceFollowingData.map((row, i) => {
                             return(
                                 <FriendsWrap key={i} >
-                                    {row.map((friend, i) => {
+                                    {row.map((friend, index) => {
                                         return(
                                         <>
                                             <div
@@ -193,11 +188,11 @@ export default function SideProfile({
                                                 onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
-                                                    key={i} 
+                                                    key={friend.following_id} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.following_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowing={true}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.following_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowingList={true}/>}
                                             </div>
                                         </>
                                         )
@@ -219,11 +214,11 @@ export default function SideProfile({
                                                 onMouseEnter={() => setFriendModalOpen(friend)}
                                                 onMouseLeave={setFriendModalClose}>
                                                 <Friend 
-                                                    key={i} 
+                                                    key={friend.followed_id} 
                                                     id={friend.userId} 
                                                     friendProfileImage={friend.profile_image} 
                                                     />
-                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.followed_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowing={false}/>}
+                                                {friendModal && <FriendModal key={i} isOpen={friendModal.userId} id={friendModal.followed_id} userId={friendModal.userId} profileImage={friendModal.profile_image} name={friendModal.name} introduce={friendModal.introduce} isFollowingList={false}/>}
                                             </div>
                                         </>
                                         )

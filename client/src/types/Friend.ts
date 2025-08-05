@@ -5,6 +5,6 @@ export type Friends = {
   tag?: string;
   introduce?: string;
   created_at?: Date;
-  followed_id?: string;
-  following_id?: string;
+  followed_id?: number;
+  following_id?: number;
 }

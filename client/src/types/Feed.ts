@@ -1,6 +1,6 @@
 export type Feed = {
-    id: string;
-    user_id: string;
+    id: number;
+    user_id: number;
     userId: string;
     profile_image?: string;
     thumnail: string;

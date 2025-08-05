@@ -10,27 +10,21 @@ import CardContainer from './component/CardContainer';
 import Card from './component/Card';
 import FeedModal from './component/FeedModal';
 import FeedView from './component/FeedView';
+import useDayFeed from './hooks/useDayFeed';
+import useUserFeed from './hooks/useUserFeed';
 
 export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
-    const [feeds, setFeeds] = useState<Feed []>([])
-    const [allFeeds, setAllFeeds] = useState<Feed []>([])
     const [friend, setFriend] = useState<User | null>(null)
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null)
-
     const params = useParams<{id: string}>();
     const friendId = params.id
-
+    const feeds = useDayFeed(friend?.id, selectedDay ? new Date(selectedDay) : null)
+    const allFeeds = useUserFeed(friend?.id)
     
     const onSelectDay = (day: any) => {
         setSelectedDay(day)
     }
-
-    useEffect(()=>{
-        if(selectedDay)
-            readDayFeed(new Date(selectedDay))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDay])
 
     useEffect(()=>{
         async function getFriendProfile(){
@@ -49,45 +43,10 @@ export default function FriendPage() {
         }
 
         getFriendProfile()
-        console.log(`get friend profile: ${friend}`)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
-    useEffect(()=>{
-        readFriendsFeed()
-    }, [friend])
-
     const navigate = useNavigate();
-
-   
-    async function readDayFeed(day: Date){
-        if(!selectedDay)
-            return
-        try{
-            const created_at = new Date(day.setHours(0, 0, 0, 0)).toISOString()
-            const created_at_end = new Date(day.setHours(23, 59, 59, 999)).toISOString()
-            const user_id = friend?.id
-            const response = await axios.post('/api/feed/readDay', { user_id: user_id, created_at: created_at, created_at_end: created_at_end })
-            console.log(response.data)
-            const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime() )
-            setFeeds(sortedFeeds)
-        } catch(error){
-            console.error(error)
-        }
-    }
-
-    async function readFriendsFeed(){
-        try {
-            const user_id = friend?.id
-            const response = await axios.post('/api/feed/readMyFeed', { user_id })
-            if(response.status === 200){
-                const sortedFeeds = response.data.slice().sort((prev: Feed, next: Feed) => new Date(next.created_at).getTime() - new Date(prev.created_at).getTime())
-                setAllFeeds(sortedFeeds)
-            }
-        } catch(error){
-            console.log(error)
-        }
-    }
 
     function handleCardClick(cardData: any){
         setSelectedCard(cardData)
