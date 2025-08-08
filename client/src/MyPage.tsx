@@ -16,13 +16,27 @@ import useDayFeed from "./hooks/useDayFeed";
 import useUserFeed from "./hooks/useUserFeed";
 
 export default function MyPage(){
-    const [selectedDay, setSelectedDay] = useState(()=>{return new Date()});
+    const [selectedDay, setSelectedDay] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
+    const [feedPerRow, setFeedPerRow] = useState(1)
+
+    useEffect(() => {
+        function handleResize() {
+        const cardWidth = 200; // 카드 하나의 폭(px)
+        const availableWidth = window.innerWidth - 740; // 좌우 padding 여유 고려
+        const count = Math.max(1, Math.floor(availableWidth / cardWidth));
+        setFeedPerRow(count);
+        }
+
+        handleResize(); // 초기 실행
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
     const user = useSelector((state: RootState) => state.auth.user)
     
-    const feeds = useDayFeed(user?.id, selectedDay)
+    const feeds = useDayFeed(user?.id, new Date(selectedDay))
     const allFeeds = useUserFeed(user?.id)
     let navigate = useNavigate();
 
@@ -48,9 +62,8 @@ export default function MyPage(){
     }
 
     const sliceData = [];
-    const rows = 4;
-    for(let i = 0; i < feeds.length; i += rows){
-        sliceData.push(feeds.slice(i, i + rows));
+    for(let i = 0; i < feeds.length; i += feedPerRow){
+        sliceData.push(feeds.slice(i, i + feedPerRow));
     }
     
 
