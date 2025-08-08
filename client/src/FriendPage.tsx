@@ -17,6 +17,7 @@ export default function FriendPage() {
     const [selectedDay, setSelectedDay] = useState<Date | null>(null);
     const [friend, setFriend] = useState<User | null>(null)
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null)
+    const [feedPerRow, setFeedPerRow] = useState(1)
     const params = useParams<{id: string}>();
     const friendId = params.id
     const feeds = useDayFeed(friend?.id, selectedDay ? new Date(selectedDay) : null)
@@ -46,6 +47,19 @@ export default function FriendPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+     useEffect(() => {
+        function handleResize() {
+        const cardWidth = 200; // 카드 하나의 폭(px)
+        const availableWidth = window.innerWidth - 740; // 좌우 padding 여유 고려
+        const count = Math.max(1, Math.floor(availableWidth / cardWidth));
+        setFeedPerRow(count);
+        }
+
+        handleResize(); // 초기 실행
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
     const navigate = useNavigate();
 
     function handleCardClick(cardData: any){
@@ -57,10 +71,9 @@ export default function FriendPage() {
     }
 
     const sliceData = []
-    const rows= 4
 
-    for(let i = 0; i < feeds.length; i += rows){
-        sliceData.push(feeds.slice(i, i + rows))
+    for(let i = 0; i < feeds.length; i += feedPerRow){
+        sliceData.push(feeds.slice(i, i + feedPerRow))
     }
 
     return (
