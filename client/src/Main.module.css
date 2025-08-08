@@ -2,13 +2,13 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    min-width: 400px;
 }
 
 .contentContainer {
     display: flex;
     flex-direction: row;
-    gap: 5%;
+    gap: 10px;
 }
 
 .sidebar {
@@ -23,7 +23,8 @@
 .content {
     display: flex;
     flex-direction: column;
-    flex: 50;
+    /* flex: 50; */
+    width: 100%;
 }
 
 .logoutField{
@@ -91,3 +92,19 @@
     padding-bottom: 20px;
 }
 
+.feedContainer {
+    display: inline-block;
+    overflow-x:auto;
+    white-space: nowrap;
+    /* overflow: auto;
+    white-space: normal; */
+    /* overflow-wrap: break-word;
+    overflow: auto; */
+    /* overflow: scroll; */
+    gap: 10px;
+    /* width: 90%; */
+}
+
+/* .feedItemContainer{
+    display: inline;
+} */
