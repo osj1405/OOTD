@@ -11,6 +11,7 @@ import axios from 'axios';
 import { User } from './types/User';
 import { Feed } from './types/Feed';
 import { useNavigate } from 'react-router';
+import useWindowSize from './hooks/useWindowSize';
 
 function Main(){
     const [open, setOpen] = useState(false);
@@ -19,9 +20,10 @@ function Main(){
     const [searchUser, setSearchUser] = useState<User[]>([]);
     const [feeds, setFeeds] = useState<Feed []>([])
     const [feedPerRow, setFeedPerRow] = useState(1)
-    
+
     const user = useSelector((state: RootState) => state.auth.user);
     const navigate = useNavigate()
+    const windowSize = useWindowSize()
 
     useEffect(()=>{
         readFeed()
@@ -118,9 +120,15 @@ function Main(){
         <div className={styles.container}>
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
-                <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} />
-                </div>
+                {windowSize > 450 
+                ? <div className={styles.sidebar}>
+                     <SideProfile setOpenModal={setOpenModal} />
+                 </div>
+                : 
+                <button>
+                    프로필
+                </button>
+                }   
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
                         <div>
