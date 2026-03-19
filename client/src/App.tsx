@@ -1,11 +1,12 @@
 import styles from './App.module.css';
 import { useNavigate } from 'react-router';
 import { createClient, Session } from '@supabase/supabase-js';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import z from 'zod';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSession } from './store/authSlice';
+import { RootState } from './store/rootStore';
 import rootStore from './store/rootStore';
 
 export const supabase = createClient(process.env.REACT_APP_SUPABASE_URL!, process.env.REACT_APP_SUPABASE_ANON_KEY!)
@@ -16,8 +17,15 @@ function App() {
   const [errors, setErrors] = useState<{email?: string; password?: string}>({})
 
   const dispatch = useDispatch();
+  const backendJWTToken = useSelector((state: RootState) => state.auth.backendJWTToken);
   
   let navigate = useNavigate();
+
+  useEffect(() => {
+    if (backendJWTToken) {
+      navigate('/main');
+    }
+  }, [backendJWTToken, navigate]);
 
   const loginSchema = z.object({
     email: z.string().email('유효한 이메일 주소를 입력해주세요.'),

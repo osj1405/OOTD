@@ -9,6 +9,11 @@ type Props = {
 
 export default function PrivateRoute({children}: Props){
     const isLoggedIn = useSelector((state: RootState)=> !!state.auth.backendJWTToken)
+    const initialized = useSelector((state: RootState) => state.auth.initialized)
+
+    if(!initialized){
+        return null;
+    }
 
     return isLoggedIn ? children : <Navigate to="/" replace />;
     // return children;

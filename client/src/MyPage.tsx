@@ -16,14 +16,30 @@ import useDayFeed from "./hooks/useDayFeed";
 import useUserFeed from "./hooks/useUserFeed";
 
 export default function MyPage(){
-    const [selectedDay, setSelectedDay] = useState(()=>{return new Date()});
+    const [selectedDay, setSelectedDay] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [selectedCard, setSelectedCard] = useState<Feed | null>(null);
+    const [feedPerRow, setFeedPerRow] = useState(1)
+    const [refreshFeedKey, setRefreshFeedKey] = useState(0)
+
+    useEffect(() => {
+        function handleResize() {
+        const cardWidth = 200; // 카드 하나의 폭(px)
+        const availableWidth = window.innerWidth - 740; // 좌우 padding 여유 고려
+        const count = Math.max(1, Math.floor(availableWidth / cardWidth));
+        setFeedPerRow(count);
+        }
+
+        handleResize(); // 초기 실행
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
     const user = useSelector((state: RootState) => state.auth.user)
+    const supabaseSession = useSelector((state: RootState) => state.auth.supabaseSession)
     
-    const feeds = useDayFeed(user?.id, selectedDay)
-    const allFeeds = useUserFeed(user?.id)
+    const feeds = useDayFeed(user?.id, selectedDay, refreshFeedKey)
+    const allFeeds = useUserFeed(user?.id, refreshFeedKey)
     let navigate = useNavigate();
 
     const onSelectDay = (day: any) => {
@@ -47,10 +63,44 @@ export default function MyPage(){
         setSelectedCard(cardData)
     }
 
+    async function handleDeleteFeed(feedId: number){
+        if(!user?.id || !supabaseSession?.access_token){
+            alert('로그인 정보가 없습니다.')
+            return;
+        }
+
+        const isConfirmed = window.confirm('게시글을 삭제하시겠습니까?');
+        if(!isConfirmed){
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/feed/delete', {
+                feed_id: feedId,
+                user_id: user.id,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${supabaseSession.access_token}`,
+                },
+            })
+
+            if(response.data.warning){
+                alert(response.data.warning)
+            } else {
+                alert('게시글이 삭제되었습니다.')
+            }
+
+            setSelectedCard((prev) => prev?.id === feedId ? null : prev)
+            setRefreshFeedKey((prev) => prev + 1)
+        } catch(error){
+            console.error(error)
+            alert('게시글 삭제에 실패했습니다.')
+        }
+    }
+
     const sliceData = [];
-    const rows = 4;
-    for(let i = 0; i < feeds.length; i += rows){
-        sliceData.push(feeds.slice(i, i + rows));
+    for(let i = 0; i < feeds.length; i += feedPerRow){
+        sliceData.push(feeds.slice(i, i + feedPerRow));
     }
     
 
@@ -114,6 +164,8 @@ export default function MyPage(){
                                                 content={feed.content}
                                                 created_at={feed.created_at} 
                                                 like_count={feed.like_count}
+                                                showDeleteButton={true}
+                                                onDelete={handleDeleteFeed}
                                                 />
                                             </>
                                         )
@@ -123,8 +175,8 @@ export default function MyPage(){
                         </div>
                     </div>    
                 </div>
-                {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal}/>}
-                <WriteModal isOpen={open} onClose={setCloseModal}/>
+                {selectedCard && <FeedModal card={selectedCard} onClose={closeCardModal} onDelete={handleDeleteFeed} showDeleteButton={true}/>}
+                <WriteModal isOpen={open} onClose={setCloseModal} onSuccess={() => setRefreshFeedKey((prev) => prev + 1)}/>
             </div>
         </>
     );

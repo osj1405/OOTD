@@ -11,6 +11,7 @@ import axios from 'axios';
 import { User } from './types/User';
 import { Feed } from './types/Feed';
 import { useNavigate } from 'react-router';
+import useWindowSize from './hooks/useWindowSize';
 
 function Main(){
     const [open, setOpen] = useState(false);
@@ -18,8 +19,11 @@ function Main(){
     const [searchText, setSearchText] = useState<string>('');
     const [searchUser, setSearchUser] = useState<User[]>([]);
     const [feeds, setFeeds] = useState<Feed []>([])
+    const [feedPerRow, setFeedPerRow] = useState(1)
+
     const user = useSelector((state: RootState) => state.auth.user);
     const navigate = useNavigate()
+    const windowSize = useWindowSize()
 
     useEffect(()=>{
         readFeed()
@@ -44,6 +48,19 @@ function Main(){
             onSearch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[searchText])
+
+    useEffect(() => {
+        function handleResize() {
+        const cardWidth = 200; // 카드 하나의 폭(px)
+        const availableWidth = window.innerWidth - 190; // 좌우 padding 여유 고려
+        const count = Math.max(1, Math.floor(availableWidth / cardWidth));
+        setFeedPerRow(count);
+        }
+
+        handleResize(); // 초기 실행
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
     function setOpenModal(){
         setOpen(true);
@@ -93,9 +110,8 @@ function Main(){
 }
 
     const sliceData = [];
-    const rows = 4;
-    for(let i = 0; i < feeds.length; i += rows){
-        sliceData.push(feeds.slice(i, i + rows));
+    for(let i = 0; i < feeds.length; i += feedPerRow){
+        sliceData.push(feeds.slice(i, i + feedPerRow));
     }
 
 
@@ -104,9 +120,15 @@ function Main(){
         <div className={styles.container}>
             <p className={styles.title}>OOTD</p>
             <div className={styles.contentContainer}>
-                <div className={styles.sidebar}>
-                    <SideProfile setOpenModal={setOpenModal} />
-                </div>
+                {windowSize > 450 
+                ? <div className={styles.sidebar}>
+                     <SideProfile setOpenModal={setOpenModal} />
+                 </div>
+                : 
+                <button>
+                    프로필
+                </button>
+                }   
                 <div className={styles.content}>
                     <div className={styles.logoutField}>
                         <div>
@@ -143,6 +165,22 @@ function Main(){
                         onClick={onSearch}
                         >검색</button>
                     </div>
+                    {/* {vs.map((feed, i) => {
+                        return (
+                                <Card 
+                                    key={i}
+                                    id={feed.id}
+                                    user_id={feed.user_id}
+                                    userId={feed.userId ? feed.userId : "none"}
+                                    profile_image={feed.profile_image}
+                                    thumnail={feed.thumnail}
+                                    timestamp={feed.created_at}
+                                    like_count={feed.like_count}
+                                    onClick={()=>handleCardClick(feed)}
+                                    />
+                        )
+                    })
+                    } */}
                     {sliceData.map((row, i) => {
                         return(
                             <CardContainer key={i}>

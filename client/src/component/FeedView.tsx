@@ -13,6 +13,8 @@ interface FeedProps {
     content?: string;
     created_at: string;
     like_count: number;
+    showDeleteButton?: boolean;
+    onDelete?: (feedId: number) => void;
 }
 
 export default function FeedView({
@@ -24,7 +26,9 @@ export default function FeedView({
     images,
     content,
     like_count,
-    created_at
+    created_at,
+    showDeleteButton = false,
+    onDelete,
 }: FeedProps){
     const [feedImages, setFeedImages] = useState<string[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -86,6 +90,12 @@ export default function FeedView({
                         <div className={styles.likeZone}>
                             <LikeButton isLiked={isLiked} width="20px" height="20px" onClick={toggleLike}/>
                             <p>{likeCount}</p>
+                            {showDeleteButton && onDelete &&
+                                <button
+                                    type="button"
+                                    className={styles.deleteButton}
+                                    onClick={() => onDelete(id)}
+                                >삭제</button>}
                         </div>
                         <p className={styles.id}>{userId ? userId : "undefined"}</p>
                         <p className={styles.feedContent}>{content}</p>

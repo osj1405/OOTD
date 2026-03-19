@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Feed } from "../types/Feed";
 import axios from "axios";
 
-export default function useUserFeed(user_id: number | undefined){
+export default function useUserFeed(user_id: number | undefined, refreshKey = 0){
     const [feeds, setFeeds] = useState<Feed[]>([])
 
     useEffect(()=>{
@@ -19,7 +19,7 @@ export default function useUserFeed(user_id: number | undefined){
         }
         if(user_id)
             readUserFeed()
-    }, [user_id])
+    }, [user_id, refreshKey])
 
     return feeds
 }

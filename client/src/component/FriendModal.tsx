@@ -40,11 +40,16 @@ export default function FriendModal ({
                         onClick={()=>navigate(`/friendpage/${userId}`)}
                         /> : <div className={styles.profileImage}></div>}
                         <div
-                            className={styles.rightContainer}
-                            onClick={()=>navigate(`/friendpage/${userId}`)}>
-                            <p className={styles.id}>{userId}</p>
-                            <p className={styles.name}>{name}</p>
-                            <p className={styles.introduce}>{introduce}</p>
+                            className={styles.rightContainer}>
+                            <p className={styles.id}
+                                onClick={()=>navigate(`/friendpage/${userId}`)}
+                                >{userId}</p>
+                            <p className={styles.name}
+                                onClick={()=>navigate(`/friendpage/${userId}`)}
+                                >{name}</p>
+                            <p className={styles.introduce}
+                                onClick={()=>navigate(`/friendpage/${userId}`)}
+                                >{introduce}</p>
                             <div className={styles.followButtonContainer}>
                         </div>
                         {isFollowingList 
