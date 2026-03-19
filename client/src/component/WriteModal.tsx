@@ -8,10 +8,12 @@ import { v4 } from 'uuid'
 interface WriteModalProps {
     isOpen: boolean | null;
     onClose: () => void
+    onSuccess?: () => void
 }
 export default function WriteModal({ 
     isOpen, 
-    onClose = () => {} 
+    onClose = () => {},
+    onSuccess = () => {}
 }:WriteModalProps){
     // eslint-disable-next-line no-unused-vars
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string []>([])
@@ -138,6 +140,7 @@ export default function WriteModal({
         if(fileInputRef.current !== null){
             fileInputRef.current.value = ''
         } 
+        onSuccess()
         onClose()
     }
 
@@ -261,4 +264,3 @@ export default function WriteModal({
         </>
     );
 }
-

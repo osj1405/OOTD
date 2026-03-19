@@ -20,7 +20,7 @@ export default function FriendPage() {
     const [feedPerRow, setFeedPerRow] = useState(1)
     const params = useParams<{id: string}>();
     const friendId = params.id
-    const feeds = useDayFeed(friend?.id, selectedDay ? new Date(selectedDay) : null)
+    const feeds = useDayFeed(friend?.id, selectedDay)
     const allFeeds = useUserFeed(friend?.id)
     
     const onSelectDay = (day: any) => {

@@ -1,7 +1,11 @@
 import express from 'express'
 const router = express.Router()
+import { createClient } from '@supabase/supabase-js';
 
 import sql from '../db.js'
+import { verifySupabaseToken } from '../verifySupabaseToken.js';
+
+const supabase = createClient(process.env.SUPABASE_PROJECT_URL, process.env.SUPABASE_SERVICE_ROLE)
 
 router.post('/upload', async(req, res) => {
     const {supabaseId, thumnail, uploadImageFilePath, content} = req.body;
@@ -126,6 +130,77 @@ router.post('/unlike', async(req, res) => {
         }
 
         console.log('unlike success')
+        return res.status(200).json({ success: true });
+    } catch(error){
+        console.error(error)
+        res.status(500).json({ error: 'Database query failed'})
+    }
+})
+
+router.post('/delete', async(req, res) => {
+    const { feed_id, user_id } = req.body;
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader?.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decodedToken = await verifySupabaseToken(token);
+
+    if (!decodedToken) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    if (decodedToken.sub !== String(user_id)) {
+        return res.status(403).json({ error: '본인 게시글만 삭제할 수 있습니다.' });
+    }
+
+    if (!feed_id || !user_id) {
+        return res.status(400).json({ error: '필수 데이터가 누락되었습니다.' });
+    }
+
+    try {
+        const feeds = await sql`
+            SELECT id, user_id, images, thumnail
+            FROM public.feed
+            WHERE id = ${feed_id} AND user_id = ${user_id}
+        `;
+
+        if (feeds.length === 0) {
+            return res.status(404).json({ error: '삭제할 게시글이 없습니다.' });
+        }
+
+        const feed = feeds[0];
+        const imagePaths = Array.isArray(feed.images) ? feed.images : [];
+        const filePaths = Array.from(new Set([feed.thumnail, ...imagePaths]))
+            .filter(Boolean)
+            .map((image) => `${feed.user_id}/${feed.id}/${image}`);
+
+        await sql.begin(async (transaction) => {
+            await transaction`
+                DELETE FROM public."Feed_Like"
+                WHERE feed_id = ${feed_id}
+            `;
+
+            await transaction`
+                DELETE FROM public.feed
+                WHERE id = ${feed_id} AND user_id = ${user_id}
+            `;
+        });
+
+        if (filePaths.length > 0) {
+            const { error } = await supabase.storage.from('feed-images').remove(filePaths);
+
+            if (error) {
+                console.error('feed image remove fail:', error.message);
+                return res.status(200).json({
+                    success: true,
+                    warning: '게시글은 삭제되었지만 이미지 정리에 실패했습니다.',
+                });
+            }
+        }
+
         return res.status(200).json({ success: true });
     } catch(error){
         console.error(error)

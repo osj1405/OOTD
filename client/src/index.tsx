@@ -5,6 +5,7 @@ import {
   Route
 } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute';
+import AuthBootstrap from './component/AuthBootstrap';
 import { Provider } from 'react-redux';
 import rootStore from './store/rootStore';
 import './index.css';
@@ -24,45 +25,47 @@ const root = ReactDOM.createRoot(container)
 
 root.render(
   <Provider store={rootStore}>
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<App />} />
+    <AuthBootstrap>
+      <BrowserRouter>
+        <Routes>
           <Route
-          path="/main"
-          element=
-            {
-              <PrivateRoute>
-                 <Main />
-              </PrivateRoute>
-           } />
-          <Route
-            path="/signup"
-            element={<SignUp />} />
-          <Route
-            path="mypage/:id"
-            element={
-              <PrivateRoute>
-                <MyPage />
-              </PrivateRoute>
-            } />
-          <Route 
-            path="editprofile/:id"
-            element={
-              <PrivateRoute>
-                <ProfileEdit />
-              </PrivateRoute>
-             }/>
-          <Route 
-            path="friendpage/:id"
-            element={
-              <PrivateRoute>
-                <FriendPage />
-              </PrivateRoute>
-            } />
-      </Routes>
-    </BrowserRouter>
+            path="/"
+            element={<App />} />
+            <Route
+            path="/main"
+            element=
+              {
+                <PrivateRoute>
+                   <Main />
+                </PrivateRoute>
+             } />
+            <Route
+              path="/signup"
+              element={<SignUp />} />
+            <Route
+              path="mypage/:id"
+              element={
+                <PrivateRoute>
+                  <MyPage />
+                </PrivateRoute>
+              } />
+            <Route 
+              path="editprofile/:id"
+              element={
+                <PrivateRoute>
+                  <ProfileEdit />
+                </PrivateRoute>
+               }/>
+            <Route 
+              path="friendpage/:id"
+              element={
+                <PrivateRoute>
+                  <FriendPage />
+                </PrivateRoute>
+              } />
+        </Routes>
+      </BrowserRouter>
+    </AuthBootstrap>
   </Provider>
 );
 

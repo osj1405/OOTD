@@ -7,10 +7,14 @@ import { RootState } from "../store/rootStore";
 import useLike from "../hooks/useLike";
 export default function FeedModal({
     card,
-    onClose = () => {}
+    onClose = () => {},
+    onDelete,
+    showDeleteButton = false,
 }:{
     card: Feed,
     onClose: () => void
+    onDelete?: (feedId: number) => void
+    showDeleteButton?: boolean
 }){
     const [images, setImages] = useState<string[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -20,16 +24,13 @@ export default function FeedModal({
     const {isLiked, likeCount, toggleLike} = useLike(user_id, card.id)
     
     useEffect(()=>{
-        card.images.forEach(async (img)=>{
-            await getImageUrl(img)
-        })
-    }, [card.images])
+        const fullUrls = card.images.map((image) => (
+            `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${card.user_id}/${card.id}/${image}`
+        ))
 
-    function getImageUrl(image: string){
-        const fullUrl  = `${process.env.REACT_APP_SUPABASE_URL}/storage/v1/object/public/feed-images/${card.user_id}/${card.id}/${image}`
-        console.log(`image url: ${fullUrl}`)
-        setImages(prev=>[...prev, fullUrl])
-    }
+        setImages(fullUrls)
+        setCurrentIndex(0)
+    }, [card.id, card.images, card.user_id])
     
     function goNext(){
         setCurrentIndex(prev => (prev + 1) % images.length)
@@ -76,6 +77,12 @@ export default function FeedModal({
                         <div className={styles.likeZone}>
                             <LikeButton isLiked={isLiked} width="20px" height="20px" onClick={toggleLike}/>
                             <p>{likeCount}</p>
+                            {showDeleteButton && onDelete &&
+                                <button
+                                    type="button"
+                                    className={styles.deleteButton}
+                                    onClick={() => onDelete(card.id)}
+                                >삭제</button>}
                         </div>
                         <p className={styles.id}>{card.userId}</p>
                         <p className={styles.feedContent}>{card.content}</p>
